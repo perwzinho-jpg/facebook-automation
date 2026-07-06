@@ -1,0 +1,41 @@
+{
+  "name": "bm-automation",
+  "version": "1.0.0",
+  "description": "Automatização de criação e verificação de contas Facebook Ads (BM)",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js",
+    "web": "node src/web/server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "facebook",
+    "ads",
+    "automation",
+    "bm"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "adspower-browser": "^2.1.0",
+    "axios": "^1.6.0",
+    "body-parser": "^1.20.2",
+    "chalk": "^5.3.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "node-cache": "^5.1.2",
+    "playwright": "^1.61.1",
+    "puppeteer": "^21.11.0",
+    "puppeteer-extra": "^3.3.6",
+    "puppeteer-extra-plugin-stealth": "^2.11.2",
+    "random-useragent": "^0.5.0",
+    "sqlite3": "^5.1.6",
+    "validator": "^13.11.0",
+    "winston": "^3.11.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  }
+}

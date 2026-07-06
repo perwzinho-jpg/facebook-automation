@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BM Automation Dashboard</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>🚀 BM Automation Dashboard</h1>
+      <p>Sistema Automático de Criação e Verificação de Contas Facebook Ads</p>
+    </header>
+
+    <nav class="tabs">
+      <button class="tab-btn active" onclick="switchTab('dashboard')">📊 Dashboard</button>
+      <button class="tab-btn" onclick="switchTab('create')">➕ Nova Automação</button>
+      <button class="tab-btn" onclick="switchTab('accounts')">📋 Contas</button>
+      <button class="tab-btn" onclick="switchTab('import')">📥 Importar</button>
+    </nav>
+
+    <!-- TAB: DASHBOARD -->
+    <div id="dashboard" class="tab-content active">
+      <div class="stats-grid">
+        <div class="stat-card">
+          <h3>Total de Contas</h3>
+          <p class="stat-number" id="stat-total">0</p>
+        </div>
+        <div class="stat-card">
+          <h3>Verificadas</h3>
+          <p class="stat-number verified" id="stat-verified">0</p>
+        </div>
+        <div class="stat-card">
+          <h3>Pendentes</h3>
+          <p class="stat-number pending" id="stat-pending">0</p>
+        </div>
+        <div class="stat-card">
+          <h3>Falhadas</h3>
+          <p class="stat-number failed" id="stat-failed">0</p>
+        </div>
+        <div class="stat-card">
+          <h3>Taxa de Sucesso</h3>
+          <p class="stat-number" id="stat-percentage">0%</p>
+        </div>
+      </div>
+
+      <div class="recent-activity">
+        <h3>Atividade Recente</h3>
+        <div id="activity-log">
+          <p class="empty">Nenhuma atividade ainda...</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB: CRIAR AUTOMAÇÃO -->
+    <div id="create" class="tab-content">
+      <form id="automationForm" class="form-container">
+        <h2>Iniciar Nova Automação</h2>
+
+        <fieldset>
+          <legend>Dados da Conta Facebook</legend>
+          <input type="email" id="email" placeholder="Email ou UID do Facebook" required>
+          <input type="password" id="password" placeholder="Senha do Facebook" required>
+          <input type="text" id="twoFASecret" placeholder="Link/ID do Autenticador 2FA (opcional)">
+          <input type="text" id="businessName" placeholder="Nome da Empresa" required>
+        </fieldset>
+
+        <fieldset>
+          <legend>Dados CNPJ/MEI</legend>
+          <input type="text" id="cnpj" placeholder="CNPJ da Empresa" required>
+          <input type="text" id="personName" placeholder="Nome da Pessoa Responsável" required>
+          <input type="email" id="companyEmail" placeholder="Email da Empresa" required>
+        </fieldset>
+
+        <fieldset>
+          <legend>Configurações Adicionais</legend>
+          <input type="text" id="proxy" placeholder="Proxy (opcional) - format: http://user:pass@host:port">
+          <select id="country">
+            <option value="BR">Brasil</option>
+            <option value="US">Estados Unidos</option>
+            <option value="MX">México</option>
+          </select>
+        </fieldset>
+
+        <button type="submit" class="btn-primary">🚀 Iniciar Automação</button>
+        <div id="formStatus" class="status-message"></div>
+      </form>
+    </div>
+
+    <!-- TAB: CONTAS -->
+    <div id="accounts" class="tab-content">
+      <div class="filter-bar">
+        <button onclick="filterAccounts('all')" class="filter-btn active">Todas</button>
+        <button onclick="filterAccounts('completed')" class="filter-btn">Concluídas</button>
+        <button onclick="filterAccounts('pending')" class="filter-btn">Pendentes</button>
+        <button onclick="filterAccounts('failed')" class="filter-btn">Falhadas</button>
+      </div>
+
+      <div class="table-container">
+        <table id="accountsTable">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Email</th>
+              <th>CNPJ</th>
+              <th>Status</th>
+              <th>Verificado</th>
+              <th>Criado em</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody id="accountsBody">
+            <tr><td colspan="7" class="empty">Carregando...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- TAB: IMPORTAR -->
+    <div id="import" class="tab-content">
+      <div class="import-container">
+        <h2>Importar Contas</h2>
+
+        <div class="import-options">
+          <div class="option-card">
+            <h3>📄 De Arquivo TXT</h3>
+            <p>Cole o conteúdo do arquivo lista.txt</p>
+            <textarea id="txtImport" placeholder="Cole o conteúdo do lista.txt aqui..." rows="10"></textarea>
+            <button onclick="importFromTxt()" class="btn-secondary">Processar TXT</button>
+          </div>
+
+          <div class="option-card">
+            <h3>📊 De JSON</h3>
+            <p>Cole um array JSON com os dados das contas</p>
+            <textarea id="jsonImport" placeholder='[{"email":"...","password":"...","cnpj":"..."}]' rows="10"></textarea>
+            <button onclick="importFromJson()" class="btn-secondary">Processar JSON</button>
+          </div>
+        </div>
+
+        <div id="importResult" class="import-result"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal de Detalhes da Conta -->
+  <div id="accountModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeAccountModal()">&times;</span>
+      <h2>Detalhes da Conta</h2>
+      <div id="modalBody" class="modal-body">
+        <!-- Preenchido via JS -->
+      </div>
+      <div id="modalLogs" class="modal-logs">
+        <h3>Logs</h3>
+        <div id="logsList"></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,248 @@
+2026-07-06 12:30:54 [[32minfo[39m] 
+============================================================
+2026-07-06 12:30:54 [[32minfo[39m] 📱 CONTAS DE FACEBOOK DETECTADAS: 1
+2026-07-06 12:30:54 [[32minfo[39m] ============================================================
+2026-07-06 12:30:54 [[32minfo[39m] 1. Email: kxeyqe@mailto.plus (UID: 61584203799202)
+2026-07-06 12:30:54 [[32minfo[39m] 
+2026-07-06 12:30:54 [[32minfo[39m] 
+======================================================================
+2026-07-06 12:30:54 [[32minfo[39m] 🚀 EXECUTANDO 1 CONTAS - 1 POR 1
+2026-07-06 12:30:54 [[32minfo[39m] ======================================================================
+
+2026-07-06 12:30:54 [[32minfo[39m] 
+[==================================================]
+2026-07-06 12:30:54 [[32minfo[39m] [1/1] 🔄 INICIANDO: kxeyqe@mailto.plus
+2026-07-06 12:30:54 [[32minfo[39m] [==================================================]
+
+2026-07-06 12:30:54 [[32minfo[39m] 
+============================================================
+2026-07-06 12:30:54 [[32minfo[39m] 📧 EMAIL: kxeyqe@mailto.plus
+2026-07-06 12:30:54 [[32minfo[39m] ============================================================
+
+2026-07-06 12:30:54 [[32minfo[39m] 🚀 Iniciando browser...
+2026-07-06 12:30:54 [[32minfo[39m] 1️⃣ Abrindo ABA 1 (Facebook)...
+2026-07-06 12:30:55 [[32minfo[39m] ✅ Facebook carregado
+
+2026-07-06 12:30:56 [[32minfo[39m] 2️⃣ Preenchendo credenciais...
+2026-07-06 12:31:05 [[32minfo[39m]    🎯 Aplicando técnica anti-bot (apagar e re-digitar)...
+2026-07-06 12:31:08 [[32minfo[39m] ✅ kxeyqe@mailto.plus
+
+2026-07-06 12:31:08 [[32minfo[39m] 3️⃣ Enviando login...
+2026-07-06 12:31:11 [[32minfo[39m]    ⏎ Botão não encontrado, usando Enter
+
+2026-07-06 12:31:16 [[32minfo[39m] ✅ Login enviado
+
+2026-07-06 12:31:18 [[32minfo[39m] ⏸️ Aguardando 5 segundos para detectar redirecionamento...
+
+2026-07-06 12:31:23 [[32minfo[39m] 🔍 URL após 5 segundos: https://www.facebook.com/two_step_verification/two_factor/?encrypted_context=AWQpwGCzOIj-1s0UnnUkH9DWsCfv1GcECWbJYlaiaS_dcpZp1Yp-b6w_5Xa-o7cOp-Eb7aQBaPeNui_xZq6F4h9zylCi5K9_5f4CUG94zASu77wYJb9tBpjqzcArxe_JLSUGNIzewpYreNb1j2y-VBDIcqRNEVyNDb7Xi_BC4h37MIoynOGoThzvSE1oUsbXpb_h83zLH4PiiDs9ia3swm_klVteyc2damLAp-5N68OJh-mdZULGEhi_YF1ixZbkotDpWLow0OPmnMBL3pCIsifcOpT7FgW6gnz8IfpOPYS4My6kHSSxl2dUOoDQbQG51ko82jjN40SI6Rkfq4KbbRFet2YmNNnyKJNouScGmMta-q9k0M2RJ6-mIMlXfkDXSkIb7TVeVWi5Hw6P9iWKAWEsEiNM-AxNv9wVJSclLt_Ynq-zXCRNQil1hvmbFjcSL1kE0vbnXK3oRhHAx90PeO-gjpl__psOxC7InLuDKb9qcCT2gDeccsyiZaNN5IEWsLCtpfT5UUoId--gb_fGpD3zu9q7nGBN5lAatweMQxIgVCgNKBuPzQt5mWaTAl-vACBJYe6XWC4MDUAtS7j3nsQum1sl1BTxpR6iXPMEL4GOICLqCIqAxjyVdGLVkBrVNRBCpfYZIds1Mf7jC0mEmGlCWrPOd-s9MEaw8Sdv1xHjHK8miMLLnuBHYjFq0b1WJ_X0mqBoRTwWzK0a&flow=two_factor_login&next
+
+2026-07-06 12:31:23 [[32minfo[39m] 🔍 [1/5] Verificando se há CAPTCHA na página...
+
+2026-07-06 12:31:23 [[32minfo[39m] ✅ Nenhum CAPTCHA detectado na página
+
+2026-07-06 12:31:23 [[32minfo[39m] 4️⃣ 2FA DETECTADO!
+
+2026-07-06 12:31:23 [[32minfo[39m] 5️⃣ Abrindo ABA 2 (Browserscan)...
+2026-07-06 12:31:27 [[32minfo[39m] ✅ Browserscan carregado
+
+2026-07-06 12:31:29 [[32minfo[39m] 6️⃣ Tentativa 1/3
+
+2026-07-06 12:31:29 [[32minfo[39m]    🔍 Extraindo código...
+2026-07-06 12:31:29 [[32minfo[39m]    ✅ Código: 650728
+
+2026-07-06 12:31:29 [[32minfo[39m]    ❌ Fechando aba Browserscan...
+2026-07-06 12:31:29 [[32minfo[39m]    ✅ Aba fechada
+
+2026-07-06 12:31:30 [[32minfo[39m]    📝 Digitando código humanizado...
+2026-07-06 12:31:30 [[32minfo[39m]    📊 Debug: 2 inputs no DOM principal
+
+2026-07-06 12:31:30 [[32minfo[39m]    ✓ Input encontrado no DOM: type=text
+
+2026-07-06 12:31:31 [[32minfo[39m]    ✅ Código digitado
+
+2026-07-06 12:31:31 [[32minfo[39m]    ✅ Enter enviado
+
+2026-07-06 12:31:31 [[32minfo[39m]    ⏳ Aguardando resposta do Facebook...
+
+2026-07-06 12:31:37 [[32minfo[39m]    🔍 Verificando se há CAPTCHA após 2FA...
+
+2026-07-06 12:31:37 [[32minfo[39m] ✅ 2FA PASSOU!
+
+2026-07-06 12:31:37 [[32minfo[39m]    🚀 Tentando ir direto para Settings...
+2026-07-06 12:31:39 [[32minfo[39m]    ✅ Conseguiu ir direto para settings!
+
+2026-07-06 12:31:39 [[32minfo[39m] ⏭️ Pulando processamento de modals (já está em settings)
+
+2026-07-06 12:31:39 [[32minfo[39m] Salvando cookies...
+2026-07-06 12:31:39 [[32minfo[39m] ✅ Cookies salvos
+
+2026-07-06 12:31:39 [[32minfo[39m] ✅ ✅ ✅ LOGIN COMPLETO!
+
+2026-07-06 12:31:39 [[32minfo[39m] 📌 Etapa 1: Alterando idioma para Português do Brasil
+
+2026-07-06 12:31:40 [[32minfo[39m]    ✅ Settings (Language & Region) carregado
+
+2026-07-06 12:31:42 [[32minfo[39m]    🔍 Procurando "Idioma da conta" / "Account Language"...
+2026-07-06 12:31:42 [[32minfo[39m]    ✅ "Idioma da conta" / "Account Language" clicado
+
+2026-07-06 12:31:42 [[32minfo[39m]    ⏳ Aguardando modal de idioma carregar completamente...
+2026-07-06 12:31:42 [[32minfo[39m]    ✅ Modal carregou com input
+
+2026-07-06 12:31:44 [[32minfo[39m]    🔍 Focando no input dentro do modal...
+2026-07-06 12:31:44 [[32minfo[39m]    ✅ Input encontrado: input[type="text"]
+
+2026-07-06 12:31:44 [[32minfo[39m]    🔍 Digitando "Brasil" no input...
+2026-07-06 12:31:47 [[32minfo[39m]    ✅ "Brasil" digitado
+
+2026-07-06 12:31:47 [[32minfo[39m]    🔍 Clicando em "Brasil" nos resultados...
+2026-07-06 12:31:47 [[32minfo[39m]    ✅ Brasil selecionado
+
+2026-07-06 12:31:49 [[32minfo[39m]    ⏳ Confirmando mudança de idioma...
+2026-07-06 12:31:59 [[32minfo[39m]    ✅ Idioma alterado
+
+2026-07-06 12:31:59 [[32minfo[39m] 📌 Etapa 2: Voltando para Home
+
+2026-07-06 12:32:04 [[32minfo[39m]    ✅ Home carregada
+
+2026-07-06 12:32:04 [[32minfo[39m] 
+✅ ✅ ✅ CONFIGURAÇÕES DE IDIOMA CONCLUÍDAS COM SUCESSO!
+
+2026-07-06 12:32:04 [[32minfo[39m] 📊 Resumo das alterações:
+
+2026-07-06 12:32:04 [[32minfo[39m]    ✅ Idioma da conta: Português (Brasil)
+
+2026-07-06 12:32:04 [[32minfo[39m]    ✅ Página inicial carregada com novo idioma
+
+2026-07-06 12:32:04 [[32minfo[39m] 
+📌 Etapa 3: Abrindo Business Manager para criar portfolio
+
+2026-07-06 12:32:04 [[32minfo[39m] 🔍 Buscando CNPJ válido na API...
+2026-07-06 12:32:04 [[32minfo[39m]    🔑 Obtendo novo token do querybuscas.com...
+2026-07-06 12:32:13 [[32minfo[39m]    ✅ Token obtido com sucesso
+2026-07-06 12:32:15 [[32minfo[39m]    ✅ CNPJ encontrado: 08071671000155
+2026-07-06 12:32:15 [[32minfo[39m] ✅ CNPJ encontrado: 08071671000155
+
+2026-07-06 12:32:15 [[32minfo[39m]    📋 Razão Social: PJP CONSTRUTORA LTDA
+
+2026-07-06 12:32:15 [[32minfo[39m]    📅 Data Abertura: 2006-06-14
+
+2026-07-06 12:32:15 [[32minfo[39m]    ✓ Situação: Inapta
+
+2026-07-06 12:32:15 [[32minfo[39m]    ✉️ Email: CIDIMOBILIARIA@CIDIMOBILIARIA.COM.BR
+
+2026-07-06 12:32:15 [[32minfo[39m] 🌐 Abrindo Business Manager...
+2026-07-06 12:32:16 [[32minfo[39m] ✅ Business Manager carregado
+
+2026-07-06 12:32:19 [[32minfo[39m] 📝 Preenchendo formulário com dados do CNPJ...
+
+2026-07-06 12:32:19 [[32minfo[39m]    1️⃣ Preenchendo "Nome da sua conta e empresa"...
+2026-07-06 12:32:22 [[32minfo[39m]    ✅ Preenchido: Pjp construtora ltda
+
+2026-07-06 12:32:24 [[32minfo[39m]    2️⃣ Preenchendo "Nome"...
+2026-07-06 12:32:24 [[32minfo[39m]       Nome do sócio: Paulo jose caires dias
+2026-07-06 12:32:28 [[32minfo[39m]    ✅ Preenchido
+
+2026-07-06 12:32:30 [[32minfo[39m]    3️⃣ Preenchendo "Email"...
+2026-07-06 12:32:30 [[32minfo[39m]       Email gerado: paulojosec1004@gmail.com
+2026-07-06 12:32:34 [[32minfo[39m]    ✅ Preenchido
+
+2026-07-06 12:32:36 [[32minfo[39m] ✅ Formulário preenchido com sucesso!
+
+2026-07-06 12:32:36 [[32minfo[39m]    🚀 Clicando em Enviar...
+2026-07-06 12:32:36 [[32minfo[39m]    ✅ Enviado!
+
+2026-07-06 12:32:39 [[33mwarn[39m] 
+   ⚠️ ⚠️ LIMITE DE NEGÓCIOS ATINGIDO!
+
+2026-07-06 12:32:39 [[32minfo[39m]    💡 Já existem várias contas neste portfólio
+
+2026-07-06 12:32:39 [[32minfo[39m]    ⏭️ Pulando criação de novo portfólio e continuando...
+
+2026-07-06 12:32:39 [[32minfo[39m] 📌 Passo: Extraindo ID da Business Manager...
+
+2026-07-06 12:32:39 [[32minfo[39m]    🌐 Acessando Business Manager raiz...
+2026-07-06 12:32:44 [[32minfo[39m]    ✅ ID da BM encontrado: 2142046299675462
+
+2026-07-06 12:32:44 [[32minfo[39m] 📌 Passo: Acessando Configurações da Empresa...
+
+2026-07-06 12:32:44 [[32minfo[39m]    🌐 Navegando para settings...
+2026-07-06 12:32:50 [[32minfo[39m]    ✅ Settings carregados
+
+2026-07-06 12:32:50 [[32minfo[39m] 📌 Passo: Acessando Domínios (Adequação e Segurança)...
+
+2026-07-06 12:32:50 [[32minfo[39m]    🌐 Navegando para domínios...
+2026-07-06 12:32:58 [[32minfo[39m]    ✅ Página de domínios carregada
+
+2026-07-06 12:32:58 [[32minfo[39m]    ➕ Clicando em Adicionar...
+2026-07-06 12:32:58 [[32minfo[39m]    ✅ Clicado!
+
+2026-07-06 12:32:58 [[32minfo[39m]    ⏳ Aguardando 5 segundos para modal abrir...
+2026-07-06 12:33:03 [[32minfo[39m]    ✅ Modal aberto
+
+2026-07-06 12:33:03 [[32minfo[39m]    🔗 Clicando em "Criar um domínio"...
+2026-07-06 12:33:03 [[32minfo[39m]    📍 Tentativa 1: Procurar via XPath por texto...
+2026-07-06 12:33:03 [[32minfo[39m]    ✅ Clicado!
+
+2026-07-06 12:33:05 [[32minfo[39m] 📌 Passo: Configurando URL do Render...
+
+2026-07-06 12:33:05 [[32minfo[39m] 🌐 Usando Render: https://render-959q.onrender.com
+
+2026-07-06 12:33:05 [[32minfo[39m] 📝 Domínio para preencher: render-959q.onrender.com
+
+2026-07-06 12:33:05 [[32minfo[39m]    📝 Nome do site: pjp949389.vercel.app
+
+2026-07-06 12:33:05 [[32minfo[39m]    ✅ HTML gerado
+
+2026-07-06 12:33:05 [[32minfo[39m]    📝 Preenchendo campo de domínio digitando suave...
+2026-07-06 12:33:05 [[32minfo[39m]    ⌨️ Digitando URL caractere por caractere...
+2026-07-06 12:33:12 [[32minfo[39m]    ✅ URL digitada com sucesso
+
+2026-07-06 12:33:12 [[32minfo[39m]    🔗 Clicando em "Adicionar"...
+2026-07-06 12:33:12 [[32minfo[39m]    ✅ Botão "Adicionar" clicado!
+
+2026-07-06 12:33:12 [[32minfo[39m]    ⏳ Aguardando 10 segundos para Facebook gerar meta tag...
+
+2026-07-06 12:33:22 [[32minfo[39m]    📋 Capturando meta tag do Facebook (aguardando geração)...
+2026-07-06 12:33:22 [[32minfo[39m]    ✅ Meta tag capturada: qdx2c0gx27hrsmhylgvigy2gtq40f4
+
+2026-07-06 12:33:22 [[32minfo[39m]    🚀 Atualizando arquivo HTML com meta tag...
+2026-07-06 12:33:22 [[32minfo[39m]    ✅ HTML atualizado
+
+2026-07-06 12:33:22 [[32minfo[39m]    📤 Fazendo push para Render...
+2026-07-06 12:33:22 [[33mwarn[39m]    ⚠️ Git push falhou, arquivo salvo localmente
+
+2026-07-06 12:33:22 [[32minfo[39m]    💡 Para atualizar no Render:
+
+2026-07-06 12:33:22 [[32minfo[39m]       git add index.html
+
+2026-07-06 12:33:22 [[32minfo[39m]       git commit -m "meta tag"
+
+2026-07-06 12:33:22 [[32minfo[39m]       git push
+
+2026-07-06 12:33:22 [[32minfo[39m]    ⏳ Aguardando 10 segundos para Render processar...
+
+2026-07-06 12:33:32 [[32minfo[39m]    🔍 Procurando botão "Verificar domínio"...
+2026-07-06 12:33:32 [[32minfo[39m]    ✅ Botão "Verificar domínio" clicado!
+
+2026-07-06 12:33:32 [[32minfo[39m]    ⏳ Aguardando resposta da verificação...
+
+2026-07-06 12:33:37 [[33mwarn[39m]    ❌ ERRO DE VERIFICAÇÃO: Falha na verificação
+
+2026-07-06 12:33:37 [[32minfo[39m]    ℹ️ Verifique manualmente no Facebook Business Manager
+
+2026-07-06 12:33:40 [[32minfo[39m] 
+============================================================
+2026-07-06 12:33:40 [[32minfo[39m] ⏸️ AGUARDANDO SEU COMANDO
+2026-07-06 12:33:40 [[32minfo[39m] ============================================================
+2026-07-06 12:33:40 [[32minfo[39m] 
+Pronto para adicionar domínio!
+2026-07-06 12:33:40 [[32minfo[39m] Verifique a página e depois pressione Ctrl+C para continuar.
+
+2026-07-06 12:33:40 [[32minfo[39m] 
+============================================================
+2026-07-06 12:33:40 [[32minfo[39m] ⏸️ NAVEGADOR ABERTO - NÃO FECHE!
+2026-07-06 12:33:40 [[32minfo[39m] ============================================================
+2026-07-06 12:33:40 [[32minfo[39m] 
+O navegador permanecerá aberto para você ver os próximos passos.
+2026-07-06 12:33:40 [[32minfo[39m] Pressione Ctrl+C no terminal para fechar.
+
