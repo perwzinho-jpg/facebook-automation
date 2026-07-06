@@ -2320,20 +2320,37 @@ async function automateAutoRetry(email, password, proxyUrl = null, browserscanUr
             fs.writeFileSync(path.join(projectDir, 'index.html'), htmlAtualizado);
             logger.info('   ✅ HTML atualizado\n');
 
-            // Fazer commit e push
+            // Fazer commit e push com token GitHub
             logger.info('   📤 Fazendo push para Render...');
             try {
               const { execSync } = require('child_process');
+              const githubToken = process.env.GITHUB_TOKEN;
+              const githubUser = 'perwzinho-jpg';
+              const githubRepo = process.env.GITHUB_REPO || 'facebook-automation';
+
               execSync('git add index.html', { cwd: projectDir, stdio: 'pipe' });
               execSync(`git commit -m "meta tag: ${metaTagContent}"`, { cwd: projectDir, stdio: 'pipe' });
-              execSync('git push', { cwd: projectDir, stdio: 'pipe' });
-              logger.info('   ✅ Push realizado! Render vai atualizar automaticamente\n');
+
+              if (githubToken) {
+                // Push com token GitHub
+                const pushUrl = `https://${githubUser}:${githubToken}@github.com/${githubUser}/${githubRepo}.git`;
+                execSync(`git push ${pushUrl} main`, { cwd: projectDir, stdio: 'pipe' });
+                logger.info('   ✅ Push realizado! Render vai atualizar automaticamente\n');
+              } else {
+                logger.warn('   ⚠️ GITHUB_TOKEN não configurado\n');
+              }
             } catch (gitError) {
-              logger.warn('   ⚠️ Git push falhou, arquivo salvo localmente\n');
-              logger.info('   💡 Para atualizar no Render:\n');
-              logger.info('      git add index.html\n');
-              logger.info('      git commit -m "meta tag"\n');
-              logger.info('      git push\n');
+              logger.warn(`   ⚠️ Git push falhou: ${gitError.message}\n`);
+              logger.info('   💡 Atualizando manualmente...\n');
+
+              // Fallback: tentar push simples
+              try {
+                const { execSync } = require('child_process');
+                execSync('git push', { cwd: projectDir, stdio: 'pipe' });
+                logger.info('   ✅ Push bem-sucedido no retry\n');
+              } catch (e) {
+                logger.warn('   ⚠️ Git push falhou mesmo no retry, arquivo salvo localmente\n');
+              }
             }
 
             // Aguardar 10 segundos para Render atualizar
