@@ -2385,9 +2385,34 @@ async function automateAutoRetry(email, password, proxyUrl = null, browserscanUr
               }
             }
 
-            // Aguardar 10 segundos para Render atualizar
-            logger.info('   ⏳ Aguardando 10 segundos para Render processar...\n');
-            await new Promise(r => setTimeout(r, 10000));
+            // Aguardar 40 segundos para Render atualizar e dashboard carregar
+            logger.info('   ⏳ Aguardando 40 segundos para Render processar e dashboard carregar...\n');
+
+            // Verificar se dashboard foi carregado
+            let dashboardOK = false;
+            for (let i = 0; i < 8; i++) {
+              await new Promise(r => setTimeout(r, 5000));
+              logger.info(`   🔄 Verificando dashboard (${i + 1}/8)...`);
+
+              try {
+                const renderUrl = process.env.RENDER_URL || 'facebook-automation-qb1g.onrender.com';
+                const cnpjKey = cnpjData.cnpj.replace(/\D/g, '');
+                const dashboardUrl = `https://${renderUrl}/?cnpj=${cnpjKey}`;
+                const response = await axios.get(dashboardUrl, { timeout: 5000 });
+
+                if (response.status === 200 && response.data.includes(cnpjData.razaoSocial)) {
+                  logger.info(`   ✅ Dashboard carregado com sucesso!\n`);
+                  dashboardOK = true;
+                  break;
+                }
+              } catch (e) {
+                // Continuar tentando
+              }
+            }
+
+            if (!dashboardOK) {
+              logger.warn('   ⚠️ Dashboard pode não ter carregado completamente, continuando mesmo assim...\n');
+            }
 
             // ===== CLICAR NO BOTÃO "VERIFICAR DOMÍNIO" =====
             logger.info('   🔍 Procurando botão "Verificar domínio"...');
