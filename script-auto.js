@@ -2099,21 +2099,39 @@ async function automateAutoRetry(email, password, proxyUrl = null, browserscanUr
 
       await new Promise(r => setTimeout(r, 2000));
 
-      // ===== CONFIGURAR RENDER =====
-      logger.info('📌 Passo: Configurando URL do Render...\n');
+      // ===== CONFIGURAR RENDER COM URL DINÂMICA POR CNPJ =====
+      logger.info('📌 Passo: Configurando URL dinâmica do Render...\n');
 
-      const renderUrl = process.env.RENDER_URL;
+      const renderUrl = process.env.RENDER_URL || 'render-959q.onrender.com';
+      const cnpj = cnpjData.cnpj.replace(/\D/g, '').substring(0, 8); // Primeiros 8 dígitos
+      const branchName = `cnpj-${cnpj}`;
+      const previewUrl = `https://${branchName}--${renderUrl}`;
 
-      if (!renderUrl || renderUrl === 'seu-projeto.onrender.com') {
-        logger.error('❌ RENDER_URL não está configurado!\n');
-        throw new Error('Configure RENDER_URL em .env (ex: render-959q.onrender.com)');
+      logger.info(`📌 CNPJ: ${cnpjData.cnpj}\n`);
+      logger.info(`🌳 Branch: ${branchName}\n`);
+      logger.info(`🌐 URL dinâmica: ${previewUrl}\n`);
+
+      // Criar e fazer push da branch para Render
+      logger.info(`📤 Criando branch ${branchName}...\n`);
+      try {
+        const { execSync } = require('child_process');
+
+        // Criar branch local
+        try {
+          execSync(`git branch ${branchName}`, { cwd: process.cwd(), stdio: 'pipe' });
+        } catch (e) {
+          // Branch já existe, pular
+        }
+
+        // Fazer checkout para a branch
+        execSync(`git checkout ${branchName}`, { cwd: process.cwd(), stdio: 'pipe' });
+        logger.info(`✅ Branch criada/verificada\n`);
+      } catch (branchError) {
+        logger.warn(`⚠️ Erro ao criar branch: ${branchError.message}\n`);
       }
 
-      const siteUrl = `https://${renderUrl}`;
-      const dominioLimpo = renderUrl;
-
-      logger.info(`🌐 Usando Render: ${siteUrl}\n`);
-      logger.info(`📝 Domínio para preencher: ${dominioLimpo}\n`);
+      const siteUrl = previewUrl;
+      const dominioLimpo = previewUrl.replace('https://', '').replace('http://', '').replace(/\/$/, '');
 
       // Gerar nome do projeto (primeiro nome + números, sem pontos)
       const nomeEmpresa = cnpjData.razaoSocial.split(' ')[0].replace(/\./g, ''); // Remove pontos
@@ -2320,22 +2338,24 @@ async function automateAutoRetry(email, password, proxyUrl = null, browserscanUr
             fs.writeFileSync(path.join(projectDir, 'index.html'), htmlAtualizado);
             logger.info('   ✅ HTML atualizado\n');
 
-            // Fazer commit e push com token GitHub
-            logger.info('   📤 Fazendo push para Render...');
+            // Fazer commit e push com token GitHub (branch específica do CNPJ)
+            logger.info('   📤 Fazendo push para branch do CNPJ...');
             try {
               const { execSync } = require('child_process');
               const githubToken = process.env.GITHUB_TOKEN;
               const githubUser = 'perwzinho-jpg';
               const githubRepo = process.env.GITHUB_REPO || 'facebook-automation';
+              const currentBranch = branchName; // Branch específica do CNPJ
 
               execSync('git add index.html', { cwd: projectDir, stdio: 'pipe' });
-              execSync(`git commit -m "meta tag: ${metaTagContent}"`, { cwd: projectDir, stdio: 'pipe' });
+              execSync(`git commit -m "meta tag: ${metaTagContent} [${cnpj}]"`, { cwd: projectDir, stdio: 'pipe' });
 
               if (githubToken) {
-                // Push com token GitHub
+                // Push com token GitHub para a branch do CNPJ
                 const pushUrl = `https://${githubUser}:${githubToken}@github.com/${githubUser}/${githubRepo}.git`;
-                execSync(`git push ${pushUrl} main`, { cwd: projectDir, stdio: 'pipe' });
-                logger.info('   ✅ Push realizado! Render vai atualizar automaticamente\n');
+                execSync(`git push -u ${pushUrl} ${currentBranch}`, { cwd: projectDir, stdio: 'pipe' });
+                logger.info(`   ✅ Push realizado na branch ${currentBranch}!\n`);
+                logger.info(`   🌐 URL dinâmica: ${previewUrl}\n`);
               } else {
                 logger.warn('   ⚠️ GITHUB_TOKEN não configurado\n');
               }
@@ -2346,7 +2366,7 @@ async function automateAutoRetry(email, password, proxyUrl = null, browserscanUr
               // Fallback: tentar push simples
               try {
                 const { execSync } = require('child_process');
-                execSync('git push', { cwd: projectDir, stdio: 'pipe' });
+                execSync(`git push -u origin ${branchName}`, { cwd: projectDir, stdio: 'pipe' });
                 logger.info('   ✅ Push bem-sucedido no retry\n');
               } catch (e) {
                 logger.warn('   ⚠️ Git push falhou mesmo no retry, arquivo salvo localmente\n');
