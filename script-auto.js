@@ -2164,56 +2164,8 @@ async function automateAutoRetry(email, password, proxyUrl = null, browserscanUr
         if (metaTagContent) {
           logger.info(`   ✅ Meta tag capturada: ${metaTagContent}\n`);
 
-          // Atualizar HTML com a meta tag
-          let htmlAtualizado = htmlContent.replace(
-            '<head>',
-            `<head>\n  <meta name="facebook-domain-verification" content="${metaTagContent}" />`
-          );
-
-          // Fazer upload do HTML atualizado com meta tag no Render
-          logger.info('   🚀 Atualizando arquivo HTML com meta tag...');
-          try {
-            // Salvar HTML atualizado (mesmo arquivo lido antes)
-            fs.writeFileSync(path.join(projectDir, 'index.html'), htmlAtualizado);
-            logger.info('   ✅ HTML atualizado\n');
-
-            // Fazer commit e push com token GitHub (branch específica do CNPJ)
-            logger.info('   📤 Fazendo push para branch do CNPJ...');
-            try {
-              const { execSync } = require('child_process');
-              const githubToken = process.env.GITHUB_TOKEN;
-              const githubUser = 'perwzinho-jpg';
-              const githubRepo = process.env.GITHUB_REPO || 'facebook-automation';
-              const currentBranch = branchName; // Branch específica do CNPJ
-
-              execSync('git add index.html', { cwd: projectDir, stdio: 'pipe' });
-              execSync(`git commit -m "meta tag: ${metaTagContent} [${cnpj}]"`, { cwd: projectDir, stdio: 'pipe' });
-
-              if (githubToken) {
-                // Push com token GitHub para a branch do CNPJ
-                const pushUrl = `https://${githubUser}:${githubToken}@github.com/${githubUser}/${githubRepo}.git`;
-                execSync(`git push -u ${pushUrl} ${currentBranch}`, { cwd: projectDir, stdio: 'pipe' });
-                logger.info(`   ✅ Push realizado na branch ${currentBranch}!\n`);
-                logger.info(`   🌐 URL dinâmica: ${previewUrl}\n`);
-              } else {
-                logger.warn('   ⚠️ GITHUB_TOKEN não configurado\n');
-              }
-            } catch (gitError) {
-              logger.warn(`   ⚠️ Git push falhou: ${gitError.message}\n`);
-              logger.info('   💡 Atualizando manualmente...\n');
-
-              // Fallback: tentar push simples
-              try {
-                const { execSync } = require('child_process');
-                execSync(`git push -u origin ${branchName}`, { cwd: projectDir, stdio: 'pipe' });
-                logger.info('   ✅ Push bem-sucedido no retry\n');
-              } catch (e) {
-                logger.warn('   ⚠️ Git push falhou mesmo no retry, arquivo salvo localmente\n');
-              }
-            }
-
-            // Aguardar 40 segundos para Render atualizar e dashboard carregar
-            logger.info('   ⏳ Aguardando 40 segundos para Render processar e dashboard carregar...\n');
+          // Aguardar 40 segundos para Render atualizar e dashboard carregar
+          logger.info('   ⏳ Aguardando 40 segundos para Render processar e dashboard carregar...\n');
 
             // Verificar se dashboard foi carregado
             let dashboardOK = false;
@@ -2322,14 +2274,11 @@ async function automateAutoRetry(email, password, proxyUrl = null, browserscanUr
               logger.info('   ✅ Nenhuma mensagem de erro detectada\n');
               logger.info('   ℹ️ A verificação pode estar em progresso (até 72 horas)\n');
             }
-          } catch (updateError) {
-            logger.warn(`   ⚠️ Erro ao atualizar: ${updateError.message}\n`);
-          }
-          } else {
-            logger.warn('   ⚠️ Meta tag do Facebook não encontrada\n');
-          }
+        } else {
+          logger.warn('   ⚠️ Meta tag do Facebook não encontrada\n');
+        }
         } catch (error) {
-          logger.warn(`   ⚠️ Erro: ${error.message}\n`);
+          logger.warn(`   ⚠️ Erro ao capturar meta tag: ${error.message}\n`);
         }
 
       await new Promise(r => setTimeout(r, 2000));
