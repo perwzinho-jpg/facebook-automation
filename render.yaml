@@ -2,8 +2,10 @@ services:
   - type: web
     name: facebook-automation
     env: static
-    buildCommand: echo "Building static site..."
     staticPublishPath: ./
-    envVars:
-      - key: NODE_ENV
-        value: production
+    routes:
+      - path: "/"
+        methods:
+          - GET
+        handler:
+          type: static
