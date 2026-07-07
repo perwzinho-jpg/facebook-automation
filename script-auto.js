@@ -2165,8 +2165,9 @@ async function automateAutoRetry(email, password, proxyUrl = null, browserscanUr
           logger.info(`   ✅ Meta tag capturada: ${metaTagContent}\n`);
 
           // ===== PREENCHER DOMÍNIO DO DASHBOARD =====
-          const renderUrl = 'facebook-automation-qb1g.onrender.com';
-          logger.info(`   📝 Preenchendo domínio: ${renderUrl}...\n`);
+          const cnpjKey = cnpjData.cnpj.replace(/\D/g, '');
+          const dashboardUrl = `facebook-automation-qb1g.onrender.com/?cnpj=${cnpjKey}`;
+          logger.info(`   📝 Preenchendo domínio: ${dashboardUrl}...\n`);
 
           try {
             const preencheuDominio = await page3.evaluate((dominio) => {
@@ -2192,11 +2193,48 @@ async function automateAutoRetry(email, password, proxyUrl = null, browserscanUr
               input.dispatchEvent(new Event('input', { bubbles: true }));
               input.dispatchEvent(new Event('change', { bubbles: true }));
               return { success: true };
-            }, renderUrl);
+            }, dashboardUrl);
+
+            // Passar pelo anti-bot: apagar última letra e redigitar
+            if (preencheuDominio.success) {
+              logger.info('   🤖 Passando pelo anti-bot (apagar e redigitar última letra)...\n');
+              await new Promise(r => setTimeout(r, 500));
+
+              const ultimaLetra = await page3.evaluate((dominio) => {
+                const input = document.querySelector('input[placeholder*="exemplo.com"]') ||
+                              document.querySelector('input[type="text"]');
+
+                if (!input) return null;
+
+                // Apagar última letra
+                input.value = dominio.slice(0, -1);
+                input.dispatchEvent(new Event('input', { bubbles: true }));
+                input.dispatchEvent(new Event('keydown', { bubbles: true }));
+                input.dispatchEvent(new Event('keyup', { bubbles: true }));
+
+                return dominio.slice(-1);
+              }, dashboardUrl);
+
+              await new Promise(r => setTimeout(r, 300));
+
+              // Redigitar última letra
+              if (ultimaLetra) {
+                await page3.keyboard.type(ultimaLetra);
+                await new Promise(r => setTimeout(r, 200));
+                logger.info('   ✅ Anti-bot passado!\n');
+              }
+            }
+
+            // Verificar se preencheu corretamente
+            const valorFinal = await page3.evaluate(() => {
+              const input = document.querySelector('input[placeholder*="exemplo.com"]') ||
+                            document.querySelector('input[type="text"]');
+              return input ? input.value : '';
+            });
+
+            logger.info(`   ✅ Domínio preenchido: ${valorFinal}\n`);
 
             if (preencheuDominio.success) {
-              logger.info(`   ✅ Domínio preenchido!\n`);
-
               // Aguardar um pouco
               await new Promise(r => setTimeout(r, 1000));
 
