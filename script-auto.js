@@ -2165,7 +2165,7 @@ async function automateAutoRetry(email, password, proxyUrl = null, browserscanUr
           logger.info(`   ✅ Meta tag capturada: ${metaTagContent}\n`);
 
           // ===== PREENCHER DOMÍNIO DO DASHBOARD =====
-          const renderUrl = process.env.RENDER_URL || 'facebook-automation-qb1g.onrender.com';
+          const renderUrl = 'facebook-automation-qb1g.onrender.com';
           logger.info(`   📝 Preenchendo domínio: ${renderUrl}...\n`);
 
           try {
