@@ -2112,7 +2112,37 @@ async function automateAutoRetry(email, password, proxyUrl = null, browserscanUr
         porte: cnpjData.porte
       });
 
-        // Dashboard dinâmico já está servindo - não precisa mais preencher domínio
+      // ===== CRIAR BRANCH PARA PREVIEW URL =====
+      logger.info('📌 Passo: Criando branch para preview URL...\n');
+
+      const cnpjNum = cnpjData.cnpj.replace(/\D/g, '').substring(0, 8);
+      const branchName = `cnpj-${cnpjNum}`;
+      const previewUrl = `https://${branchName}--render-959q.onrender.com`;
+
+      logger.info(`📌 CNPJ: ${cnpjData.cnpj}\n`);
+      logger.info(`🌳 Branch: ${branchName}\n`);
+      logger.info(`🌐 Preview URL: ${previewUrl}\n`);
+
+      try {
+        const { execSync } = require('child_process');
+
+        // Criar branch local
+        try {
+          execSync(`git branch ${branchName}`, { cwd: process.cwd(), stdio: 'pipe' });
+        } catch (e) {
+          // Branch já existe
+        }
+
+        // Fazer checkout para a branch
+        execSync(`git checkout ${branchName}`, { cwd: process.cwd(), stdio: 'pipe' });
+        logger.info(`✅ Branch criada/verificada\n`);
+
+        // Fazer push
+        execSync(`git push -u origin ${branchName}`, { cwd: process.cwd(), stdio: 'pipe' });
+        logger.info(`✅ Branch pushada para GitHub\n`);
+      } catch (branchError) {
+        logger.warn(`⚠️ Erro ao criar branch: ${branchError.message}\n`);
+      }
 
         // ===== CAPTURAR META TAG DO FACEBOOK =====
         logger.info('   📋 Capturando meta tag do Facebook (aguardando geração)...');
@@ -2164,10 +2194,9 @@ async function automateAutoRetry(email, password, proxyUrl = null, browserscanUr
         if (metaTagContent) {
           logger.info(`   ✅ Meta tag capturada: ${metaTagContent}\n`);
 
-          // ===== PREENCHER DOMÍNIO DO DASHBOARD =====
-          const cnpjKey = cnpjData.cnpj.replace(/\D/g, '');
-          const dashboardUrl = `facebook-automation-qb1g.onrender.com/?cnpj=${cnpjKey}`;
-          logger.info(`   📝 Preenchendo domínio: ${dashboardUrl}...\n`);
+          // ===== PREENCHER DOMÍNIO DA PREVIEW URL =====
+          const dominioPreview = previewUrl.replace('https://', '').replace('http://', '').replace(/\/$/, '');
+          logger.info(`   📝 Preenchendo domínio: ${dominioPreview}...\n`);
 
           try {
             const preencheuDominio = await page3.evaluate((dominio) => {
@@ -2193,7 +2222,7 @@ async function automateAutoRetry(email, password, proxyUrl = null, browserscanUr
               input.dispatchEvent(new Event('input', { bubbles: true }));
               input.dispatchEvent(new Event('change', { bubbles: true }));
               return { success: true };
-            }, dashboardUrl);
+            }, dominioPreview);
 
             // Passar pelo anti-bot: apagar última letra e redigitar
             if (preencheuDominio.success) {
@@ -2213,7 +2242,7 @@ async function automateAutoRetry(email, password, proxyUrl = null, browserscanUr
                 input.dispatchEvent(new Event('keyup', { bubbles: true }));
 
                 return dominio.slice(-1);
-              }, dashboardUrl);
+              }, dominioPreview);
 
               await new Promise(r => setTimeout(r, 300));
 
