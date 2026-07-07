@@ -4,7 +4,7 @@
   "description": "Automatização de criação e verificação de contas Facebook Ads (BM)",
   "main": "src/index.js",
   "scripts": {
-    "start": "node src/index.js",
+    "start": "node server.js",
     "dev": "nodemon src/index.js",
     "web": "node src/web/server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
