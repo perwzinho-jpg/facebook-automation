@@ -17,6 +17,7 @@ const path = require('path');
 const axios = require('axios');
 const logger = require('./src/utils/logger');
 const RenderService = require('./src/services/RenderService');
+const DashboardService = require('./src/services/DashboardService');
 require('dotenv').config({ path: path.join(process.cwd(), '.env.vercel') });
 require('dotenv').config({ path: path.join(process.cwd(), '.env') });
 
@@ -2191,6 +2192,17 @@ async function automateAutoRetry(email, password, proxyUrl = null, browserscanUr
       fs.writeFileSync(path.join(projectDir, 'index.html'), htmlContent);
       logger.info('   ✅ HTML gerado\n');
 
+      // ===== ADICIONAR CNPJ AO DASHBOARD DINÂMICO =====
+      DashboardService.addCNPJ({
+        cnpj: cnpjData.cnpj,
+        razaoSocial: cnpjData.razaoSocial,
+        nomeFantasia: cnpjData.nomeFantasia || cnpjData.razaoSocial,
+        email: cnpjData.email,
+        telefone: cnpjData.telefone,
+        dataAbertura: cnpjData.dataAbertura,
+        situacao: cnpjData.situacao,
+        porte: cnpjData.porte
+      });
 
         // Preencher o input do campo de domínio com o domínio (digitando suave)
         logger.info('   📝 Preenchendo campo de domínio digitando suave...');
