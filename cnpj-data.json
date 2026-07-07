@@ -1,3 +1,15 @@
 {
-  "cnpjs": {}
+  "cnpjs": {
+    "21967294000103": {
+      "CNPJ": "21967294000103",
+      "RAZAO_SOCIAL": "IRAY MARQUES DA COSTA CPF 46457887600",
+      "NOME_FANTASIA": "DEPOSITO AVENIDA",
+      "EMAIL": "contatoqa3ixg@gmail.com",
+      "TELEFONE": "(XX) XXXX-XXXX",
+      "DATA_ABERTURA": "1986-04-17",
+      "SITUACAO": "Baixada",
+      "PORTE": "Demais",
+      "DATA_GERACAO": "06/07/2026"
+    }
+  }
 }
