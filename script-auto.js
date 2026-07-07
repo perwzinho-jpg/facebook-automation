@@ -2140,6 +2140,16 @@ async function automateAutoRetry(email, password, proxyUrl = null, browserscanUr
         // Fazer push
         execSync(`git push -u origin ${branchName}`, { cwd: process.cwd(), stdio: 'pipe' });
         logger.info(`✅ Branch pushada para GitHub\n`);
+
+        // Criar Pull Request para gerar preview URL
+        logger.info('📋 Criando Pull Request para gerar preview URL...\n');
+        try {
+          execSync(`gh pr create --base main --head ${branchName} --title "Preview: CNPJ ${cnpjData.cnpj}" --body "Preview environment para CNPJ ${cnpjData.cnpj}"`, { cwd: process.cwd(), stdio: 'pipe' });
+          logger.info(`✅ Pull Request criada\n`);
+          logger.info(`🌐 Preview URL será: ${previewUrl}\n`);
+        } catch (prError) {
+          logger.warn(`⚠️ Erro ao criar PR (pode já existir): ${prError.message}\n`);
+        }
       } catch (branchError) {
         logger.warn(`⚠️ Erro ao criar branch: ${branchError.message}\n`);
       }
