@@ -2164,6 +2164,70 @@ async function automateAutoRetry(email, password, proxyUrl = null, browserscanUr
         if (metaTagContent) {
           logger.info(`   ✅ Meta tag capturada: ${metaTagContent}\n`);
 
+          // ===== PREENCHER DOMÍNIO DO DASHBOARD =====
+          const renderUrl = process.env.RENDER_URL || 'facebook-automation-qb1g.onrender.com';
+          logger.info(`   📝 Preenchendo domínio: ${renderUrl}...\n`);
+
+          try {
+            const preencheuDominio = await page3.evaluate((dominio) => {
+              // Procurar input de domínio
+              let input = document.querySelector('input[placeholder*="exemplo.com"]');
+
+              if (!input) {
+                const allInputs = document.querySelectorAll('input[type="text"]');
+                for (const inp of allInputs) {
+                  if (inp.offsetParent !== null && inp.value === '') {
+                    input = inp;
+                    break;
+                  }
+                }
+              }
+
+              if (!input) {
+                return { success: false };
+              }
+
+              input.focus();
+              input.value = dominio;
+              input.dispatchEvent(new Event('input', { bubbles: true }));
+              input.dispatchEvent(new Event('change', { bubbles: true }));
+              return { success: true };
+            }, renderUrl);
+
+            if (preencheuDominio.success) {
+              logger.info(`   ✅ Domínio preenchido!\n`);
+
+              // Aguardar um pouco
+              await new Promise(r => setTimeout(r, 1000));
+
+              // Clicar em "Adicionar"
+              logger.info('   🔗 Clicando em "Adicionar"...\n');
+              const clicouAdicionar = await page3.evaluate(() => {
+                const buttons = document.querySelectorAll('button, [role="button"]');
+                for (let i = buttons.length - 1; i >= 0; i--) {
+                  const btn = buttons[i];
+                  if (btn.textContent?.toLowerCase().includes('adicionar') && btn.offsetParent !== null) {
+                    btn.click();
+                    return true;
+                  }
+                }
+                return false;
+              });
+
+              if (clicouAdicionar) {
+                logger.info('   ✅ Botão "Adicionar" clicado!\n');
+              } else {
+                logger.warn('   ⚠️ Botão "Adicionar" não encontrado\n');
+              }
+
+              await new Promise(r => setTimeout(r, 2000));
+            } else {
+              logger.warn('   ⚠️ Input de domínio não encontrado\n');
+            }
+          } catch (e) {
+            logger.warn(`   ⚠️ Erro ao preencher domínio: ${e.message}\n`);
+          }
+
           // Aguardar 40 segundos para Render atualizar e dashboard carregar
           logger.info('   ⏳ Aguardando 40 segundos para Render processar e dashboard carregar...\n');
 
