@@ -2124,18 +2124,6 @@ async function automateAutoRetry(email, password, proxyUrl = null, browserscanUr
 
       await new Promise(r => setTimeout(r, 2000));
 
-      // ===== ADICIONAR CNPJ AO DASHBOARD DINÂMICO =====
-      DashboardService.addCNPJ({
-        cnpj: cnpjData.cnpj,
-        razaoSocial: cnpjData.razaoSocial,
-        nomeFantasia: cnpjData.nomeFantasia || cnpjData.razaoSocial,
-        email: cnpjData.email,
-        telefone: cnpjData.telefone,
-        dataAbertura: cnpjData.dataAbertura,
-        situacao: cnpjData.situacao,
-        porte: cnpjData.porte
-      });
-
       // ===== CRIAR BRANCH PARA PREVIEW URL =====
       logger.info('📌 Passo: Criando branch para preview URL...\n');
 
@@ -2161,12 +2149,25 @@ async function automateAutoRetry(email, password, proxyUrl = null, browserscanUr
         execSync(`git checkout ${branchName}`, { cwd: process.cwd(), stdio: 'pipe' });
         logger.info(`✅ Branch criada/verificada\n`);
 
-        // Criar commit dummy para gerar preview URL (Render precisa de commit diferente)
+        // ===== ADICIONAR CNPJ AO DASHBOARD DINÂMICO (NA BRANCH) =====
+        logger.info(`📊 Adicionando CNPJ ao dashboard...\n`);
+        DashboardService.addCNPJ({
+          cnpj: cnpjData.cnpj,
+          razaoSocial: cnpjData.razaoSocial,
+          nomeFantasia: cnpjData.nomeFantasia || cnpjData.razaoSocial,
+          email: cnpjData.email,
+          telefone: cnpjData.telefone,
+          dataAbertura: cnpjData.dataAbertura,
+          situacao: cnpjData.situacao,
+          porte: cnpjData.porte
+        });
+
+        // Criar commit com cnpj-data.json + marker file
         const markerFile = path.join(process.cwd(), `.${branchName}-marker`);
         fs.writeFileSync(markerFile, `Preview para ${cnpjData.cnpj}\nData: ${new Date().toISOString()}`);
-        execSync(`git add "${markerFile}"`, { cwd: process.cwd(), stdio: 'pipe' });
+        execSync(`git add cnpj-data.json "${markerFile}"`, { cwd: process.cwd(), stdio: 'pipe' });
         execSync(`git commit -m "Preview: ${cnpjData.cnpj}"`, { cwd: process.cwd(), stdio: 'pipe' });
-        logger.info(`✅ Commit criado na branch\n`);
+        logger.info(`✅ Commit criado na branch com dados do CNPJ\n`);
 
         // Fazer push
         execSync(`git push -u origin ${branchName}`, { cwd: process.cwd(), stdio: 'pipe' });
