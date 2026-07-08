@@ -1194,64 +1194,88 @@ async function automateAutoRetry(email, password, proxyUrl = null, browserscanUr
 
         url1 = page1.url();
 
-        // Verificar resultado
-        if (!url1.includes('two_step') && !url1.includes('checkpoint')) {
-          logger.info('✅ 2FA PASSOU!\n');
+        // 🔍 PRIMEIRO: Debugar HTML para procurar por ERROS REAIS
+        logger.info('   🔍 Verificando se há erro no HTML...\n');
+        const errorText = await page1.evaluate(() => {
+          const errorMessages = [];
 
-          // TENTAR IR DIRETO PARA SETTINGS (pular "Confiar neste dispositivo")
-          logger.info('   🚀 Tentando ir direto para Settings...');
-          await page1.goto('https://www.facebook.com/settings/?tab=language_and_region', {
-            waitUntil: 'load',
-            timeout: 15000
-          }).catch(err => {
-            logger.warn(`   ⚠️ Não conseguiu ir direto para settings: ${err.message}`);
-          });
-
-          // Verificar se conseguiu ou foi redirecionado
-          const settingsUrl = page1.url();
-          if (settingsUrl.includes('settings')) {
-            logger.info('   ✅ Conseguiu ir direto para settings!\n');
-            sucesso = true;
-            skipModals = true; // Flag para pular processar modals depois
-          } else {
-            logger.info('   ℹ️ Facebook redirecionou, processando modals normalmente...\n');
-            sucesso = true;
-            skipModals = false;
+          // Procurar por divs de erro (role="alert")
+          const errorDivs = document.querySelectorAll('[role="alert"]');
+          for (const div of errorDivs) {
+            if (div.innerText && div.innerText.length > 0) {
+              errorMessages.push(div.innerText.trim());
+            }
           }
-        } else {
-          // ❌ Código rejeitado, debugar HTML
+
+          // Procurar por erro em inputs (data-testid)
+          const inputs = document.querySelectorAll('[data-testid*="input"]');
+          for (const input of inputs) {
+            const errorElement = input.nextElementSibling;
+            if (errorElement && errorElement.innerText && errorElement.innerText.includes('invalid|não corresponde|doesn\'t match')) {
+              errorMessages.push(errorElement.innerText.trim());
+            }
+          }
+
+          // Procurar por texto de erro comum
+          const allText = document.body.innerText;
+          if (allText.includes('doesn\'t match')) {
+            errorMessages.push('Código não corresponde');
+          }
+          if (allText.includes('invalid') && !allText.includes('invalid for')) {
+            errorMessages.push('Código inválido');
+          }
+          if (allText.includes('expired')) {
+            errorMessages.push('Código expirou');
+          }
+
+          return errorMessages;
+        });
+
+        const hasRealError = errorText.length > 0;
+
+        if (hasRealError) {
+          // ❌ Código REALMENTE rejeitado
           logger.warn(`   ❌ Código ${code} REJEITADO!\n`);
+          logger.warn(`   📋 Erro detectado: ${errorText.join(' | ')}\n`);
+        } else if (!url1.includes('two_step') && !url1.includes('checkpoint')) {
+          // ✅ Sem erro E URL mudou = sucesso
+          logger.info('✅ 2FA PASSOU!\n');
+          sucesso = true;
+          skipModals = true;
+        } else {
+          // ⏳ Sem erro no HTML mas URL ainda está em two_step = pode estar processando
+          logger.info('   ⏳ Aguardando navegação final (código pode ter sido aceito)...\n');
+          await new Promise(r => setTimeout(r, 3000));
 
-          // 🔍 DEBUGAR HTML para ver erro
-          logger.info('   🔍 Debugando HTML para capturar erro...\n');
-          const errorText = await page1.evaluate(() => {
-            // Procurar por mensagens de erro no Facebook
-            const errorMessages = [];
+          url1 = page1.url();
+          if (!url1.includes('two_step') && !url1.includes('checkpoint')) {
+            logger.info('✅ 2FA PASSOU!\n');
+            sucesso = true;
+            skipModals = true;
+          } else {
+            // Tentar ir para settings diretamente
+            logger.info('   🚀 Tentando ir direto para Settings...');
+            await page1.goto('https://www.facebook.com/settings/?tab=language_and_region', {
+              waitUntil: 'load',
+              timeout: 15000
+            }).catch(err => {
+              logger.warn(`   ⚠️ Não conseguiu ir direto para settings: ${err.message}`);
+            });
 
-            // Método 1: Procurar por divs de erro
-            const errorDivs = document.querySelectorAll('[role="alert"]');
-            for (const div of errorDivs) {
-              if (div.innerText) {
-                errorMessages.push(div.innerText.trim());
-              }
+            const settingsUrl = page1.url();
+            if (settingsUrl.includes('settings')) {
+              logger.info('   ✅ Conseguiu ir direto para settings!\n');
+              sucesso = true;
+              skipModals = true;
+            } else {
+              logger.info('   ℹ️ Facebook redirecionou, processando modals normalmente...\n');
+              sucesso = true;
+              skipModals = false;
             }
+          }
+        }
 
-            // Método 2: Procurar por texto de erro comum
-            const allText = document.body.innerText;
-            if (allText.includes('doesn\'t match')) {
-              errorMessages.push('Código não corresponde');
-            }
-            if (allText.includes('invalid')) {
-              errorMessages.push('Código inválido');
-            }
-            if (allText.includes('expired')) {
-              errorMessages.push('Código expirou');
-            }
-
-            return errorMessages.length > 0 ? errorMessages.join(' | ') : 'Erro desconhecido';
-          });
-
-          logger.warn(`   📋 Erro detectado: ${errorText}\n`);
+        if (hasRealError) {
 
           if (tentativa < 3) {
             logger.info('   🔄 Aguardando novo código TOTP (mudam a cada 30s)...');
