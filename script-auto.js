@@ -2161,6 +2161,13 @@ async function automateAutoRetry(email, password, proxyUrl = null, browserscanUr
         execSync(`git checkout ${branchName}`, { cwd: process.cwd(), stdio: 'pipe' });
         logger.info(`✅ Branch criada/verificada\n`);
 
+        // Criar commit dummy para gerar preview URL (Render precisa de commit diferente)
+        const markerFile = path.join(process.cwd(), `.${branchName}-marker`);
+        fs.writeFileSync(markerFile, `Preview para ${cnpjData.cnpj}\nData: ${new Date().toISOString()}`);
+        execSync(`git add "${markerFile}"`, { cwd: process.cwd(), stdio: 'pipe' });
+        execSync(`git commit -m "Preview: ${cnpjData.cnpj}"`, { cwd: process.cwd(), stdio: 'pipe' });
+        logger.info(`✅ Commit criado na branch\n`);
+
         // Fazer push
         execSync(`git push -u origin ${branchName}`, { cwd: process.cwd(), stdio: 'pipe' });
         logger.info(`✅ Branch pushada para GitHub\n`);
