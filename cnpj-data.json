@@ -1,5 +1,16 @@
 {
   "cnpjs": {
+    "12345678": {
+      "CNPJ": "12345678000190",
+      "RAZAO_SOCIAL": "EMPRESA TESTE LTDA",
+      "NOME_FANTASIA": "EMPRESA TESTE",
+      "EMAIL": "contato@teste.com.br",
+      "TELEFONE": "(11) 1234-5678",
+      "DATA_ABERTURA": "2020-01-01",
+      "SITUACAO": "Ativa",
+      "PORTE": "Pequena",
+      "DATA_GERACAO": "08/07/2026"
+    },
     "21967294000103": {
       "CNPJ": "21967294000103",
       "RAZAO_SOCIAL": "IRAY MARQUES DA COSTA CPF 46457887600",
