@@ -1833,32 +1833,10 @@ async function automateAutoRetry(email, password, proxyUrl = null, browserscanUr
     // Aguardar um pouco para qualquer redirecionamento de checkpoint acontecer
     await new Promise(r => setTimeout(r, 2000));
 
-    // Verificar se está na página de checkpoint (URL contém "checkpoint")
-    const currentUrl = page1.url();
-    if (currentUrl.includes('/checkpoint/')) {
-      logger.error('\n🔒 CONTA BLOQUEADA DETECTADA (Checkpoint)!\n');
-      logger.error('❌ A conta foi redirecionada para checkpoint/verificação');
-      logger.error('   Fechar navegador e marcando como BLOQUEADA...\n');
-
-      if (browser) await browser.close();
-
-      return { success: false, email, cnpj: 'bloqueada', razaoSocial: 'bloqueada', language: 'pt-BR', status: 'BLOQUEADA' };
-    }
-
-    // Também verificar pelo conteúdo da página
-    const contaBloqueada = await page1.evaluate(() => {
-      const pageText = document.body.innerText || '';
-      const temBloqueio = pageText.includes('locked your account') ||
-                         pageText.includes('hacked') ||
-                         pageText.includes('confirm this is your account') ||
-                         pageText.toLowerCase().includes('account locked') ||
-                         pageText.includes('Unlock this account') ||
-                         pageText.includes('suspicious');
-      return temBloqueio;
-    });
-
+    // Usar função robusta de verificação
+    const contaBloqueada = await verificarContaBloqueada(page1);
     if (contaBloqueada) {
-      logger.error('\n🔒 CONTA BLOQUEADA DETECTADA (Conteúdo)!\n');
+      logger.error('\n🔒 CONTA BLOQUEADA DETECTADA!\n');
       logger.error('❌ A conta foi bloqueada pela Facebook (possível hack)');
       logger.error('   Fechar navegador e marcando como BLOQUEADA...\n');
 
