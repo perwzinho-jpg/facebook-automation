@@ -2186,41 +2186,38 @@ async function automateAutoRetry(email, password, proxyUrl = null, browserscanUr
           const metaTagContent = await page3.evaluate(() => {
           let code = null;
 
-          // Método 1: Procurar direto em todo o HTML pela string "facebook-domain-verification"
-          const htmlText = document.documentElement.innerText;
-          const match = htmlText.match(/facebook-domain-verification["\s]*content=["']([a-z0-9]+)["']/i);
+          // Método 1: Procurar em <code> tags (Facebook coloca assim)
+          const codeTags = document.querySelectorAll('code');
+          for (const tag of codeTags) {
+            const text = tag.innerText || tag.textContent || '';
+            const match = text.match(/content=["']([a-z0-9]{25,35})["']/i);
+            if (match && match[1]) {
+              code = match[1];
+              return code;
+            }
+          }
+
+          // Método 2: Procurar perto de "Copie esta metatag" ou "Copy this meta tag"
+          const allElements = document.querySelectorAll('*');
+          for (const el of allElements) {
+            const text = (el.textContent || '').toLowerCase();
+            if (text.includes('copie') || text.includes('copy') || text.includes('metatag')) {
+              // Procurar por content= dentro deste elemento ou filhos
+              const html = el.innerHTML || '';
+              const match = html.match(/content=["']([a-z0-9]{25,35})["']/i);
+              if (match && match[1]) {
+                code = match[1];
+                return code;
+              }
+            }
+          }
+
+          // Método 3: Procurar direto por content="xxx" pattern
+          const htmlText = document.documentElement.innerHTML;
+          const match = htmlText.match(/content=["']([a-z0-9]{25,35})["']/i);
           if (match && match[1]) {
             code = match[1];
             return code;
-          }
-
-          // Método 2: Procurar em inputs visíveis
-          const inputs = document.querySelectorAll('input[type="text"], input[type="hidden"]');
-          for (const input of inputs) {
-            const val = input.value || '';
-            // Padrão: alfanuméricos de 25-35 caracteres
-            if (val.length >= 25 && val.length <= 35 && /^[a-z0-9]+$/.test(val)) {
-              code = val;
-              break;
-            }
-          }
-
-          // Método 3: Procurar em texto visível - procurar por padrões de hash
-          if (!code) {
-            const allElements = document.querySelectorAll('*');
-            for (const el of allElements) {
-              const text = (el.textContent || '').trim();
-              // Procurar por strings que parecem hashes (25-35 caracteres, alfanuméricos)
-              const hashMatch = text.match(/([a-z0-9]{25,35})/);
-              if (hashMatch && hashMatch[1]) {
-                const potentialCode = hashMatch[1];
-                // Verificar se não está dentro de uma URL ou outra coisa
-                if (!text.includes('http') && !text.includes('.com')) {
-                  code = potentialCode;
-                  break;
-                }
-              }
-            }
           }
 
           return code;
