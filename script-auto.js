@@ -2627,10 +2627,16 @@ async function automateAutoRetry(email, password, proxyUrl = null, browserscanUr
         previewUrl = 'https://facebook-automation-qb1g.onrender.com';
       }
 
-        // ===== PREENCHER DOMÍNIO DA PREVIEW URL =====
+        // ===== PREENCHER DOMÍNIO DA PREVIEW URL (COM RETRY) =====
         // Usar domínio sem query param (Facebook rejeita)
-        const dominioPreview = 'facebook-automation-qb1g.onrender.com';
-        logger.info(`   📝 Preenchendo domínio: ${dominioPreview}...\n`);
+        let dominioPreview = 'facebook-automation-qb1g.onrender.com';
+        let tentativaDominio = 0;
+        const maxTentativasDominio = 3;
+        let dominioAdicionadoComSucesso = false;
+
+        while (tentativaDominio < maxTentativasDominio && !dominioAdicionadoComSucesso) {
+          tentativaDominio++;
+          logger.info(`\n📝 Tentativa ${tentativaDominio}/${maxTentativasDominio} - Preenchendo domínio: ${dominioPreview}...\n`);
 
           try {
             const preencheuDominio = await page3.evaluate((dominio) => {
@@ -2915,13 +2921,50 @@ async function automateAutoRetry(email, password, proxyUrl = null, browserscanUr
 
             if (mensagemErro) {
               logger.warn(`   ❌ ERRO DE VERIFICAÇÃO: ${mensagemErro}\n`);
-              logger.info('   ℹ️ Verifique manualmente no Facebook Business Manager\n');
+
+              // Se o erro é "domínio já foi verificado", criar novo domínio e tentar novamente
+              if (mensagemErro.toLowerCase().includes('domínio já foi verificado') ||
+                  mensagemErro.toLowerCase().includes('verificado por outra empresa') ||
+                  mensagemErro.toLowerCase().includes('já foi verificado')) {
+
+                if (tentativaDominio < maxTentativasDominio) {
+                  logger.warn(`   🔄 Domínio já foi verificado! Criando novo projeto Render (${tentativaDominio}/${maxTentativasDominio})...\n`);
+
+                  try {
+                    // Criar novo projeto Render com sufixo diferente
+                    const renderAPI = new RenderServiceAPI(process.env.RENDER_API_KEY);
+                    const sufixo = Date.now().toString().slice(-6);
+                    const renderProject = await renderAPI.createWebService({
+                      cnpj: cnpjData.cnpj,
+                      suffix: sufixo
+                    });
+
+                    if (renderProject && renderProject.service && renderProject.service.name) {
+                      dominioPreview = renderProject.service.name + '.onrender.com';
+                      logger.success(`   ✅ Novo domínio Render criado: ${dominioPreview}\n`);
+                    }
+                  } catch (renderError) {
+                    logger.warn(`   ⚠️ Erro ao criar novo projeto Render: ${renderError.message}\n`);
+                    dominioPreview = `facebook-automation-${Date.now().toString().slice(-6)}.onrender.com`;
+                  }
+
+                  // Continuar o while loop para tentar novamente
+                  await new Promise(r => setTimeout(r, 2000));
+                  continue;
+                } else {
+                  logger.error('   ❌ Máximo de tentativas com domínios diferentes atingido\n');
+                }
+              } else {
+                logger.info('   ℹ️ Verifique manualmente no Facebook Business Manager\n');
+              }
             } else {
               logger.info('   ✅ Nenhuma mensagem de erro detectada\n');
               logger.info('   ℹ️ A verificação pode estar em progresso (até 72 horas)\n');
+              dominioAdicionadoComSucesso = true; // Marcar como sucesso
             }
 
       await new Promise(r => setTimeout(r, 2000));
+        } // Fim do while loop de tentativas de domínio
     }
 
     // ===== INFORMAÇÕES DA EMPRESA =====
