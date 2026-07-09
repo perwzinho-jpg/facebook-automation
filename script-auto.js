@@ -586,12 +586,13 @@ async function clickIfExists(page, selectors) {
 async function automateAutoRetry(email, password, proxyUrl = null, browserscanUrl = null) {
   let browser, page1, page2;
 
-  logger.info(`\n${'='.repeat(60)}`);
-  logger.info(`📧 EMAIL: ${email}`);
-  if (proxyUrl) {
-    logger.info(`🌐 PROXY: ${proxyUrl}`);
-  }
-  logger.info(`${'='.repeat(60)}\n`);
+  try {
+    logger.info(`\n${'='.repeat(60)}`);
+    logger.info(`📧 EMAIL: ${email}`);
+    if (proxyUrl) {
+      logger.info(`🌐 PROXY: ${proxyUrl}`);
+    }
+    logger.info(`${'='.repeat(60)}\n`);
 
   try {
     // Browser com PROXY
