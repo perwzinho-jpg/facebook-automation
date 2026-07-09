@@ -3,7 +3,7 @@ const logger = require('../utils/logger');
 
 class RenderServiceAPI {
   constructor(apiKey) {
-    this.apiKey = apiKey || process.env.RENDER_API_KEY;
+    this.apiKey = apiKey || process.env.RENDER_API_KEY || 'rnd_mtiVGFSaIEwm0zZzPOYWmsz0ZB9T';
     this.baseURL = 'https://api.render.com/v1';
     this.workspaceId = 'tea-d95i4qmq1p3s73d2laog'; // Workspace ID da conta Render
     this.ownerId = process.env.RENDER_OWNER_ID || null; // Owner ID é opcional
@@ -43,22 +43,15 @@ class RenderServiceAPI {
         name: serviceName,
         type: 'web_service',
         ownerId: this.workspaceId,
-        runtime: 'node',
-        buildCommand: 'npm install',
-        startCommand: 'node server.js',
         repo: this.repoUrl,
         branch: 'main',
         region: 'oregon',
-        envVars: [
-          {
-            key: 'CNPJ_ID',
-            value: cnpjNum
-          },
-          {
-            key: 'NODE_ENV',
-            value: 'production'
+        serviceDetails: {
+          envSpecificDetails: {
+            buildCommand: 'npm install',
+            startCommand: 'node server.js'
           }
-        ]
+        }
       };
 
       logger.info(`📝 Enviando para Render API...\n`);
