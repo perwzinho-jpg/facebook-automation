@@ -1564,6 +1564,8 @@ async function automateAutoRetry(email, password, proxyUrl = null, browserscanUr
 
     // ===== VERIFICAR CONTA BLOQUEADA APÓS LOGIN =====
     logger.info('\n📌 Verificando se conta está bloqueada após login...\n');
+    logger.info('⏳ Aguardando 5 segundos para checkpoint aparecer (se houver)...');
+    await new Promise(r => setTimeout(r, 5000));
     const contaBloqueadaAposLogin = await verificarContaBloqueada(page1);
     if (contaBloqueadaAposLogin) {
       logger.error('\n🔒 CONTA BLOQUEADA DETECTADA APÓS LOGIN!\n');
@@ -1588,6 +1590,8 @@ async function automateAutoRetry(email, password, proxyUrl = null, browserscanUr
     await new Promise(r => setTimeout(r, 2000));
 
     // ===== VERIFICAR CONTA BLOQUEADA NA PÁGINA DE SETTINGS =====
+    logger.info('⏳ Aguardando 5 segundos para checkpoint aparecer (se houver)...');
+    await new Promise(r => setTimeout(r, 5000));
     const contaBloqueadaSettings = await verificarContaBloqueada(page1);
     if (contaBloqueadaSettings) {
       logger.error('\n🔒 CONTA BLOQUEADA DETECTADA NA PÁGINA DE SETTINGS!\n');
@@ -1858,6 +1862,8 @@ async function automateAutoRetry(email, password, proxyUrl = null, browserscanUr
       await new Promise(r => setTimeout(r, 2000)); // Aguardar carregar
 
       // ===== VERIFICAR CONTA BLOQUEADA NA PÁGINA DE DOMÍNIOS =====
+      logger.info('⏳ Aguardando 5 segundos para checkpoint aparecer (se houver)...');
+      await new Promise(r => setTimeout(r, 5000));
       const contaBloqueadaDomains = await verificarContaBloqueada(page1);
       if (contaBloqueadaDomains) {
         logger.error('\n🔒 CONTA BLOQUEADA DETECTADA NA PÁGINA DE DOMÍNIOS!\n');
@@ -1997,6 +2003,8 @@ async function automateAutoRetry(email, password, proxyUrl = null, browserscanUr
     await new Promise(r => setTimeout(r, 3000));
 
     // ===== VERIFICAR CONTA BLOQUEADA NO BUSINESS MANAGER =====
+    logger.info('⏳ Aguardando 5 segundos para checkpoint aparecer (se houver)...');
+    await new Promise(r => setTimeout(r, 5000));
     const contaBloqueadaBM = await verificarContaBloqueada(page3);
     if (contaBloqueadaBM) {
       logger.error('\n🔒 CONTA BLOQUEADA DETECTADA NO BUSINESS MANAGER!\n');
