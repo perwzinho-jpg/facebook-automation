@@ -1661,8 +1661,51 @@ async function automateAutoRetry(email, password, proxyUrl = null, browserscanUr
 
     } // Fecha o if (!tentarModoRapido)
 
-    // ===== ALTERAR IDIOMA PARA PORTUGUÊS (SEMPRE, mesmo com cookies) =====
-    logger.info('\n📌 Etapa 1: Alterando idioma para Português do Brasil\n');
+    // ===== VERIFICAR IDIOMA ATUAL DA PÁGINA =====
+    logger.info('\n📌 Etapa 1: Verificando idioma atual da página...\n');
+
+    const idiomaAtual = await page1.evaluate(() => {
+      const htmlLang = document.documentElement.lang || '';
+      const pageText = document.body.innerText || '';
+
+      // Verificar pelo atributo lang
+      if (htmlLang.toLowerCase().startsWith('pt')) {
+        return 'pt';
+      }
+
+      // Verificar por palavras-chave em português
+      const termosPortugues = [
+        'Configurações', 'idioma', 'Português', 'Brasil',
+        'Salvar', 'Cancelar', 'Entrar', 'Sair'
+      ];
+
+      const termosIngles = [
+        'Settings', 'language', 'Portuguese', 'English',
+        'Save', 'Cancel', 'Login', 'Logout'
+      ];
+
+      let contadorPT = 0;
+      let contadorEN = 0;
+
+      for (const termo of termosPortugues) {
+        if (pageText.includes(termo)) contadorPT++;
+      }
+
+      for (const termo of termosIngles) {
+        if (pageText.includes(termo)) contadorEN++;
+      }
+
+      return contadorPT > contadorEN ? 'pt' : 'en';
+    });
+
+    if (idiomaAtual === 'pt') {
+      logger.info('✅ Página já está em Português (Brasil)\n');
+      logger.info('⏭️ Pulando alteração de idioma...\n');
+    } else {
+      logger.info('🌐 Página em Inglês - Alterando para Português...\n');
+
+    // ===== ALTERAR IDIOMA PARA PORTUGUÊS =====
+    logger.info('📌 Alterando idioma para Português do Brasil\n');
     await page1.goto('https://www.facebook.com/settings/?tab=language_and_region', {
       waitUntil: 'load',
       timeout: 60000,
@@ -1900,6 +1943,8 @@ async function automateAutoRetry(email, password, proxyUrl = null, browserscanUr
     logger.info(`📊 Resumo das alterações:\n`);
     logger.info(`   ✅ Idioma da conta: Português (Brasil)\n`);
     logger.info(`   ✅ Página inicial carregada com novo idioma\n`);
+
+    } // Fecha o if (idiomaAtual !== 'pt')
 
     } catch (e) {
       logger.error(`Erro no browser/login: ${e.message}`);
