@@ -1,4 +1,4 @@
-/**
+﻿/**
  * 🚀 FACEBOOK AUTOMATION - AUTO-RETRY COM NOVO CÓDIGO
  *
  * ✅ Tenta 1 vez
@@ -1686,6 +1686,13 @@ async function automateAutoRetry(email, password, proxyUrl = null, browserscanUr
     logger.info(`   ✅ Idioma da conta: Português (Brasil)\n`);
     logger.info(`   ✅ Página inicial carregada com novo idioma\n`);
 
+    } // Fecha o if (!tentarModoRapido)
+
+    } catch (e) {
+      logger.error(`Erro no browser/login: ${e.message}`);
+      throw e;
+    }
+
     // ===== BUSINESS MANAGER - CRIAR PORTFOLIO =====
     logger.info('\n📌 Etapa 3: Abrindo Business Manager para criar portfolio\n');
 
@@ -2216,80 +2223,10 @@ async function automateAutoRetry(email, password, proxyUrl = null, browserscanUr
         previewUrl = 'https://facebook-automation-qb1g.onrender.com';
       }
 
-        // ===== CAPTURAR META TAG DO FACEBOOK =====
-        logger.info('   📋 Capturando meta tag do Facebook (aguardando geração)...');
-
-        try {
-          const metaTagContent = await page3.evaluate(() => {
-          let code = null;
-
-          // Método 1: Procurar em <code> tags (Facebook coloca assim)
-          const codeTags = document.querySelectorAll('code');
-          for (const tag of codeTags) {
-            const text = tag.innerText || tag.textContent || '';
-            const match = text.match(/content=["']([a-z0-9]{25,35})["']/i);
-            if (match && match[1]) {
-              code = match[1];
-              return code;
-            }
-          }
-
-          // Método 2: Procurar perto de "Copie esta metatag" ou "Copy this meta tag"
-          const allElements = document.querySelectorAll('*');
-          for (const el of allElements) {
-            const text = (el.textContent || '').toLowerCase();
-            if (text.includes('copie') || text.includes('copy') || text.includes('metatag')) {
-              // Procurar por content= dentro deste elemento ou filhos
-              const html = el.innerHTML || '';
-              const match = html.match(/content=["']([a-z0-9]{25,35})["']/i);
-              if (match && match[1]) {
-                code = match[1];
-                return code;
-              }
-            }
-          }
-
-          // Método 3: Procurar direto por content="xxx" pattern
-          const htmlText = document.documentElement.innerHTML;
-          const match = htmlText.match(/content=["']([a-z0-9]{25,35})["']/i);
-          if (match && match[1]) {
-            code = match[1];
-            return code;
-          }
-
-          return code;
-        });
-
-        if (metaTagContent) {
-          logger.info(`   ✅ Meta tag capturada: ${metaTagContent}\n`);
-
-          // Salvar meta tag no cnpj-data.json
-          const cnpjDataPath = path.join(process.cwd(), 'cnpj-data.json');
-          const cnpjDataContent = JSON.parse(fs.readFileSync(cnpjDataPath, 'utf8'));
-          if (cnpjDataContent.cnpjs[cnpjNum]) {
-            cnpjDataContent.cnpjs[cnpjNum].META_TAG = metaTagContent;
-            fs.writeFileSync(cnpjDataPath, JSON.stringify(cnpjDataContent, null, 2), 'utf8');
-            logger.info(`   💾 Meta tag salva em cnpj-data.json\n`);
-
-            // Fazer commit e push para Render recarregar com a meta tag
-            logger.info(`   🚀 Enviando meta tag para Render...\n`);
-            try {
-              const { execSync } = require('child_process');
-              execSync('git add cnpj-data.json', { cwd: process.cwd(), stdio: 'pipe' });
-              execSync('git commit -m "data: update meta tag for domain verification"', { cwd: process.cwd(), stdio: 'pipe' });
-              execSync('git push origin main', { cwd: process.cwd(), stdio: 'pipe' });
-              logger.info(`   ✅ Meta tag enviada para Render!\n`);
-              logger.info(`   🌐 Acesse: https://facebook-automation-qb1g.onrender.com/\n`);
-              logger.info(`   ⏳ Aguarde ~30 segundos para Render recarregar com a meta tag\n`);
-            } catch (pushErr) {
-              logger.warn(`   ⚠️ Erro ao fazer push: ${pushErr.message}\n`);
-            }
-          }
-
-          // ===== PREENCHER DOMÍNIO DA PREVIEW URL =====
-          // Usar domínio sem query param (Facebook rejeita)
-          const dominioPreview = 'facebook-automation-qb1g.onrender.com';
-          logger.info(`   📝 Preenchendo domínio: ${dominioPreview}...\n`);
+        // ===== PREENCHER DOMÍNIO DA PREVIEW URL =====
+        // Usar domínio sem query param (Facebook rejeita)
+        const dominioPreview = 'facebook-automation-qb1g.onrender.com';
+        logger.info(`   📝 Preenchendo domínio: ${dominioPreview}...\n`);
 
           try {
             const preencheuDominio = await page3.evaluate((dominio) => {
@@ -2376,6 +2313,83 @@ async function automateAutoRetry(email, password, proxyUrl = null, browserscanUr
 
               if (clicouAdicionar) {
                 logger.info('   ✅ Botão "Adicionar" clicado!\n');
+
+                // ===== CAPTURAR META TAG DO FACEBOOK (APÓS PREENCHER DOMÍNIO) =====
+                logger.info('   📋 Capturando meta tag gerada pelo Facebook...\n');
+                await new Promise(r => setTimeout(r, 3000)); // Aguardar geração
+
+                try {
+                  const metaTagContent = await page3.evaluate(() => {
+                    let code = null;
+
+                    // Método 1: Procurar em <code> tags (Facebook coloca assim)
+                    const codeTags = document.querySelectorAll('code');
+                    for (const tag of codeTags) {
+                      const text = tag.innerText || tag.textContent || '';
+                      const match = text.match(/content=["']([a-z0-9]{25,35})["']/i);
+                      if (match && match[1]) {
+                        code = match[1];
+                        return code;
+                      }
+                    }
+
+                    // Método 2: Procurar perto de "Copie esta metatag" ou "Copy this meta tag"
+                    const allElements = document.querySelectorAll('*');
+                    for (const el of allElements) {
+                      const text = (el.textContent || '').toLowerCase();
+                      if (text.includes('copie') || text.includes('copy') || text.includes('metatag')) {
+                        const html = el.innerHTML || '';
+                        const match = html.match(/content=["']([a-z0-9]{25,35})["']/i);
+                        if (match && match[1]) {
+                          code = match[1];
+                          return code;
+                        }
+                      }
+                    }
+
+                    // Método 3: Procurar direto por content="xxx" pattern
+                    const htmlText = document.documentElement.innerHTML;
+                    const match = htmlText.match(/content=["']([a-z0-9]{25,35})["']/i);
+                    if (match && match[1]) {
+                      code = match[1];
+                      return code;
+                    }
+
+                    return code;
+                  });
+
+                  if (metaTagContent) {
+                    logger.info(`   ✅ Meta tag capturada: ${metaTagContent}\n`);
+
+                    // Salvar meta tag no cnpj-data.json
+                    const cnpjDataPath = path.join(process.cwd(), 'cnpj-data.json');
+                    const cnpjDataContent = JSON.parse(fs.readFileSync(cnpjDataPath, 'utf8'));
+                    const cnpjKey = cnpjData.cnpj.replace(/\D/g, '');
+                    if (cnpjDataContent.cnpjs[cnpjKey]) {
+                      cnpjDataContent.cnpjs[cnpjKey].META_TAG = metaTagContent;
+                      fs.writeFileSync(cnpjDataPath, JSON.stringify(cnpjDataContent, null, 2), 'utf8');
+                      logger.info(`   💾 Meta tag salva em cnpj-data.json\n`);
+
+                      // Fazer commit e push para Render recarregar com a meta tag
+                      logger.info(`   🚀 Enviando meta tag para Render...\n`);
+                      try {
+                        const { execSync } = require('child_process');
+                        execSync('git add cnpj-data.json', { cwd: process.cwd(), stdio: 'pipe' });
+                        execSync('git commit -m "data: update meta tag for domain verification"', { cwd: process.cwd(), stdio: 'pipe' });
+                        execSync('git push origin main', { cwd: process.cwd(), stdio: 'pipe' });
+                        logger.info(`   ✅ Meta tag enviada para Render!\n`);
+                        logger.info(`   🌐 Acesse: https://facebook-automation-qb1g.onrender.com/\n`);
+                        logger.info(`   ⏳ Aguarde ~30 segundos para Render recarregar com a meta tag\n`);
+                      } catch (pushErr) {
+                        logger.warn(`   ⚠️ Erro ao fazer push: ${pushErr.message}\n`);
+                      }
+                    }
+                  } else {
+                    logger.warn('   ⚠️ Meta tag não encontrada\n');
+                  }
+                } catch (captureErr) {
+                  logger.warn(`   ⚠️ Erro ao capturar meta tag: ${captureErr.message}\n`);
+                }
               } else {
                 logger.warn('   ⚠️ Botão "Adicionar" não encontrado\n');
               }
@@ -2498,12 +2512,6 @@ async function automateAutoRetry(email, password, proxyUrl = null, browserscanUr
               logger.info('   ✅ Nenhuma mensagem de erro detectada\n');
               logger.info('   ℹ️ A verificação pode estar em progresso (até 72 horas)\n');
             }
-        } else {
-          logger.warn('   ⚠️ Meta tag do Facebook não encontrada\n');
-        }
-        } catch (error) {
-          logger.warn(`   ⚠️ Erro ao capturar meta tag: ${error.message}\n`);
-        }
 
       await new Promise(r => setTimeout(r, 2000));
     }
@@ -2516,484 +2524,6 @@ async function automateAutoRetry(email, password, proxyUrl = null, browserscanUr
     logger.info('Verifique a página e depois pressione Ctrl+C para continuar.\n');
 
     return { success: true, email, cnpj: cnpjData.cnpj, razaoSocial: cnpjData.razaoSocial, nomeSocio, emailGerado, businessId, language: 'pt-BR' };
-
-    await new Promise(r => setTimeout(r, 2000));
-
-    // Clicar em "Concluir" no modal de email
-    const emailConfirmado = await page3.evaluate(() => {
-      const buttons = document.querySelectorAll('button');
-      for (const btn of buttons) {
-        const text = btn.textContent?.toLowerCase() || '';
-        if (text.includes('concluir') || text.includes('done') || text.includes('continue')) {
-          btn.click();
-          return true;
-        }
-      }
-      return false;
-    });
-
-    if (emailConfirmado) {
-      logger.info('✅ Email confirmado\n');
-    } else {
-      logger.warn('⚠️ Não encontrou botão de concluir\n');
-    }
-
-    await new Promise(r => setTimeout(r, 2000));
-
-    // ===== PERMITIR NOTIFICAÇÕES =====
-    logger.info('📌 Passo 2: Permitindo notificações no Meta...\n');
-
-    const notificacaoPermitida = await page3.evaluate(() => {
-      const buttons = document.querySelectorAll('button');
-      for (const btn of buttons) {
-        const text = btn.textContent?.toLowerCase() || '';
-        if (text.includes('permitir') || text.includes('allow') || text.includes('sim')) {
-          btn.click();
-          return true;
-        }
-      }
-      return false;
-    });
-
-    if (notificacaoPermitida) {
-      logger.info('✅ Notificações permitidas\n');
-    } else {
-      logger.warn('⚠️ Não encontrou botão de permitir notificações\n');
-    }
-
-    await new Promise(r => setTimeout(r, 2000));
-
-    // ===== CLICAR NA SETINHA E IR PARA CONFIGURAÇÃO =====
-    logger.info('📌 Passo 3: Acessando Configuração da Empresa...\n');
-
-    // Clicar na setinha/menu no canto esquerdo
-    const menuClicado = await page3.evaluate(() => {
-      // Procurar por botão de menu/setinha
-      const buttons = document.querySelectorAll('button, [role="button"]');
-      for (const btn of buttons) {
-        const ariaLabel = btn.getAttribute('aria-label')?.toLowerCase() || '';
-        const title = btn.getAttribute('title')?.toLowerCase() || '';
-
-        if (ariaLabel.includes('menu') || ariaLabel.includes('configuração') ||
-            title.includes('menu') || title.includes('configuração') ||
-            btn.textContent?.includes('⚙️') || btn.textContent?.includes('≡')) {
-          btn.click();
-          return true;
-        }
-      }
-      return false;
-    });
-
-    if (menuClicado) {
-      logger.info('✅ Menu aberto\n');
-    } else {
-      logger.warn('⚠️ Não encontrou botão de menu\n');
-    }
-
-    await new Promise(r => setTimeout(r, 1500));
-
-    logger.info('✅ Navegação completada!\n');
-
-    // ===== DOMÍNIOS - ADICIONAR =====
-    logger.info('📌 Passo 4: Adicionando Domínio...\n');
-
-    // Gerar nome de domínio baseado no nome da pessoa
-    const nomeDominioGerado = gerarNomeDominio(nomeSocio);
-    const dominioCompleto = `${nomeDominioGerado}.com.br`;
-
-    logger.info(`   Domínio gerado: ${dominioCompleto}\n`);
-
-    // Navegar para página de domínios
-    logger.info('   🌐 Acessando página de domínios...');
-    await page3.goto(`https://business.facebook.com/latest/settings/domains?business_id=${cnpjData.cnpj}`, {
-      waitUntil: 'load',
-      timeout: 60000,
-    }).catch(() => {
-      logger.warn('   ⚠️ Não conseguiu navegar direto para domínios');
-    });
-
-    await new Promise(r => setTimeout(r, 2000));
-    logger.info('   ✅ Página de domínios carregada\n');
-
-    // Clicar em "Adicionar"
-    logger.info('   ➕ Clicando em Adicionar...');
-    const adicionarClicado = await page3.evaluate(() => {
-      const buttons = document.querySelectorAll('button, [role="button"]');
-      for (const btn of buttons) {
-        const text = btn.textContent?.toLowerCase() || '';
-        if (text.includes('adicionar') || text.includes('add') || text.includes('+')) {
-          btn.click();
-          return true;
-        }
-      }
-      return false;
-    });
-
-    if (adicionarClicado) {
-      logger.info('   ✅ Botão Adicionar clicado\n');
-    } else {
-      logger.warn('   ⚠️ Não encontrou botão Adicionar\n');
-    }
-
-    await new Promise(r => setTimeout(r, 2000));
-
-    // Preencher campo de domínio
-    logger.info('   📝 Preenchendo nome do domínio...');
-    const dominioPreenchido = await page3.evaluate((dominio) => {
-      const inputs = document.querySelectorAll('input[type="text"]');
-      for (const inp of inputs) {
-        if (inp.offsetParent !== null && (inp.placeholder?.includes('domain') || inp.placeholder?.includes('domínio'))) {
-          inp.focus();
-          inp.value = dominio;
-          inp.dispatchEvent(new Event('change', { bubbles: true }));
-          return true;
-        }
-      }
-
-      // Fallback: primeiro input visível
-      const visibleInputs = Array.from(inputs).filter(inp => inp.offsetParent !== null);
-      if (visibleInputs.length > 0) {
-        visibleInputs[0].focus();
-        visibleInputs[0].value = dominio;
-        visibleInputs[0].dispatchEvent(new Event('change', { bubbles: true }));
-        return true;
-      }
-
-      return false;
-    }, dominioCompleto);
-
-    if (dominioPreenchido) {
-      logger.info('   ✅ Domínio preenchido\n');
-    } else {
-      logger.warn('   ⚠️ Não conseguiu preencher domínio\n');
-    }
-
-    await new Promise(r => setTimeout(r, 2000));
-
-    logger.info('✅ Domínio adicionado à fila!\n');
-
-    // ===== PEGAR META TAG ID =====
-    logger.info('📌 Passo 5: Extraindo Meta Tag ID...\n');
-
-    await new Promise(r => setTimeout(r, 2000));
-
-    const metaTagId = await page3.evaluate(() => {
-      // Procurar pelo Meta Tag ID (pode estar em um elemento específico)
-      const metaTagElements = document.querySelectorAll('input, span, div');
-      for (const el of metaTagElements) {
-        const text = el.textContent || el.value || '';
-        if (text.includes('meta-') || text.includes('verification-id') || /^\d{15,}$/.test(text.trim())) {
-          return text.trim();
-        }
-      }
-
-      // Procurar em data attributes
-      const allElements = document.querySelectorAll('[data-meta-tag], [data-verification-id]');
-      if (allElements.length > 0) {
-        return allElements[0].getAttribute('data-meta-tag') ||
-               allElements[0].getAttribute('data-verification-id') ||
-               allElements[0].textContent;
-      }
-
-      return null;
-    });
-
-    if (metaTagId) {
-      logger.info(`✅ Meta Tag ID encontrado: ${metaTagId}\n`);
-    } else {
-      logger.warn('⚠️ Meta Tag ID não encontrado automaticamente\n');
-      logger.info('   📝 Você terá que copiar manualmente do Meta e adicionar ao Cloudflare\n');
-    }
-
-    // ===== WORKER CLOUDFLARE =====
-    logger.info('📌 Passo 6: Gerando Worker Cloudflare...\n');
-
-    // Gerar script do Worker baseado no Meta Tag ID
-    const workerScript = metaTagId ? `
-// Cloudflare Worker - Meta Domain Verification
-export default {
-  async fetch(request) {
-    const url = new URL(request.url);
-
-    // Rota de verificação Meta
-    if (url.pathname === '/.well-known/meta-verification') {
-      return new Response('${metaTagId}', {
-        status: 200,
-        headers: { 'Content-Type': 'text/plain' }
-      });
-    }
-
-    // Redirecionar para homepage
-    return new Response('Domínio verificado', {
-      status: 200,
-      headers: { 'Content-Type': 'text/html' }
-    });
-  }
-};
-    ` : '// Adicionar Meta Tag ID acima na linha com o valor correspondente';
-
-    logger.info('   📝 Worker Script Gerado:\n');
-    logger.info('   ' + workerScript.substring(0, 100) + '...\n');
-
-    logger.info('   📋 Para configurar no Cloudflare:\n');
-    logger.info('   1. Abrir Cloudflare > Workers\n');
-    logger.info('   2. Criar novo worker\n');
-    logger.info('   3. Colar o script acima em workers.js\n');
-    logger.info('   4. Fazer deploy\n\n');
-
-    // Salvar worker script
-    fs.writeFileSync('cloudflare-worker.js', workerScript);
-    logger.info('✅ Worker salvo em cloudflare-worker.js\n');
-
-    // ===== VERIFICAR DOMÍNIO =====
-    logger.info('📌 Passo 7: Verificando Domínio...\n');
-
-    await new Promise(r => setTimeout(r, 2000));
-
-    const verificarClicado = await page3.evaluate(() => {
-      const buttons = document.querySelectorAll('button, [role="button"]');
-      for (const btn of buttons) {
-        const text = btn.textContent?.toLowerCase() || '';
-        if (text.includes('verificar') || text.includes('verify') || text.includes('confirmar')) {
-          btn.click();
-          return true;
-        }
-      }
-      return false;
-    });
-
-    if (verificarClicado) {
-      logger.info('✅ Clicado em Verificar\n');
-      await new Promise(r => setTimeout(r, 5000)); // Aguardar verificação
-      logger.info('✅ Domínio Verificado!\n');
-    } else {
-      logger.warn('⚠️ Botão Verificar não encontrado\n');
-    }
-
-    // ===== INFORMAÇÕES DA EMPRESA =====
-    logger.info('📌 Passo 8: Preenchendo Informações da Empresa...\n');
-
-    const infoUrl = `https://business.facebook.com/latest/settings/business_info?business_id=${businessId}`;
-
-    logger.info('   🌐 Acessando página de informações...');
-    await page3.goto(infoUrl, {
-      waitUntil: 'load',
-      timeout: 60000,
-    }).catch(() => {
-      logger.warn('   ⚠️ Não conseguiu navegar para informações');
-    });
-
-    await new Promise(r => setTimeout(r, 2000));
-    logger.info('   ✅ Página carregada\n');
-
-    // Clicar em "Editar Detalhes"
-    logger.info('   ✏️ Clicando em Editar Detalhes...');
-    const editarClicado = await page3.evaluate(() => {
-      const buttons = document.querySelectorAll('button, [role="button"], a');
-      for (const btn of buttons) {
-        const text = btn.textContent?.toLowerCase() || '';
-        if (text.includes('editar') || text.includes('edit') || text.includes('modificar')) {
-          btn.click();
-          return true;
-        }
-      }
-      return false;
-    });
-
-    if (editarClicado) {
-      logger.info('   ✅ Clicado\n');
-    } else {
-      logger.warn('   ⚠️ Botão não encontrado\n');
-    }
-
-    await new Promise(r => setTimeout(r, 2000));
-
-    // Preencher campos de empresa
-    logger.info('   📝 Preenchendo dados da empresa...');
-
-    const empresaPreenchida = await page3.evaluate((empresa) => {
-      const inputs = document.querySelectorAll('input[type="text"], textarea');
-      const visibleInputs = Array.from(inputs).filter(inp => inp.offsetParent !== null);
-
-      if (visibleInputs.length > 0) {
-        // Primeiro campo: Razão Social
-        visibleInputs[0].focus();
-        visibleInputs[0].value = empresa.razaoSocial;
-        visibleInputs[0].dispatchEvent(new Event('change', { bubbles: true }));
-
-        // Segundo campo: Website (domínio)
-        if (visibleInputs.length > 1) {
-          visibleInputs[1].focus();
-          visibleInputs[1].value = 'https://' + empresa.dominio;
-          visibleInputs[1].dispatchEvent(new Event('change', { bubbles: true }));
-        }
-
-        return true;
-      }
-      return false;
-    }, { razaoSocial: cnpjData.razaoSocial, dominio: dominioCompleto });
-
-    if (empresaPreenchida) {
-      logger.info('   ✅ Dados preenchidos\n');
-    } else {
-      logger.warn('   ⚠️ Não conseguiu preencher dados\n');
-    }
-
-    await new Promise(r => setTimeout(r, 1500));
-
-    // Clicar em Salvar
-    logger.info('   💾 Salvando...');
-    const salvoClicado = await page3.evaluate(() => {
-      const buttons = document.querySelectorAll('button');
-      for (const btn of buttons) {
-        const text = btn.textContent?.toLowerCase() || '';
-        if (text.includes('salvar') || text.includes('save') || text.includes('guardar')) {
-          btn.click();
-          return true;
-        }
-      }
-      return false;
-    });
-
-    if (salvoClicado) {
-      logger.info('   ✅ Salvo com sucesso!\n');
-    } else {
-      logger.warn('   ⚠️ Não encontrou botão de salvar\n');
-    }
-
-    await new Promise(r => setTimeout(r, 2000));
-
-    // ===== WHATSAPP =====
-    logger.info('📌 Passo 9: Criando Conta WhatsApp...\n');
-
-    const whatsappUrl = `https://business.facebook.com/latest/settings/whatsapp_account?business_id=${businessId}`;
-
-    logger.info('   💬 Acessando WhatsApp...');
-    await page3.goto(whatsappUrl, {
-      waitUntil: 'load',
-      timeout: 60000,
-    }).catch(() => {
-      logger.warn('   ⚠️ Não conseguiu acessar WhatsApp');
-    });
-
-    await new Promise(r => setTimeout(r, 2000));
-    logger.info('   ✅ Página carregada\n');
-
-    // Clicar em Adicionar
-    logger.info('   ➕ Clicando em Adicionar...');
-    const whatsappAdicionarClicado = await page3.evaluate(() => {
-      const buttons = document.querySelectorAll('button, [role="button"]');
-      for (const btn of buttons) {
-        const text = btn.textContent?.toLowerCase() || '';
-        if (text.includes('adicionar') || text.includes('add') || text.includes('nova')) {
-          btn.click();
-          return true;
-        }
-      }
-      return false;
-    });
-
-    if (whatsappAdicionarClicado) {
-      logger.info('   ✅ Modal aberto\n');
-    } else {
-      logger.warn('   ⚠️ Não encontrou botão Adicionar\n');
-    }
-
-    await new Promise(r => setTimeout(r, 2000));
-
-    // Preencher nome
-    logger.info('   📝 Preenchendo nome da conta...');
-    const whatsappNomePreenchido = await page3.evaluate((nome) => {
-      const inputs = document.querySelectorAll('input[type="text"]');
-      for (const inp of inputs) {
-        if (inp.offsetParent !== null) {
-          inp.focus();
-          inp.value = nome;
-          inp.dispatchEvent(new Event('change', { bubbles: true }));
-          return true;
-        }
-      }
-      return false;
-    }, nomeSocio);
-
-    if (whatsappNomePreenchido) {
-      logger.info('   ✅ Nome preenchido\n');
-    } else {
-      logger.warn('   ⚠️ Não conseguiu preencher nome\n');
-    }
-
-    await new Promise(r => setTimeout(r, 1500));
-
-    // Selecionar categoria "Outro"
-    logger.info('   📂 Selecionando categoria "Outro"...');
-    const categoriaOutroClicada = await page3.evaluate(() => {
-      const selects = document.querySelectorAll('select');
-      for (const select of selects) {
-        if (select.offsetParent !== null) {
-          select.value = 'outro';
-          select.dispatchEvent(new Event('change', { bubbles: true }));
-          return true;
-        }
-      }
-
-      // Fallback: procurar por opcao "Outro"
-      const options = document.querySelectorAll('option, [role="option"]');
-      for (const opt of options) {
-        if (opt.textContent?.toLowerCase().includes('outro')) {
-          opt.click();
-          return true;
-        }
-      }
-
-      return false;
-    });
-
-    if (categoriaOutroClicada) {
-      logger.info('   ✅ Categoria selecionada\n');
-    } else {
-      logger.warn('   ⚠️ Não conseguiu selecionar categoria\n');
-    }
-
-    await new Promise(r => setTimeout(r, 2000));
-
-    logger.info('⚠️ CAPTCHA DETECTADO!\n');
-    logger.info('📝 Você precisa resolver o captcha manualmente:\n');
-    logger.info('   1. Localize o captcha na página\n');
-    logger.info('   2. Complete o desafio\n');
-    logger.info('   3. Clique em "Criar" ou "Submit"\n');
-    logger.info('   4. O navegador continuará automaticamente\n\n');
-
-    logger.info('⏳ Aguardando 30 segundos para você resolver o captcha...\n');
-    await new Promise(r => setTimeout(r, 30000));
-
-    // Salvar dados utilizados
-    logger.info('💾 Salvando dados do CNPJ utilizado...');
-
-    const cnpjLog = {
-      timestamp: new Date().toISOString(),
-      email_facebook: email,
-      cnpj: cnpjData.cnpj,
-      razaoSocial: cnpjData.razaoSocial,
-      nomeFantasia: cnpjData.nomeFantasia,
-      situacao: cnpjData.situacao,
-      dataAbertura: cnpjData.dataAbertura,
-      telefone: cnpjData.telefone,
-      nomeSocio: nomeSocio,
-      emailGerado: emailGerado,
-      socios: cnpjData.socios
-    };
-
-    fs.appendFileSync('cnpj-utilizados.json', JSON.stringify(cnpjLog, null, 2) + '\n\n');
-    logger.info('✅ Dados salvos em cnpj-utilizados.json\n');
-
-    await page3.close();
-
-    logger.info('='.repeat(60));
-    logger.info('✅ BUSINESS MANAGER PREPARADO COM SUCESSO!');
-    logger.info('='.repeat(60) + '\n');
-
-    return { success: true, email, cnpj: cnpjData.cnpj, razaoSocial: cnpjData.razaoSocial, language: 'pt-BR' };
-
   } catch (error) {
     logger.error(`❌ ERRO: ${error.message}\n`);
     return { success: false, email, error: error.message };
@@ -3173,3 +2703,4 @@ if (require.main === module) {
 }
 
 module.exports = { automateAutoRetry };
+
