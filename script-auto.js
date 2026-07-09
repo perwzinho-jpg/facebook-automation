@@ -1586,10 +1586,27 @@ async function automateAutoRetry(email, password, proxyUrl = null, browserscanUr
     }
     logger.info('✅ Conta acessível - prosseguindo com fluxo\n');
 
-    // ===== NOVOS PASSOS APÓS LOGIN =====
+    // Salvar cookies apenas se não for modo rápido (primeira vez que faz login)
+    if (!tentarModoRapido) {
+      // 💾 SALVAR COOKIES (depois de login = sessão completa)
+      logger.info('\n💾 Salvando cookies de sessão...');
+      const cookiesDir = 'storage/cookies';
+      if (!fs.existsSync(cookiesDir)) {
+        fs.mkdirSync(cookiesDir, { recursive: true });
+      }
+      const cookies = await page1.cookies();
+      fs.writeFileSync(
+        path.join(cookiesDir, `${email}.json`),
+        JSON.stringify(cookies, null, 2)
+      );
+      logger.success('Cookies salvos com sucesso!');
+      logger.info('⚡ Próxima execução será muito mais rápida!\n');
+    }
 
-    // SETTINGS - IDIOMA PARA PORTUGUÊS
-    logger.info('📌 Etapa 1: Alterando idioma para Português do Brasil\n');
+    } // Fecha o if (!tentarModoRapido)
+
+    // ===== ALTERAR IDIOMA PARA PORTUGUÊS (SEMPRE, mesmo com cookies) =====
+    logger.info('\n📌 Etapa 1: Alterando idioma para Português do Brasil\n');
     await page1.goto('https://www.facebook.com/settings/?tab=language_and_region', {
       waitUntil: 'load',
       timeout: 60000,
@@ -1811,20 +1828,6 @@ async function automateAutoRetry(email, password, proxyUrl = null, browserscanUr
     await new Promise(r => setTimeout(r, 2000));
     logger.info('   ✅ Idioma alterado\n');
 
-    // 💾 SALVAR COOKIES (depois de idioma alterado = sessão completa)
-    logger.info('\n💾 Salvando cookies de sessão...');
-    const cookiesDir = 'storage/cookies';
-    if (!fs.existsSync(cookiesDir)) {
-      fs.mkdirSync(cookiesDir, { recursive: true });
-    }
-    const cookies = await page1.cookies();
-    fs.writeFileSync(
-      path.join(cookiesDir, `${email}.json`),
-      JSON.stringify(cookies, null, 2)
-    );
-    logger.success('Cookies salvos com sucesso!');
-    logger.info('⚡ Próxima execução será muito mais rápida!\n');
-
     // FINALIZAÇÃO
     logger.info('📌 Etapa 2: Voltando para Home\n');
     await page1.goto('https://www.facebook.com/', {
@@ -1839,8 +1842,6 @@ async function automateAutoRetry(email, password, proxyUrl = null, browserscanUr
     logger.info(`📊 Resumo das alterações:\n`);
     logger.info(`   ✅ Idioma da conta: Português (Brasil)\n`);
     logger.info(`   ✅ Página inicial carregada com novo idioma\n`);
-
-    } // Fecha o if (!tentarModoRapido)
 
     } catch (e) {
       logger.error(`Erro no browser/login: ${e.message}`);
