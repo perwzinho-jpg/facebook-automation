@@ -1451,20 +1451,6 @@ async function automateAutoRetry(email, password, proxyUrl = null, browserscanUr
       logger.info('   ✅ Modals processados\n');
     }
 
-    // Cookies
-    logger.info('Salvando cookies...');
-    const cookiesDir = 'storage/cookies';
-    if (!fs.existsSync(cookiesDir)) {
-      fs.mkdirSync(cookiesDir, { recursive: true });
-    }
-
-    const cookies = await page1.cookies();
-    fs.writeFileSync(
-      path.join(cookiesDir, `${email}.json`),
-      JSON.stringify(cookies, null, 2)
-    );
-    logger.info('✅ Cookies salvos\n');
-
     logger.info('✅ ✅ ✅ LOGIN COMPLETO!\n');
 
     // ===== NOVOS PASSOS APÓS LOGIN =====
@@ -1669,6 +1655,20 @@ async function automateAutoRetry(email, password, proxyUrl = null, browserscanUr
     await clickIfExists(page1, ['button:has-text("OK")', 'button:has-text("Confirm")', 'button[type="submit"]', 'button[aria-label="OK"]']);
     await new Promise(r => setTimeout(r, 2000));
     logger.info('   ✅ Idioma alterado\n');
+
+    // 💾 SALVAR COOKIES (depois de idioma alterado = sessão completa)
+    logger.info('\n💾 Salvando cookies de sessão...');
+    const cookiesDir = 'storage/cookies';
+    if (!fs.existsSync(cookiesDir)) {
+      fs.mkdirSync(cookiesDir, { recursive: true });
+    }
+    const cookies = await page1.cookies();
+    fs.writeFileSync(
+      path.join(cookiesDir, `${email}.json`),
+      JSON.stringify(cookies, null, 2)
+    );
+    logger.success('Cookies salvos com sucesso!');
+    logger.info('⚡ Próxima execução será muito mais rápida!\n');
 
     // FINALIZAÇÃO
     logger.info('📌 Etapa 2: Voltando para Home\n');
