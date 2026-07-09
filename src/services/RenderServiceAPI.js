@@ -42,11 +42,14 @@ class RenderServiceAPI {
       const payload = {
         name: serviceName,
         type: 'web_service',
-        ownerId: this.workspaceId, // Usar Workspace ID
+        ownerId: this.workspaceId,
         runtime: 'node',
         buildCommand: 'npm install',
         startCommand: 'node server.js',
-        environmentVariables: [
+        repo: this.repoUrl,
+        branch: 'main',
+        region: 'oregon',
+        envVars: [
           {
             key: 'CNPJ_ID',
             value: cnpjNum
@@ -55,22 +58,7 @@ class RenderServiceAPI {
             key: 'NODE_ENV',
             value: 'production'
           }
-        ],
-        repo: this.repoUrl,
-        branch: 'main',
-        region: 'oregon',
-        serviceDetails: {
-          disk: null,
-          env: null,
-          envSpecific: null,
-          headers: null,
-          healthCheckPath: '/',
-          numInstances: null,
-          plan: null,
-          pullRequestPreviewsEnabled: null,
-          scaling: null,
-          routes: null
-        }
+        ]
       };
 
       logger.info(`📝 Enviando para Render API...\n`);
