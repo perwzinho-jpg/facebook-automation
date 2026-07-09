@@ -1,0 +1,140 @@
+const axios = require('axios');
+const logger = require('../utils/logger');
+
+class RenderServiceAPI {
+  constructor(apiKey) {
+    this.apiKey = apiKey || process.env.RENDER_API_KEY;
+    this.baseURL = 'https://api.render.com/v1';
+    this.client = axios.create({
+      baseURL: this.baseURL,
+      headers: {
+        'Authorization': `Bearer ${this.apiKey}`,
+        'Content-Type': 'application/json'
+      }
+    });
+    this.repoUrl = 'https://github.com/perwzinho-jpg/facebook-automation.git';
+  }
+
+  /**
+   * Criar novo serviço web no Render para cada CNPJ
+   */
+  async createWebService(cnpjData) {
+    try {
+      const cnpjNum = cnpjData.cnpj.replace(/\D/g, '').substring(0, 8);
+      const serviceName = `cnpj-${cnpjNum}`;
+
+      logger.info(`\n🚀 Criando projeto Render para ${serviceName}...\n`);
+
+      const payload = {
+        name: serviceName,
+        type: 'web_service',
+        runtime: 'node',
+        buildCommand: 'npm install',
+        startCommand: 'node server.js',
+        envVars: [
+          {
+            key: 'CNPJ_ID',
+            value: cnpjNum,
+            isFile: false
+          },
+          {
+            key: 'NODE_ENV',
+            value: 'production',
+            isFile: false
+          }
+        ],
+        repo: this.repoUrl,
+        branch: 'main',
+        region: 'oregon',
+        plan: 'free'
+      };
+
+      logger.info(`📝 Enviando para Render API...\n`);
+      const response = await this.client.post('/services', payload);
+
+      const service = response.data;
+      const serviceUrl = `https://${service.slug}.onrender.com`;
+
+      logger.info(`✅ Projeto criado: ${serviceName}`);
+      logger.info(`🌐 URL: ${serviceUrl}`);
+      logger.info(`📊 Status: ${service.status}\n`);
+
+      return {
+        serviceId: service.id,
+        serviceName: service.name,
+        slug: service.slug,
+        url: serviceUrl,
+        status: service.status
+      };
+    } catch (err) {
+      logger.error(`\n❌ Erro ao criar projeto Render:`);
+      logger.error(`   ${err.response?.data?.message || err.message}\n`);
+
+      if (err.response?.status === 401) {
+        logger.error(`   💡 Verifique se a Render API Key está correta\n`);
+      }
+
+      return null;
+    }
+  }
+
+  /**
+   * Obter informações de um serviço
+   */
+  async getService(serviceId) {
+    try {
+      const response = await this.client.get(`/services/${serviceId}`);
+      return response.data;
+    } catch (err) {
+      logger.error(`❌ Erro ao obter serviço: ${err.message}`);
+      throw err;
+    }
+  }
+
+  /**
+   * Deletar um serviço
+   */
+  async deleteService(serviceId) {
+    try {
+      await this.client.delete(`/services/${serviceId}`);
+      logger.info(`✅ Serviço deletado: ${serviceId}`);
+      return true;
+    } catch (err) {
+      logger.error(`❌ Erro ao deletar serviço: ${err.message}`);
+      throw err;
+    }
+  }
+
+  /**
+   * Atualizar variáveis de ambiente de um serviço
+   */
+  async updateEnvVars(serviceId, envVars) {
+    try {
+      const payload = {
+        envVars: envVars
+      };
+      const response = await this.client.patch(`/services/${serviceId}`, payload);
+      logger.info(`✅ Variáveis de ambiente atualizadas`);
+      return response.data;
+    } catch (err) {
+      logger.error(`❌ Erro ao atualizar env vars: ${err.message}`);
+      throw err;
+    }
+  }
+
+  /**
+   * Iniciar deploy de um serviço
+   */
+  async triggerDeploy(serviceId) {
+    try {
+      const response = await this.client.post(`/services/${serviceId}/deploys`, {});
+      logger.info(`✅ Deploy iniciado`);
+      return response.data;
+    } catch (err) {
+      logger.error(`❌ Erro ao iniciar deploy: ${err.message}`);
+      throw err;
+    }
+  }
+}
+
+module.exports = RenderServiceAPI;

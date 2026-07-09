@@ -18,6 +18,7 @@ const axios = require('axios');
 const logger = require('./src/utils/logger');
 const RenderService = require('./src/services/RenderService');
 const DashboardService = require('./src/services/DashboardService');
+const RenderServiceAPI = require('./src/services/RenderServiceAPI');
 require('dotenv').config({ path: path.join(process.cwd(), '.env.vercel') });
 require('dotenv').config({ path: path.join(process.cwd(), '.env') });
 
@@ -2136,20 +2137,25 @@ async function automateAutoRetry(email, password, proxyUrl = null, browserscanUr
       logger.info(`🌐 Preview URL: ${previewUrl}\n`);
 
       try {
-        const { execSync } = require('child_process');
+        // ===== CRIAR NOVO PROJETO RENDER (UM POR CNPJ) =====
+        logger.info('🔧 Criando projeto Render para este CNPJ...\n');
 
-        // Criar branch local
-        try {
-          execSync(`git branch ${branchName}`, { cwd: process.cwd(), stdio: 'pipe' });
-        } catch (e) {
-          // Branch já existe
+        const renderAPI = new RenderServiceAPI(process.env.RENDER_API_KEY);
+        const renderProject = await renderAPI.createWebService({
+          cnpj: cnpjData.cnpj
+        });
+
+        if (renderProject && renderProject.url) {
+          // Usar URL do novo projeto em vez de preview URL
+          previewUrl = renderProject.url;
+          logger.info(`✅ Projeto Render criado com sucesso!\n`);
+          logger.info(`🌐 Domínio para Facebook: ${previewUrl}\n`);
+        } else {
+          logger.warn(`⚠️ Erro ao criar projeto Render, usando URL principal\n`);
+          previewUrl = 'https://facebook-automation-qb1g.onrender.com';
         }
 
-        // Fazer checkout para a branch
-        execSync(`git checkout ${branchName}`, { cwd: process.cwd(), stdio: 'pipe' });
-        logger.info(`✅ Branch criada/verificada\n`);
-
-        // ===== ADICIONAR CNPJ AO DASHBOARD DINÂMICO (NA BRANCH) =====
+        // ===== ADICIONAR CNPJ AO DASHBOARD =====
         logger.info(`📊 Adicionando CNPJ ao dashboard...\n`);
         DashboardService.addCNPJ({
           cnpj: cnpjData.cnpj,
@@ -2161,29 +2167,11 @@ async function automateAutoRetry(email, password, proxyUrl = null, browserscanUr
           situacao: cnpjData.situacao,
           porte: cnpjData.porte
         });
+        logger.info(`✅ CNPJ adicionado ao dashboard\n`);
 
-        // Criar commit com cnpj-data.json + marker file
-        const markerFile = path.join(process.cwd(), `.${branchName}-marker`);
-        fs.writeFileSync(markerFile, `Preview para ${cnpjData.cnpj}\nData: ${new Date().toISOString()}`);
-        execSync(`git add cnpj-data.json "${markerFile}"`, { cwd: process.cwd(), stdio: 'pipe' });
-        execSync(`git commit -m "Preview: ${cnpjData.cnpj}"`, { cwd: process.cwd(), stdio: 'pipe' });
-        logger.info(`✅ Commit criado na branch com dados do CNPJ\n`);
-
-        // Fazer push
-        execSync(`git push -u origin ${branchName}`, { cwd: process.cwd(), stdio: 'pipe' });
-        logger.info(`✅ Branch pushada para GitHub\n`);
-
-        // Criar Pull Request para gerar preview URL
-        logger.info('📋 Criando Pull Request para gerar preview URL...\n');
-        try {
-          execSync(`gh pr create --base main --head ${branchName} --title "Preview: CNPJ ${cnpjData.cnpj}" --body "Preview environment para CNPJ ${cnpjData.cnpj}"`, { cwd: process.cwd(), stdio: 'pipe' });
-          logger.info(`✅ Pull Request criada\n`);
-          logger.info(`🌐 Preview URL será: ${previewUrl}\n`);
-        } catch (prError) {
-          logger.warn(`⚠️ Erro ao criar PR (pode já existir): ${prError.message}\n`);
-        }
-      } catch (branchError) {
-        logger.warn(`⚠️ Erro ao criar branch: ${branchError.message}\n`);
+      } catch (renderError) {
+        logger.warn(`⚠️ Erro ao criar projeto Render: ${renderError.message}\n`);
+        previewUrl = 'https://facebook-automation-qb1g.onrender.com';
       }
 
         // ===== CAPTURAR META TAG DO FACEBOOK =====

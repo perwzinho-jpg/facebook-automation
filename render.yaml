@@ -1,11 +1,11 @@
 services:
   - type: web
     name: facebook-automation
-    env: static
-    staticPublishPath: ./
-    routes:
-      - path: "/"
-        methods:
-          - GET
-        handler:
-          type: static
+    env: node
+    buildCommand: npm install
+    startCommand: node server.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3000
