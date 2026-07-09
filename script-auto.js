@@ -1821,6 +1821,9 @@ async function automateAutoRetry(email, password, proxyUrl = null, browserscanUr
 
         logger.info('⏭️ PULANDO ESTA CONTA (já tem domínios verificados)...\n');
 
+        // Fechar browser antes de pular
+        if (browser) await browser.close();
+
         return { success: true, email, cnpj: 'verificado', razaoSocial: 'verificado', language: 'pt-BR', skipAccount: true };
       } else {
         logger.info('📋 Nenhum domínio verificado encontrado, prosseguindo com o fluxo completo...\n');
