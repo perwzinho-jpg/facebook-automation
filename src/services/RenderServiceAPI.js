@@ -54,13 +54,9 @@ class RenderServiceAPI {
 
       logger.info(`\n🚀 Criando projeto Render para ${serviceName}...\n`);
 
-      // Obter Owner ID
-      const ownerId = await this.getOwnerId();
-
       const payload = {
         name: serviceName,
         type: 'web_service',
-        ownerId: ownerId,
         runtime: 'node',
         buildCommand: 'npm install',
         startCommand: 'node server.js',
@@ -78,6 +74,17 @@ class RenderServiceAPI {
         branch: 'main',
         region: 'oregon'
       };
+
+      // Adicionar Owner ID se estiver configurado
+      try {
+        const ownerId = await this.getOwnerId();
+        if (ownerId) {
+          payload.ownerId = ownerId;
+        }
+      } catch (e) {
+        logger.warn(`   ⚠️ Owner ID não configurado, continuando sem ele...`);
+        // Continuar sem Owner ID
+      }
 
       logger.info(`📝 Enviando para Render API...\n`);
       const response = await this.client.post('/services', payload);
