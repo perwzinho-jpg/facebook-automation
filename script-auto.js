@@ -645,22 +645,38 @@ async function automateAutoRetry(email, password, proxyUrl = null, browserscanUr
       logger.info('💾 Usando cookies do arquivo lista.txt...\n');
       try {
         // Converter string de cookies em array de objetos
-        const cookieArray = cookiesString.split(';').map(cookie => {
-          const [name, value] = cookie.trim().split('=');
-          return {
-            name: name.trim(),
-            value: value.trim(),
-            domain: '.facebook.com',
-            path: '/',
-            httpOnly: true,
-            secure: true,
-            sameSite: 'Lax'
-          };
-        });
-        await page1.setCookie(...cookieArray);
-        logger.info('✅ Cookies do lista.txt carregados\n');
-        cookiesUtilizados = 'lista.txt';
-        tentarModoRapido = true;
+        const cookieArray = cookiesString
+          .split(';')
+          .filter(c => c.trim())  // Filtrar vazios
+          .map(cookie => {
+            const parts = cookie.trim().split('=');
+            const name = parts[0]?.trim();
+            const value = parts[1]?.trim();
+
+            if (!name || !value) {
+              return null;
+            }
+
+            return {
+              name: name,
+              value: value,
+              domain: '.facebook.com',
+              path: '/',
+              httpOnly: true,
+              secure: true,
+              sameSite: 'Lax'
+            };
+          })
+          .filter(c => c !== null);  // Remover nulos
+
+        if (cookieArray.length > 0) {
+          await page1.setCookie(...cookieArray);
+          logger.info(`✅ Cookies do lista.txt carregados (${cookieArray.length} cookies)\n`);
+          cookiesUtilizados = 'lista.txt';
+          tentarModoRapido = true;
+        } else {
+          logger.warn('⚠️ Nenhum cookie válido encontrado no arquivo\n');
+        }
       } catch (err) {
         logger.warn(`⚠️ Erro ao usar cookies do lista.txt: ${err.message}\n`);
         tentarModoRapido = false;
