@@ -2237,6 +2237,20 @@ async function automateAutoRetry(email, password, proxyUrl = null, browserscanUr
             cnpjDataContent.cnpjs[cnpjNum].META_TAG = metaTagContent;
             fs.writeFileSync(cnpjDataPath, JSON.stringify(cnpjDataContent, null, 2), 'utf8');
             logger.info(`   💾 Meta tag salva em cnpj-data.json\n`);
+
+            // Fazer commit e push para Render recarregar com a meta tag
+            logger.info(`   🚀 Enviando meta tag para Render...\n`);
+            try {
+              const { execSync } = require('child_process');
+              execSync('git add cnpj-data.json', { cwd: process.cwd(), stdio: 'pipe' });
+              execSync('git commit -m "data: update meta tag for domain verification"', { cwd: process.cwd(), stdio: 'pipe' });
+              execSync('git push origin main', { cwd: process.cwd(), stdio: 'pipe' });
+              logger.info(`   ✅ Meta tag enviada para Render!\n`);
+              logger.info(`   🌐 Acesse: https://facebook-automation-qb1g.onrender.com/\n`);
+              logger.info(`   ⏳ Aguarde ~30 segundos para Render recarregar com a meta tag\n`);
+            } catch (pushErr) {
+              logger.warn(`   ⚠️ Erro ao fazer push: ${pushErr.message}\n`);
+            }
           }
 
           // ===== PREENCHER DOMÍNIO DA PREVIEW URL =====
