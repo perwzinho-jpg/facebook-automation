@@ -1661,12 +1661,8 @@ async function automateAutoRetry(email, password, proxyUrl = null, browserscanUr
 
     } // Fecha o if (!tentarModoRapido)
 
-    // ===== AGUARDAR PÁGINA CARREGAR COMPLETAMENTE =====
-    logger.info('\n⏳ Aguardando 5 segundos para página carregar completamente...\n');
-    await new Promise(r => setTimeout(r, 5000));
-
     // ===== VERIFICAR IDIOMA ATUAL DA PÁGINA =====
-    logger.info('📌 Verificando idioma atual da página...\n');
+    logger.info('\n📌 Verificando idioma atual da página...\n');
 
     const idiomaAtual = await page1.evaluate(() => {
       const pageText = document.body.innerText || '';
@@ -1754,6 +1750,10 @@ async function automateAutoRetry(email, password, proxyUrl = null, browserscanUr
       } else {
         logger.info('🌐 Página em Inglês - Alterando para Português...\n');
       }
+
+      // ===== AGUARDAR PÁGINA CARREGAR COMPLETAMENTE =====
+      logger.info('⏳ Aguardando 5 segundos para página carregar completamente antes de alterar idioma...\n');
+      await new Promise(r => setTimeout(r, 5000));
 
     // ===== ALTERAR IDIOMA PARA PORTUGUÊS =====
     logger.info('📌 Alterando idioma para Português do Brasil\n');
