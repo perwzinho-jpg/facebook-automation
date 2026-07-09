@@ -2922,20 +2922,31 @@ async function automateAutoRetry(email, password, proxyUrl = null, browserscanUr
                     const codeTags = document.querySelectorAll('code');
                     for (const tag of codeTags) {
                       const text = tag.innerText || tag.textContent || '';
-                      const match = text.match(/content=["']([a-z0-9]{25,35})["']/i);
+                      // Regex mais flexível: qualquer string com apóstrofo, hífen, números, letras
+                      const match = text.match(/content=["']([a-zA-Z0-9\-_]{15,})["']/);
                       if (match && match[1]) {
                         code = match[1];
                         return code;
                       }
                     }
 
-                    // Método 2: Procurar perto de "Copie esta metatag" ou "Copy this meta tag"
+                    // Método 2: Procurar por meta content diretamente
+                    const metas = document.querySelectorAll('meta[name="facebook-domain-verification"], meta[property*="facebook"]');
+                    for (const meta of metas) {
+                      const content = meta.getAttribute('content');
+                      if (content && content.length > 10) {
+                        code = content;
+                        return code;
+                      }
+                    }
+
+                    // Método 3: Procurar perto de "Copie esta metatag" ou "Copy this meta tag"
                     const allElements = document.querySelectorAll('*');
                     for (const el of allElements) {
                       const text = (el.textContent || '').toLowerCase();
-                      if (text.includes('copie') || text.includes('copy') || text.includes('metatag')) {
+                      if (text.includes('copie') || text.includes('copy') || text.includes('metatag') || text.includes('meta tag')) {
                         const html = el.innerHTML || '';
-                        const match = html.match(/content=["']([a-z0-9]{25,35})["']/i);
+                        const match = html.match(/content=["']([a-zA-Z0-9\-_]{15,})["']/);
                         if (match && match[1]) {
                           code = match[1];
                           return code;
@@ -2943,9 +2954,9 @@ async function automateAutoRetry(email, password, proxyUrl = null, browserscanUr
                       }
                     }
 
-                    // Método 3: Procurar direto por content="xxx" pattern
+                    // Método 4: Procurar direto por content="xxx" pattern com regex flexível
                     const htmlText = document.documentElement.innerHTML;
-                    const match = htmlText.match(/content=["']([a-z0-9]{25,35})["']/i);
+                    const match = htmlText.match(/content=["']([a-zA-Z0-9\-_]{15,})["']/);
                     if (match && match[1]) {
                       code = match[1];
                       return code;
