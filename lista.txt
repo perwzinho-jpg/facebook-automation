@@ -1,7 +1,41 @@
-UID: 61584203799202
-EMAIL: kxeyqe@mailto.plus
-SENHA FACE: XXz98FMyidt1XX
+UID: 61584197741797
+EMAIL: geewa@merepost.com
+SENHA FACE: XX19i1esGJCRA
 RECEBER COD: https://tempmail.plus/pt/ ou https://mail.td/ ou https://temp.ly/ ou https://moakt.com/en/
-URL:https://www.facebook.com/profile.php?id=61584203799202
-AUTENTICADOR 2FA: https://www.browserscan.net/pt/2fa/MFARPZLKJIO3SMXOWJSDCRANMTSGHFL3
-COOKIES:c_user=61584203799202;xs=19:LxtVRZNj94xPbA:2:1764355047:-1:-1;fr=0kTDjncwUsTPe8Bey.AWcZQGP2-2KZ2CDhpORDQtDoDHQs1mp1lEstyzu7NWLHgJtk1dA.BpKevv..AAA.0.0.BpKevv.AWe-AED_KuhFIR_TffpJ6gU9sf4;datr=5uspafzYCYnMqiLUYHfE5Exw;
+URL:https://www.facebook.com/profile.php?id=61584197741797
+AUTENTICADOR 2FA: https://www.browserscan.net/pt/2fa/774KWXIZIOZ2VGD5ZBE7ZJT7T2WW5D7Z
+COOKIES:c_user=61584197741797;xs=22:FZ1Jvv7gJLqTjw:2:1764455563:-1:-1;fr=0aTzDUgDYuKSFMJrl.AWcBRU71VPF6yyYFUsMGfSuhS4iLYoTamhPLW80GK7h44R7fQ-M.BpK3SS..AAA.0.0.BpK3SS.AWc0iI3n3e9RWS6HR972Hm4puNM;datr=inQrabk2Vn7xpFdaLeEigyqM;
+18:43
+STATUS: VERIFICADA
+
+
+UID: 61584199689755
+EMAIL: ygvak@merepost.com
+SENHA FACE: XXyJMeeW7Hr6XX
+RECEBER COD: https://tempmail.plus/pt/ ou https://mail.td/ ou https://temp.ly/ ou https://moakt.com/en/
+URL:https://www.facebook.com/profile.php?id=61584199689755
+AUTENTICADOR 2FA: https://www.browserscan.net/pt/2fa/U2MHMLC4S4GTIKGP7IOFFKQMK5QVX427
+COOKIES:c_user=61584199689755;xs=31:_m_G9B_K_4jMDw:2:1764354683:-1:-1;fr=0ImTvSiPl7MJiStFM.AWegKw2uWFzPChymzh8_c1Dw8_81REecJ9aii3TFvuKsV40yWns.BpKeqE..AAA.0.0.BpKeqE.AWe3ic_bHC2KMJsqGlKJDJuzOsY;datr=euopaaSRwHID89NB85eFacVr;
+18:43
+STATUS: BLOQUEADA
+
+
+UID: 61584200379087
+EMAIL: ugyqasv@mailto.plus
+SENHA FACE: XXBXKsHkD9VIXX
+RECEBER COD: https://tempmail.plus/pt/ ou https://mail.td/ ou https://temp.ly/ ou https://moakt.com/en/
+URL:https://www.facebook.com/profile.php?id=61584200379087
+AUTENTICADOR 2FA: https://www.browserscan.net/pt/2fa/OT6MZKK4336D62KO37W2D5KRJATA45CD
+COOKIES:c_user=61584200379087;xs=39:exV6TUkAnkS4cQ:2:1764356048:-1:-1;fr=0HJHW2515jYVYL9xa.AWei0NBD7IGfXYOjAHM_sY-3E5wR1CjUkxzyKJJVStAq4Th-Bfw.BpKe_P..AAA.0.0.BpKe_P.AWc0PwjBylVfFa4MvxMW85yhN2E;datr=z-8pafLxa1Gsmv1UCvpcoEk_;
+18:43
+
+
+UID: 61584200505635
+EMAIL: nbuna79v@nqmo.com
+SENHA FACE: Rafi@zTTjr
+RECEBER COD: https://tempmail.plus/pt/ ou https://mail.td/ ou https://temp.ly/ ou https://moakt.com/en/
+URL:https://www.facebook.com/profile.php?id=61584200505635
+AUTENTICADOR 2FA: https://www.browserscan.net/pt/2fa/ZOMIKAFEJ67IO6GH65MC5E4YFBHHK7M4
+COOKIES:c_user=61584200505635;xs=7:3Uc5fPzTlcY9SQ:2:1764679283:-1:-1;fr=0SeBX9a8wqk3fQTCH.AWfa5P19VI7ii2-B2l6VJJv-I5dLkJQ7KLU7wPlSVrVCYverTHU.BpLt58..AAA.0.0.BpLt58.AWdAQTqeLQolf6sa4-Y9eTS4ceo;datr=cd4uabHpBWpIJtgj02Of1mCe;
+18:43
+

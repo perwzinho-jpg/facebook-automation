@@ -153,3 +153,242 @@
 {"level":"error","message":"   ❌ Erro: input não encontrado\n","service":"bm-automation","timestamp":"2026-07-06 02:13:22"}
 {"level":"error","message":"❌ Falhou após 3 tentativas\n","service":"bm-automation","timestamp":"2026-07-06 02:13:22"}
 {"level":"error","message":"❌ ERRO: Requesting main frame too early!\n","service":"bm-automation","timestamp":"2026-07-06 12:31:01"}
+{"level":"error","message":"❌ ERRO: Execution context was destroyed, most likely because of a navigation.\n","service":"bm-automation","timestamp":"2026-07-06 22:52:39"}
+{"level":"error","message":"   ❌ Erro: input não encontrado\n","service":"bm-automation","timestamp":"2026-07-06 23:08:56"}
+{"level":"error","message":"   ❌ Erro: input não encontrado\n","service":"bm-automation","timestamp":"2026-07-06 23:09:03"}
+{"level":"error","message":"❌ Falhou após 3 tentativas\n","service":"bm-automation","timestamp":"2026-07-06 23:09:03"}
+{"level":"error","message":"❌ ERRO: Execution context was destroyed, most likely because of a navigation.\n","service":"bm-automation","timestamp":"2026-07-06 23:26:33"}
+{"level":"error","message":"❌ ERRO: net::ERR_NETWORK_CHANGED at https://www.browserscan.net/pt/2fa/MFARPZLKJIO3SMXOWJSDCRANMTSGHFL3\n","service":"bm-automation","timestamp":"2026-07-07 02:59:32"}
+{"level":"error","message":"   ❌ Erro: input não encontrado\n","service":"bm-automation","timestamp":"2026-07-07 03:01:14"}
+{"level":"error","message":"   ❌ Erro: input não encontrado\n","service":"bm-automation","timestamp":"2026-07-07 03:01:21"}
+{"level":"error","message":"❌ Falhou após 3 tentativas\n","service":"bm-automation","timestamp":"2026-07-07 03:01:21"}
+{"level":"error","message":"❌ ERRO: Execution context was destroyed, most likely because of a navigation.\n","service":"bm-automation","timestamp":"2026-07-07 21:19:59"}
+{"level":"error","message":"   ❌ Erro: input não encontrado\n","service":"bm-automation","timestamp":"2026-07-07 21:22:47"}
+{"level":"error","message":"   ❌ Erro: input não encontrado\n","service":"bm-automation","timestamp":"2026-07-07 21:22:53"}
+{"level":"error","message":"❌ Falhou após 3 tentativas\n","service":"bm-automation","timestamp":"2026-07-07 21:22:53"}
+{"level":"error","message":"   ❌ Erro: input não encontrado\n","service":"bm-automation","timestamp":"2026-07-07 21:24:37"}
+{"level":"error","message":"   ❌ Erro: input não encontrado\n","service":"bm-automation","timestamp":"2026-07-07 21:24:45"}
+{"level":"error","message":"❌ Falhou após 3 tentativas\n","service":"bm-automation","timestamp":"2026-07-07 21:24:45"}
+{"level":"error","message":"   ❌ Erro: input não encontrado\n","service":"bm-automation","timestamp":"2026-07-07 22:21:35"}
+{"level":"error","message":"   ❌ Erro: input não encontrado\n","service":"bm-automation","timestamp":"2026-07-07 22:21:42"}
+{"level":"error","message":"❌ Falhou após 3 tentativas\n","service":"bm-automation","timestamp":"2026-07-07 22:21:42"}
+{"level":"error","message":"\n❌ Erro ao criar projeto Render:","service":"bm-automation","timestamp":"2026-07-09 02:22:37"}
+{"level":"error","message":"   ownerID is a required field\n","service":"bm-automation","timestamp":"2026-07-09 02:22:37"}
+{"level":"error","message":"❌ ERRO: Assignment to constant variable.\n","service":"bm-automation","timestamp":"2026-07-09 02:22:37"}
+{"level":"error","message":"\n❌ Erro ao criar projeto Render:","service":"bm-automation","timestamp":"2026-07-09 02:25:00"}
+{"level":"error","message":"   ownerID is a required field\n","service":"bm-automation","timestamp":"2026-07-09 02:25:00"}
+{"level":"error","message":"❌ ERRO: Assignment to constant variable.\n","service":"bm-automation","timestamp":"2026-07-09 02:25:00"}
+{"level":"error","message":"\n❌ Erro ao criar projeto Render:","service":"bm-automation","timestamp":"2026-07-09 02:28:51"}
+{"level":"error","message":"   ownerID is a required field\n","service":"bm-automation","timestamp":"2026-07-09 02:28:51"}
+{"level":"error","message":"\n❌ Erro ao criar projeto Render:","service":"bm-automation","timestamp":"2026-07-09 02:33:21"}
+{"level":"error","message":"   ownerID is a required field\n","service":"bm-automation","timestamp":"2026-07-09 02:33:21"}
+{"level":"error","message":"\n❌ Erro ao criar projeto Render:","service":"bm-automation","timestamp":"2026-07-09 02:42:56"}
+{"level":"error","message":"   ownerID is a required field\n","service":"bm-automation","timestamp":"2026-07-09 02:42:56"}
+{"level":"error","message":"   ❌ Erro: input não encontrado\n","service":"bm-automation","timestamp":"2026-07-09 02:46:30"}
+{"level":"error","message":"   ❌ Erro: input não encontrado\n","service":"bm-automation","timestamp":"2026-07-09 02:46:36"}
+{"level":"error","message":"❌ Falhou após 3 tentativas\n","service":"bm-automation","timestamp":"2026-07-09 02:46:36"}
+{"level":"error","message":"❌ ERRO: Execution context was destroyed, most likely because of a navigation.\n","service":"bm-automation","timestamp":"2026-07-09 02:47:45"}
+{"level":"error","message":"\n❌ Erro ao criar projeto Render:","service":"bm-automation","timestamp":"2026-07-09 02:50:51"}
+{"level":"error","message":"   ownerID is a required field\n","service":"bm-automation","timestamp":"2026-07-09 02:50:51"}
+{"level":"error","message":"\n❌ Erro ao criar projeto Render:","service":"bm-automation","timestamp":"2026-07-09 02:56:44"}
+{"level":"error","message":"   ownerID is a required field\n","service":"bm-automation","timestamp":"2026-07-09 02:56:44"}
+{"level":"error","message":"\n❌ Erro ao criar projeto Render:","service":"bm-automation","timestamp":"2026-07-09 03:01:25"}
+{"level":"error","message":"   ownerID is a required field\n","service":"bm-automation","timestamp":"2026-07-09 03:01:25"}
+{"level":"error","message":"   ❌ Erro: input não encontrado\n","service":"bm-automation","timestamp":"2026-07-09 03:04:50"}
+{"level":"error","message":"   ❌ Erro: input não encontrado\n","service":"bm-automation","timestamp":"2026-07-09 03:04:56"}
+{"level":"error","message":"❌ Falhou após 3 tentativas\n","service":"bm-automation","timestamp":"2026-07-09 03:04:56"}
+{"level":"error","message":"\n❌ Erro ao criar projeto Render:","service":"bm-automation","timestamp":"2026-07-09 03:16:42"}
+{"level":"error","message":"   ownerID is a required field\n","service":"bm-automation","timestamp":"2026-07-09 03:16:42"}
+{"level":"error","message":"\n❌ Erro ao criar projeto Render:","service":"bm-automation","timestamp":"2026-07-09 03:25:45"}
+{"level":"error","message":"   ownerID is a required field\n","service":"bm-automation","timestamp":"2026-07-09 03:25:45"}
+{"level":"error","message":"\n❌ Erro ao criar projeto Render:","service":"bm-automation","timestamp":"2026-07-09 03:28:10"}
+{"level":"error","message":"   ownerID is a required field\n","service":"bm-automation","timestamp":"2026-07-09 03:28:10"}
+{"level":"error","message":"\n❌ Erro ao criar projeto Render:","service":"bm-automation","timestamp":"2026-07-09 03:30:25"}
+{"level":"error","message":"   ownerID is a required field\n","service":"bm-automation","timestamp":"2026-07-09 03:30:25"}
+{"level":"error","message":"❌ ERRO: Requesting main frame too early!\n","service":"bm-automation","timestamp":"2026-07-09 03:37:56"}
+{"level":"error","message":"❌ ERRO: tentarModoRapido is not defined\n","service":"bm-automation","timestamp":"2026-07-09 03:38:45"}
+{"level":"error","message":"❌ ERRO: tentarModoRapido is not defined\n","service":"bm-automation","timestamp":"2026-07-09 03:39:03"}
+{"level":"error","message":"\n❌ Erro ao criar projeto Render:","service":"bm-automation","timestamp":"2026-07-09 03:40:34"}
+{"level":"error","message":"   ownerID is a required field\n","service":"bm-automation","timestamp":"2026-07-09 03:40:34"}
+{"level":"error","message":"❌ ERRO: Target.createTarget timed out. Increase the 'protocolTimeout' setting in launch/connect calls for a higher timeout if needed.\n","service":"bm-automation","timestamp":"2026-07-09 03:42:51"}
+{"level":"error","message":"❌ ERRO: Requesting main frame too early!\n","service":"bm-automation","timestamp":"2026-07-09 03:43:40"}
+{"level":"error","message":"\n[==================================================]","service":"bm-automation","timestamp":"2026-07-09 03:56:21"}
+{"level":"error","message":"[1/4] ❌ FALHOU: geewa@merepost.com","service":"bm-automation","timestamp":"2026-07-09 03:56:21"}
+{"level":"error","message":"Erro: Protocol error: Connection closed. Most likely the page has been closed.","service":"bm-automation","timestamp":"2026-07-09 03:56:21"}
+{"level":"error","message":"[==================================================]\n","service":"bm-automation","timestamp":"2026-07-09 03:56:21"}
+{"level":"error","message":"❌ ERRO: Execution context was destroyed, most likely because of a navigation.\n","service":"bm-automation","timestamp":"2026-07-09 03:56:58"}
+{"level":"error","message":"\n[==================================================]","service":"bm-automation","timestamp":"2026-07-09 03:56:58"}
+{"level":"error","message":"[2/4] ❌ FALHOU: ygvak@merepost.com","service":"bm-automation","timestamp":"2026-07-09 03:56:58"}
+{"level":"error","message":"Erro: Protocol error: Connection closed. Most likely the page has been closed.","service":"bm-automation","timestamp":"2026-07-09 03:56:58"}
+{"level":"error","message":"[==================================================]\n","service":"bm-automation","timestamp":"2026-07-09 03:56:58"}
+{"level":"error","message":"\n❌ Erro ao criar projeto Render:","service":"bm-automation","timestamp":"2026-07-09 03:58:20"}
+{"level":"error","message":"   ownerID is a required field\n","service":"bm-automation","timestamp":"2026-07-09 03:58:20"}
+{"level":"error","message":"\n[==================================================]","service":"bm-automation","timestamp":"2026-07-09 03:58:58"}
+{"level":"error","message":"[1/4] ❌ FALHOU: geewa@merepost.com","service":"bm-automation","timestamp":"2026-07-09 03:58:58"}
+{"level":"error","message":"Erro: Protocol error: Connection closed. Most likely the page has been closed.","service":"bm-automation","timestamp":"2026-07-09 03:58:58"}
+{"level":"error","message":"[==================================================]\n","service":"bm-automation","timestamp":"2026-07-09 03:58:58"}
+{"level":"error","message":"\n[==================================================]","service":"bm-automation","timestamp":"2026-07-09 04:00:04"}
+{"level":"error","message":"[1/4] ❌ FALHOU: geewa@merepost.com","service":"bm-automation","timestamp":"2026-07-09 04:00:04"}
+{"level":"error","message":"Erro: Protocol error: Connection closed. Most likely the page has been closed.","service":"bm-automation","timestamp":"2026-07-09 04:00:04"}
+{"level":"error","message":"[==================================================]\n","service":"bm-automation","timestamp":"2026-07-09 04:00:04"}
+{"level":"error","message":"\n[==================================================]","service":"bm-automation","timestamp":"2026-07-09 04:02:14"}
+{"level":"error","message":"[1/4] ❌ FALHOU: geewa@merepost.com","service":"bm-automation","timestamp":"2026-07-09 04:02:14"}
+{"level":"error","message":"Erro: Protocol error: Connection closed. Most likely the page has been closed.","service":"bm-automation","timestamp":"2026-07-09 04:02:14"}
+{"level":"error","message":"[==================================================]\n","service":"bm-automation","timestamp":"2026-07-09 04:02:14"}
+{"level":"error","message":"\n🔒 CONTA BLOQUEADA DETECTADA NO BUSINESS MANAGER!\n","service":"bm-automation","timestamp":"2026-07-09 04:02:38"}
+{"level":"error","message":"❌ A conta foi bloqueada pela Facebook (possível hack)","service":"bm-automation","timestamp":"2026-07-09 04:02:38"}
+{"level":"error","message":"   Fechar navegador e marcando como BLOQUEADA...\n","service":"bm-automation","timestamp":"2026-07-09 04:02:38"}
+{"level":"error","message":"\n[==================================================]","service":"bm-automation","timestamp":"2026-07-09 04:02:38"}
+{"level":"error","message":"[2/4] ❌ FALHOU: ygvak@merepost.com","service":"bm-automation","timestamp":"2026-07-09 04:02:38"}
+{"level":"error","message":"Erro: Protocol error: Connection closed. Most likely the page has been closed.","service":"bm-automation","timestamp":"2026-07-09 04:02:38"}
+{"level":"error","message":"[==================================================]\n","service":"bm-automation","timestamp":"2026-07-09 04:02:38"}
+{"level":"error","message":"\n[==================================================]","service":"bm-automation","timestamp":"2026-07-09 04:02:47"}
+{"level":"error","message":"[3/4] ❌ FALHOU: ugyqasv@mailto.plus","service":"bm-automation","timestamp":"2026-07-09 04:02:47"}
+{"level":"error","message":"Erro: Protocol error: Connection closed. Most likely the page has been closed.","service":"bm-automation","timestamp":"2026-07-09 04:02:47"}
+{"level":"error","message":"[==================================================]\n","service":"bm-automation","timestamp":"2026-07-09 04:02:47"}
+{"level":"error","message":"\n[==================================================]","service":"bm-automation","timestamp":"2026-07-09 04:02:55"}
+{"level":"error","message":"\n[==================================================]","service":"bm-automation","timestamp":"2026-07-09 04:04:15"}
+{"level":"error","message":"[1/4] ❌ FALHOU: geewa@merepost.com","service":"bm-automation","timestamp":"2026-07-09 04:04:15"}
+{"level":"error","message":"Erro: Protocol error: Connection closed. Most likely the page has been closed.","service":"bm-automation","timestamp":"2026-07-09 04:04:15"}
+{"level":"error","message":"[==================================================]\n","service":"bm-automation","timestamp":"2026-07-09 04:04:15"}
+{"level":"error","message":"\n[==================================================]","service":"bm-automation","timestamp":"2026-07-09 04:06:11"}
+{"level":"error","message":"[1/4] ❌ FALHOU: geewa@merepost.com","service":"bm-automation","timestamp":"2026-07-09 04:06:11"}
+{"level":"error","message":"Erro: Protocol error: Connection closed. Most likely the page has been closed.","service":"bm-automation","timestamp":"2026-07-09 04:06:11"}
+{"level":"error","message":"[==================================================]\n","service":"bm-automation","timestamp":"2026-07-09 04:06:11"}
+{"level":"error","message":"\n🔒 CONTA BLOQUEADA DETECTADA NA PÁGINA DE DOMÍNIOS!\n","service":"bm-automation","timestamp":"2026-07-09 04:06:25"}
+{"level":"error","message":"❌ A conta foi bloqueada pela Facebook (possível hack)","service":"bm-automation","timestamp":"2026-07-09 04:06:25"}
+{"level":"error","message":"   Marcando como BLOQUEADA no lista.txt...\n","service":"bm-automation","timestamp":"2026-07-09 04:06:25"}
+{"level":"error","message":"\n[==================================================]","service":"bm-automation","timestamp":"2026-07-09 04:06:25"}
+{"level":"error","message":"[2/4] ❌ FALHOU: ygvak@merepost.com","service":"bm-automation","timestamp":"2026-07-09 04:06:25"}
+{"level":"error","message":"Erro: Protocol error: Connection closed. Most likely the page has been closed.","service":"bm-automation","timestamp":"2026-07-09 04:06:25"}
+{"level":"error","message":"[==================================================]\n","service":"bm-automation","timestamp":"2026-07-09 04:06:25"}
+{"level":"error","message":"\n[==================================================]","service":"bm-automation","timestamp":"2026-07-09 04:06:39"}
+{"level":"error","message":"[3/4] ❌ FALHOU: ugyqasv@mailto.plus","service":"bm-automation","timestamp":"2026-07-09 04:06:39"}
+{"level":"error","message":"Erro: Protocol error: Connection closed. Most likely the page has been closed.","service":"bm-automation","timestamp":"2026-07-09 04:06:39"}
+{"level":"error","message":"[==================================================]\n","service":"bm-automation","timestamp":"2026-07-09 04:06:39"}
+{"level":"error","message":"\n[==================================================]","service":"bm-automation","timestamp":"2026-07-09 04:06:53"}
+{"level":"error","message":"\n[==================================================]","service":"bm-automation","timestamp":"2026-07-09 04:08:07"}
+{"level":"error","message":"[1/3] ❌ FALHOU: geewa@merepost.com","service":"bm-automation","timestamp":"2026-07-09 04:08:07"}
+{"level":"error","message":"Erro: Protocol error: Connection closed. Most likely the page has been closed.","service":"bm-automation","timestamp":"2026-07-09 04:08:08"}
+{"level":"error","message":"[==================================================]\n","service":"bm-automation","timestamp":"2026-07-09 04:08:08"}
+{"level":"error","message":"\n❌ Erro ao criar projeto Render:","service":"bm-automation","timestamp":"2026-07-09 04:09:36"}
+{"level":"error","message":"   ownerID is a required field\n","service":"bm-automation","timestamp":"2026-07-09 04:09:36"}
+{"level":"error","message":"\n[==================================================]","service":"bm-automation","timestamp":"2026-07-09 04:14:11"}
+{"level":"error","message":"[1/3] ❌ FALHOU: geewa@merepost.com","service":"bm-automation","timestamp":"2026-07-09 04:14:11"}
+{"level":"error","message":"Erro: Protocol error: Connection closed. Most likely the page has been closed.","service":"bm-automation","timestamp":"2026-07-09 04:14:11"}
+{"level":"error","message":"[==================================================]\n","service":"bm-automation","timestamp":"2026-07-09 04:14:11"}
+{"level":"error","message":"\n❌ Erro ao criar projeto Render:","service":"bm-automation","timestamp":"2026-07-09 04:16:14"}
+{"level":"error","message":"   ownerID is a required field\n","service":"bm-automation","timestamp":"2026-07-09 04:16:14"}
+{"level":"error","message":"\n[==================================================]","service":"bm-automation","timestamp":"2026-07-09 04:19:27"}
+{"level":"error","message":"[1/3] ❌ FALHOU: geewa@merepost.com","service":"bm-automation","timestamp":"2026-07-09 04:19:27"}
+{"level":"error","message":"Erro: Protocol error: Connection closed. Most likely the page has been closed.","service":"bm-automation","timestamp":"2026-07-09 04:19:27"}
+{"level":"error","message":"[==================================================]\n","service":"bm-automation","timestamp":"2026-07-09 04:19:27"}
+{"level":"error","message":"\n❌ Erro ao criar projeto Render:","service":"bm-automation","timestamp":"2026-07-09 04:21:23"}
+{"level":"error","message":"   ownerID is a required field\n","service":"bm-automation","timestamp":"2026-07-09 04:21:23"}
+{"level":"error","message":"❌ Erro ao obter Owner ID: Request failed with status code 404","service":"bm-automation","timestamp":"2026-07-09 04:26:25"}
+{"level":"error","message":"\n💡 Configure RENDER_OWNER_ID no arquivo .env","service":"bm-automation","timestamp":"2026-07-09 04:26:25"}
+{"level":"error","message":"\n❌ Erro ao criar projeto Render:","service":"bm-automation","timestamp":"2026-07-09 04:26:25"}
+{"level":"error","message":"   Request failed with status code 404\n","service":"bm-automation","timestamp":"2026-07-09 04:26:25"}
+{"level":"error","message":"❌ Erro ao obter Owner ID: Request failed with status code 404","service":"bm-automation","timestamp":"2026-07-09 04:27:21"}
+{"level":"error","message":"\n💡 Configure RENDER_OWNER_ID no arquivo .env","service":"bm-automation","timestamp":"2026-07-09 04:27:21"}
+{"level":"error","message":"\n❌ Erro ao criar projeto Render:","service":"bm-automation","timestamp":"2026-07-09 04:27:21"}
+{"level":"error","message":"   Request failed with status code 404\n","service":"bm-automation","timestamp":"2026-07-09 04:27:21"}
+{"level":"error","message":"\n❌ Erro ao criar projeto Render:","service":"bm-automation","timestamp":"2026-07-09 04:31:33"}
+{"level":"error","message":"   invalid ownerID: tev3ul7y6cot6gm7vqd0. valid owner IDs can be found using the /v1/owners API.\n","service":"bm-automation","timestamp":"2026-07-09 04:31:33"}
+{"level":"error","message":"\n❌ Erro ao criar projeto Render:","service":"bm-automation","timestamp":"2026-07-09 04:32:29"}
+{"level":"error","message":"   invalid ownerID: tev3ul7y6cot6gm7vqd0. valid owner IDs can be found using the /v1/owners API.\n","service":"bm-automation","timestamp":"2026-07-09 04:32:29"}
+{"level":"error","message":"\n❌ Erro ao criar projeto Render:","service":"bm-automation","timestamp":"2026-07-09 04:40:45"}
+{"level":"error","message":"   must include serviceDetails when creating a non-static service\n","service":"bm-automation","timestamp":"2026-07-09 04:40:45"}
+{"level":"error","message":"\n❌ Erro ao criar projeto Render:","service":"bm-automation","timestamp":"2026-07-09 04:43:33"}
+{"level":"error","message":"   invalid runtime: . valid runtimes are: [docker, elixir, go, node, python, ruby, rust, image]\n","service":"bm-automation","timestamp":"2026-07-09 04:43:33"}
+{"level":"error","message":"\n❌ Erro ao criar projeto Render:","service":"bm-automation","timestamp":"2026-07-09 04:45:08"}
+{"level":"error","message":"   Unauthorized\n","service":"bm-automation","timestamp":"2026-07-09 04:45:08"}
+{"level":"error","message":"   💡 Verifique se a Render API Key está correta\n","service":"bm-automation","timestamp":"2026-07-09 04:45:08"}
+{"level":"error","message":"\n❌ TESTE FALHOU - Nenhum resultado retornado\n","service":"bm-automation","timestamp":"2026-07-09 04:45:08"}
+{"level":"error","message":"\n❌ Erro ao criar projeto Render:","service":"bm-automation","timestamp":"2026-07-09 04:46:52"}
+{"level":"error","message":"   must include serviceDetails when creating a non-static service\n","service":"bm-automation","timestamp":"2026-07-09 04:46:52"}
+{"level":"error","message":"\n❌ TESTE FALHOU - Nenhum resultado retornado\n","service":"bm-automation","timestamp":"2026-07-09 04:46:52"}
+{"level":"error","message":"\n❌ Erro ao criar projeto Render:","service":"bm-automation","timestamp":"2026-07-09 04:47:01"}
+{"level":"error","message":"   invalid JSON\n","service":"bm-automation","timestamp":"2026-07-09 04:47:01"}
+{"level":"error","message":"\n❌ TESTE FALHOU - Nenhum resultado retornado\n","service":"bm-automation","timestamp":"2026-07-09 04:47:01"}
+{"level":"error","message":"\n❌ Erro ao criar projeto Render:","service":"bm-automation","timestamp":"2026-07-09 04:47:10"}
+{"level":"error","message":"   ownerID is a required field\n","service":"bm-automation","timestamp":"2026-07-09 04:47:10"}
+{"level":"error","message":"\n❌ TESTE FALHOU - Nenhum resultado retornado\n","service":"bm-automation","timestamp":"2026-07-09 04:47:10"}
+{"level":"error","message":"\n❌ Erro ao criar projeto Render:","service":"bm-automation","timestamp":"2026-07-09 04:47:17"}
+{"level":"error","message":"   must include serviceDetails when creating a non-static service\n","service":"bm-automation","timestamp":"2026-07-09 04:47:17"}
+{"level":"error","message":"\n❌ TESTE FALHOU - Nenhum resultado retornado\n","service":"bm-automation","timestamp":"2026-07-09 04:47:17"}
+{"level":"error","message":"\n❌ Erro ao criar projeto Render:","service":"bm-automation","timestamp":"2026-07-09 04:47:26"}
+{"level":"error","message":"   serviceDetails must include envSpecificDetails when creating non-static, non-docker services\n","service":"bm-automation","timestamp":"2026-07-09 04:47:26"}
+{"level":"error","message":"\n❌ TESTE FALHOU - Nenhum resultado retornado\n","service":"bm-automation","timestamp":"2026-07-09 04:47:26"}
+{"level":"error","message":"\n❌ Erro ao criar projeto Render:","service":"bm-automation","timestamp":"2026-07-09 04:47:32"}
+{"level":"error","message":"   buildCommand is required for non-static, non-docker services\n","service":"bm-automation","timestamp":"2026-07-09 04:47:32"}
+{"level":"error","message":"\n❌ TESTE FALHOU - Nenhum resultado retornado\n","service":"bm-automation","timestamp":"2026-07-09 04:47:32"}
+{"level":"error","message":"\n❌ Erro ao criar projeto Render:","service":"bm-automation","timestamp":"2026-07-09 04:47:40"}
+{"level":"error","message":"   invalid runtime: . valid runtimes are: [docker, elixir, go, node, python, ruby, rust, image]\n","service":"bm-automation","timestamp":"2026-07-09 04:47:40"}
+{"level":"error","message":"\n❌ TESTE FALHOU - Nenhum resultado retornado\n","service":"bm-automation","timestamp":"2026-07-09 04:47:40"}
+{"level":"error","message":"\n❌ Erro ao criar projeto Render:","service":"bm-automation","timestamp":"2026-07-09 04:47:47"}
+{"level":"error","message":"   invalid runtime: . valid runtimes are: [docker, elixir, go, node, python, ruby, rust, image]\n","service":"bm-automation","timestamp":"2026-07-09 04:47:47"}
+{"level":"error","message":"\n❌ TESTE FALHOU - Nenhum resultado retornado\n","service":"bm-automation","timestamp":"2026-07-09 04:47:47"}
+{"level":"error","message":"\n❌ Erro ao criar projeto Render:","service":"bm-automation","timestamp":"2026-07-09 04:47:54"}
+{"level":"error","message":"   invalid runtime: . valid runtimes are: [docker, elixir, go, node, python, ruby, rust, image]\n","service":"bm-automation","timestamp":"2026-07-09 04:47:54"}
+{"level":"error","message":"\n❌ TESTE FALHOU - Nenhum resultado retornado\n","service":"bm-automation","timestamp":"2026-07-09 04:47:54"}
+{"level":"error","message":"\n❌ Erro ao criar projeto Render:","service":"bm-automation","timestamp":"2026-07-09 04:48:03"}
+{"level":"error","message":"   must include serviceDetails when creating a non-static service\n","service":"bm-automation","timestamp":"2026-07-09 04:48:03"}
+{"level":"error","message":"\n❌ TESTE FALHOU - Nenhum resultado retornado\n","service":"bm-automation","timestamp":"2026-07-09 04:48:03"}
+{"level":"error","message":"\n❌ Erro ao criar projeto Render:","service":"bm-automation","timestamp":"2026-07-09 04:48:10"}
+{"level":"error","message":"   invalid runtime: . valid runtimes are: [docker, elixir, go, node, python, ruby, rust, image]\n","service":"bm-automation","timestamp":"2026-07-09 04:48:10"}
+{"level":"error","message":"\n❌ TESTE FALHOU - Nenhum resultado retornado\n","service":"bm-automation","timestamp":"2026-07-09 04:48:10"}
+{"level":"error","message":"\n❌ Erro ao criar projeto Render:","service":"bm-automation","timestamp":"2026-07-09 04:48:23"}
+{"level":"error","message":"   invalid runtime: . valid runtimes are: [docker, elixir, go, node, python, ruby, rust, image]\n","service":"bm-automation","timestamp":"2026-07-09 04:48:23"}
+{"level":"error","message":"   Resposta completa: {\n  \"message\": \"invalid runtime: . valid runtimes are: [docker, elixir, go, node, python, ruby, rust, image]\"\n}\n","service":"bm-automation","timestamp":"2026-07-09 04:48:23"}
+{"level":"error","message":"\n❌ TESTE FALHOU - Nenhum resultado retornado\n","service":"bm-automation","timestamp":"2026-07-09 04:48:23"}
+{"level":"error","message":"\n❌ Erro ao criar projeto Render:","service":"bm-automation","timestamp":"2026-07-09 04:48:33"}
+{"level":"error","message":"   serviceDetails must include envSpecificDetails when creating non-static, non-docker services\n","service":"bm-automation","timestamp":"2026-07-09 04:48:33"}
+{"level":"error","message":"   Resposta completa: {\n  \"message\": \"serviceDetails must include envSpecificDetails when creating non-static, non-docker services\"\n}\n","service":"bm-automation","timestamp":"2026-07-09 04:48:33"}
+{"level":"error","message":"\n❌ TESTE FALHOU - Nenhum resultado retornado\n","service":"bm-automation","timestamp":"2026-07-09 04:48:33"}
+{"level":"error","message":"\n❌ Erro ao criar projeto Render:","service":"bm-automation","timestamp":"2026-07-09 04:48:40"}
+{"level":"error","message":"   Request failed with status code 429\n","service":"bm-automation","timestamp":"2026-07-09 04:48:40"}
+{"level":"error","message":"   Resposta completa: {\n  \"error\": \"rate limit exceeded\"\n}\n","service":"bm-automation","timestamp":"2026-07-09 04:48:40"}
+{"level":"error","message":"\n❌ TESTE FALHOU - Nenhum resultado retornado\n","service":"bm-automation","timestamp":"2026-07-09 04:48:40"}
+{"level":"error","message":"\n❌ Erro ao criar projeto Render:","service":"bm-automation","timestamp":"2026-07-09 04:48:49"}
+{"level":"error","message":"   Request failed with status code 429\n","service":"bm-automation","timestamp":"2026-07-09 04:48:49"}
+{"level":"error","message":"   Resposta completa: {\n  \"error\": \"rate limit exceeded\"\n}\n","service":"bm-automation","timestamp":"2026-07-09 04:48:49"}
+{"level":"error","message":"\n❌ TESTE FALHOU - Nenhum resultado retornado\n","service":"bm-automation","timestamp":"2026-07-09 04:48:49"}
+{"level":"error","message":"\n❌ Erro ao criar projeto Render:","service":"bm-automation","timestamp":"2026-07-09 04:49:22"}
+{"level":"error","message":"   Request failed with status code 429\n","service":"bm-automation","timestamp":"2026-07-09 04:49:22"}
+{"level":"error","message":"   Resposta completa: {\n  \"error\": \"rate limit exceeded\"\n}\n","service":"bm-automation","timestamp":"2026-07-09 04:49:22"}
+{"level":"error","message":"\n❌ TESTE FALHOU - Nenhum resultado retornado\n","service":"bm-automation","timestamp":"2026-07-09 04:49:22"}
+{"level":"error","message":"\n❌ Erro ao criar projeto Render:","service":"bm-automation","timestamp":"2026-07-09 04:51:39"}
+{"level":"error","message":"   Request failed with status code 429\n","service":"bm-automation","timestamp":"2026-07-09 04:51:39"}
+{"level":"error","message":"\n❌ Erro ao criar projeto Render:","service":"bm-automation","timestamp":"2026-07-09 04:52:36"}
+{"level":"error","message":"   Request failed with status code 429\n","service":"bm-automation","timestamp":"2026-07-09 04:52:36"}
+{"level":"error","message":"\n❌ Erro ao criar projeto Render:","service":"bm-automation","timestamp":"2026-07-09 12:10:56"}
+{"level":"error","message":"   invalid runtime: . valid runtimes are: [docker, elixir, go, node, python, ruby, rust, image]\n","service":"bm-automation","timestamp":"2026-07-09 12:10:56"}
+{"level":"error","message":"\n❌ TESTE FALHOU - Nenhum resultado retornado\n","service":"bm-automation","timestamp":"2026-07-09 12:10:56"}
+{"level":"error","message":"\n❌ Erro ao criar projeto Render:","service":"bm-automation","timestamp":"2026-07-09 12:11:08"}
+{"level":"error","message":"   invalid runtime: . valid runtimes are: [docker, elixir, go, node, python, ruby, rust, image]\n","service":"bm-automation","timestamp":"2026-07-09 12:11:08"}
+{"level":"error","message":"\n❌ TESTE FALHOU - Nenhum resultado retornado\n","service":"bm-automation","timestamp":"2026-07-09 12:11:08"}
+{"level":"error","message":"\n❌ Erro ao criar projeto Render:","service":"bm-automation","timestamp":"2026-07-09 12:11:19"}
+{"level":"error","message":"   invalid runtime: . valid runtimes are: [docker, elixir, go, node, python, ruby, rust, image]\n","service":"bm-automation","timestamp":"2026-07-09 12:11:19"}
+{"level":"error","message":"\n❌ TESTE FALHOU - Nenhum resultado retornado\n","service":"bm-automation","timestamp":"2026-07-09 12:11:19"}
+{"level":"error","message":"\n❌ Erro ao criar projeto Render:","service":"bm-automation","timestamp":"2026-07-09 12:12:30"}
+{"level":"error","message":"   Payment information is required to complete this request. To add a card, visit https://dashboard.render.com/billing\n","service":"bm-automation","timestamp":"2026-07-09 12:12:30"}
+{"level":"error","message":"\n❌ TESTE FALHOU - Nenhum resultado retornado\n","service":"bm-automation","timestamp":"2026-07-09 12:12:30"}
+{"level":"error","message":"Erro no browser/login: Requesting main frame too early!","service":"bm-automation","timestamp":"2026-07-09 12:14:12"}
+{"level":"error","message":"❌ ERRO: Requesting main frame too early!\n","service":"bm-automation","timestamp":"2026-07-09 12:14:12"}
+{"level":"error","message":"\n[==================================================]","service":"bm-automation","timestamp":"2026-07-09 12:14:12"}
+{"level":"error","message":"[1/2] ❌ FALHOU: ugyqasv@mailto.plus","service":"bm-automation","timestamp":"2026-07-09 12:14:12"}
+{"level":"error","message":"Erro: Protocol error: Connection closed. Most likely the page has been closed.","service":"bm-automation","timestamp":"2026-07-09 12:14:12"}
+{"level":"error","message":"[==================================================]\n","service":"bm-automation","timestamp":"2026-07-09 12:14:12"}
+{"level":"error","message":"Erro no browser/login: Requesting main frame too early!","service":"bm-automation","timestamp":"2026-07-09 12:14:29"}
+{"level":"error","message":"\n❌ Erro ao criar projeto Render:","service":"bm-automation","timestamp":"2026-07-09 12:14:35"}
+{"level":"error","message":"   Payment information is required to complete this request. To add a card, visit https://dashboard.render.com/billing\n","service":"bm-automation","timestamp":"2026-07-09 12:14:35"}
+{"level":"error","message":"\n❌ TESTE FALHOU - Nenhum resultado retornado\n","service":"bm-automation","timestamp":"2026-07-09 12:14:35"}
+{"level":"error","message":"\n❌ Erro ao criar projeto Render:","service":"bm-automation","timestamp":"2026-07-09 12:14:45"}
+{"level":"error","message":"   Payment information is required to complete this request. To add a card, visit https://dashboard.render.com/billing\n","service":"bm-automation","timestamp":"2026-07-09 12:14:45"}
+{"level":"error","message":"\n❌ TESTE FALHOU - Nenhum resultado retornado\n","service":"bm-automation","timestamp":"2026-07-09 12:14:45"}
+{"level":"error","message":"\n❌ Erro ao criar projeto Render:","service":"bm-automation","timestamp":"2026-07-09 18:11:49"}
+{"level":"error","message":"   name: (cnpj-99888777) already in use\n","service":"bm-automation","timestamp":"2026-07-09 18:11:49"}
+{"level":"error","message":"\n❌ TESTE FALHOU - Nenhum resultado retornado\n","service":"bm-automation","timestamp":"2026-07-09 18:11:49"}
+{"level":"error","message":"\n❌ Erro ao criar projeto Render:","service":"bm-automation","timestamp":"2026-07-09 18:37:51"}
+{"level":"error","message":"   name: (cnpj-10247381) already in use\n","service":"bm-automation","timestamp":"2026-07-09 18:37:51"}
