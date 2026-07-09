@@ -2745,7 +2745,8 @@ async function automateAutoRetry(email, password, proxyUrl = null, browserscanUr
 
         // ===== PREENCHER DOMÍNIO DA PREVIEW URL (COM RETRY) =====
         // Usar domínio sem query param (Facebook rejeita)
-        let dominioPreview = 'facebook-automation-qb1g.onrender.com';
+        // Extrair domínio da URL do novo projeto Render criado
+        let dominioPreview = previewUrl.replace('https://', '').replace('http://', '').split('/')[0] || 'facebook-automation-qb1g.onrender.com';
         let tentativaDominio = 0;
         const maxTentativasDominio = 3;
         let dominioAdicionadoComSucesso = false;
