@@ -19,8 +19,16 @@ function fillTemplate(template, data) {
   let html = template;
   Object.keys(data).forEach(key => {
     const regex = new RegExp(`{{${key}}}`, 'g');
-    html = html.replace(regex, data[key]);
+    const value = data[key] || '';
+    html = html.replace(regex, value);
   });
+
+  // Verificar se ainda há placeholders não preenchidos e avisar
+  const unmatchedPlaceholders = html.match(/{{[^}]+}}/g);
+  if (unmatchedPlaceholders) {
+    console.warn(`⚠️ Placeholders não preenchidos: ${unmatchedPlaceholders.join(', ')}`);
+  }
+
   return html;
 }
 
@@ -33,10 +41,18 @@ function getDashboardTemplate() {
 }
 
 const server = http.createServer((req, res) => {
+  // Sempre recarregar dados (sem cache)
+  delete require.cache[require.resolve('./cnpj-data.json')];
+
   const parsedUrl = url.parse(req.url, true);
   const pathname = parsedUrl.pathname;
   const query = parsedUrl.query;
   const cnpjData = loadCNPJData();
+
+  // Headers para evitar cache
+  res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+  res.setHeader('Pragma', 'no-cache');
+  res.setHeader('Expires', '0');
 
   if (pathname === '/') {
     let cnpjKey = query.cnpj ? query.cnpj.replace(/\D/g, '') : null;
