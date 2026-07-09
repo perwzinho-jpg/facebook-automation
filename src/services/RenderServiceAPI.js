@@ -20,21 +20,44 @@ class RenderServiceAPI {
    */
   async getOwnerId() {
     try {
-      // Se estiver em environment variable, usar isso
+      // Se estiver em environment variable, usar isso (PREFERIDO)
       if (process.env.RENDER_OWNER_ID) {
+        logger.info(`✅ Owner ID obtido de RENDER_OWNER_ID: ${process.env.RENDER_OWNER_ID}`);
         return process.env.RENDER_OWNER_ID;
       }
 
-      // Tentar obter a conta padrão (teams)
-      const response = await this.client.get('/teams');
-      if (response.data && response.data.length > 0) {
-        return response.data[0].id;
+      // Tentar obter do endpoint /account
+      try {
+        const accountResponse = await this.client.get('/account');
+        if (accountResponse.data && accountResponse.data.id) {
+          logger.info(`✅ Owner ID obtido da API: ${accountResponse.data.id}`);
+          return accountResponse.data.id;
+        }
+      } catch (e) {
+        logger.warn(`   ⚠️ Endpoint /account não disponível`);
       }
 
-      throw new Error('Nenhuma team encontrada na conta Render');
+      // Tentar obter da lista de teams
+      try {
+        const teamsResponse = await this.client.get('/teams');
+        if (teamsResponse.data && teamsResponse.data.length > 0) {
+          logger.info(`✅ Owner ID obtido de Teams: ${teamsResponse.data[0].id}`);
+          return teamsResponse.data[0].id;
+        }
+      } catch (e) {
+        logger.warn(`   ⚠️ Endpoint /teams não disponível`);
+      }
+
+      // Se nenhum método funcionou, pedir configuração
+      throw new Error('RENDER_OWNER_ID não configurado e não conseguiu obter da API');
     } catch (err) {
-      logger.error(`❌ Erro ao obter Owner ID: ${err.message}`);
-      logger.error(`\n💡 Configure RENDER_OWNER_ID no arquivo .env`);
+      logger.error(`\n❌ Erro ao obter Owner ID: ${err.message}\n`);
+      logger.error(`📋 SOLUÇÃO:`);
+      logger.error(`   1. Acesse: https://dashboard.render.com/teams`);
+      logger.error(`   2. Clique na sua team`);
+      logger.error(`   3. A URL terá: /teams/tXXXXXXXXX`);
+      logger.error(`   4. Copie o ID (tXXXXXXXXX)`);
+      logger.error(`   5. Configure no .env: RENDER_OWNER_ID=tXXXXXXXXX\n`);
       throw err;
     }
   }
