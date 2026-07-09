@@ -58,7 +58,19 @@ class RenderServiceAPI {
         ],
         repo: this.repoUrl,
         branch: 'main',
-        region: 'oregon'
+        region: 'oregon',
+        serviceDetails: {
+          disk: null,
+          env: null,
+          envSpecific: null,
+          headers: null,
+          healthCheckPath: '/',
+          numInstances: null,
+          plan: null,
+          pullRequestPreviewsEnabled: null,
+          scaling: null,
+          routes: null
+        }
       };
 
       logger.info(`📝 Enviando para Render API...\n`);
