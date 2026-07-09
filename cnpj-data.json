@@ -1,5 +1,16 @@
 {
   "cnpjs": {
+    "87654321": {
+      "CNPJ": "87654321000199",
+      "RAZAO_SOCIAL": "TESTE FINAL LTDA",
+      "NOME_FANTASIA": "TESTE FINAL",
+      "EMAIL": "teste@final.com.br",
+      "TELEFONE": "(11) 9999-9999",
+      "DATA_ABERTURA": "2020-01-01",
+      "SITUACAO": "Ativa",
+      "PORTE": "Pequena",
+      "DATA_GERACAO": "09/07/2026"
+    },
     "21967294000103": {
       "CNPJ": "21967294000103",
       "RAZAO_SOCIAL": "IRAY MARQUES DA COSTA CPF 46457887600",
