@@ -268,6 +268,40 @@
       "PORTE": "Microempresa (ME)",
       "DATA_GERACAO": "09/07/2026",
       "META_TAG": "wosof2a7ohl8cq6rn9gbg4uebkio6l"
+    },
+    "05299447000127": {
+      "CNPJ": "05299447000127",
+      "RAZAO_SOCIAL": "N.S.A. RECURSOS HUMANOS LTDA",
+      "NOME_FANTASIA": "UMANU     A",
+      "EMAIL": "nsarecursoshumanos@uol.com.br",
+      "TELEFONE": "(11) 38817131",
+      "DATA_ABERTURA": "2002-09-18",
+      "SITUACAO": "Inapta",
+      "PORTE": "Microempresa (ME)",
+      "DATA_GERACAO": "09/07/2026"
+    },
+    "33198142000164": {
+      "CNPJ": "33198142000164",
+      "RAZAO_SOCIAL": "JANE CLEIDE MARTINS DA SILVA 19750905865",
+      "NOME_FANTASIA": "JANE CLEIDE",
+      "EMAIL": "janecleide2004@hotmail.com",
+      "TELEFONE": "(13) 33641958",
+      "DATA_ABERTURA": "2019-03-30",
+      "SITUACAO": "Baixada",
+      "PORTE": "Microempresa (ME)",
+      "DATA_GERACAO": "09/07/2026"
+    },
+    "21710534000181": {
+      "CNPJ": "21710534000181",
+      "RAZAO_SOCIAL": "MARIA VALDEREZ COELHO FIGUEIRA 27088960168",
+      "NOME_FANTASIA": "LOJA TEM DE TUDO",
+      "EMAIL": "contato4yuj2c@gmail.com",
+      "TELEFONE": "(61) 84581869",
+      "DATA_ABERTURA": "2015-01-20",
+      "SITUACAO": "Baixada",
+      "PORTE": "Microempresa (ME)",
+      "DATA_GERACAO": "09/07/2026",
+      "META_TAG": "zsny3zauwsmzsntt205xg4jpeou3s1"
     }
   }
 }
