@@ -1570,7 +1570,15 @@ async function automateAutoRetry(email, password, proxyUrl = null, browserscanUr
     if (contaBloqueadaAposLogin) {
       logger.error('\n🔒 CONTA BLOQUEADA DETECTADA APÓS LOGIN!\n');
       logger.error('❌ A conta foi bloqueada pela Facebook (possível hack)');
-      logger.error('   Fechar navegador e marcando como BLOQUEADA...\n');
+      logger.error('   Marcando como BLOQUEADA no lista.txt...\n');
+
+      // Marcar conta como bloqueada no lista.txt
+      if (email && cookiesString) {
+        const uidMatch = cookiesString.match(/c_user=(\d+)/);
+        if (uidMatch) {
+          marcarContaBloqueada(uidMatch[1]);
+        }
+      }
 
       if (browser) await browser.close();
 
@@ -1596,7 +1604,15 @@ async function automateAutoRetry(email, password, proxyUrl = null, browserscanUr
     if (contaBloqueadaSettings) {
       logger.error('\n🔒 CONTA BLOQUEADA DETECTADA NA PÁGINA DE SETTINGS!\n');
       logger.error('❌ A conta foi bloqueada pela Facebook (possível hack)');
-      logger.error('   Fechar navegador e marcando como BLOQUEADA...\n');
+      logger.error('   Marcando como BLOQUEADA no lista.txt...\n');
+
+      // Marcar conta como bloqueada no lista.txt
+      if (email && cookiesString) {
+        const uidMatch = cookiesString.match(/c_user=(\d+)/);
+        if (uidMatch) {
+          marcarContaBloqueada(uidMatch[1]);
+        }
+      }
 
       if (browser) await browser.close();
 
@@ -1842,7 +1858,16 @@ async function automateAutoRetry(email, password, proxyUrl = null, browserscanUr
     if (contaBloqueada) {
       logger.error('\n🔒 CONTA BLOQUEADA DETECTADA!\n');
       logger.error('❌ A conta foi bloqueada pela Facebook (possível hack)');
-      logger.error('   Fechar navegador e marcando como BLOQUEADA...\n');
+      logger.error('   Marcando como BLOQUEADA no lista.txt...\n');
+
+      // Marcar conta como bloqueada no lista.txt (para não tentar de novo)
+      if (email && cookiesString) {
+        // Tentar extrair UID do cookies string (formato: c_user=XXXXX;...)
+        const uidMatch = cookiesString.match(/c_user=(\d+)/);
+        if (uidMatch) {
+          marcarContaBloqueada(uidMatch[1]);
+        }
+      }
 
       if (browser) await browser.close();
 
@@ -1868,7 +1893,15 @@ async function automateAutoRetry(email, password, proxyUrl = null, browserscanUr
       if (contaBloqueadaDomains) {
         logger.error('\n🔒 CONTA BLOQUEADA DETECTADA NA PÁGINA DE DOMÍNIOS!\n');
         logger.error('❌ A conta foi bloqueada pela Facebook (possível hack)');
-        logger.error('   Fechar navegador e marcando como BLOQUEADA...\n');
+        logger.error('   Marcando como BLOQUEADA no lista.txt...\n');
+
+        // Marcar conta como bloqueada no lista.txt
+        if (email && cookiesString) {
+          const uidMatch = cookiesString.match(/c_user=(\d+)/);
+          if (uidMatch) {
+            marcarContaBloqueada(uidMatch[1]);
+          }
+        }
 
         if (browser) await browser.close();
 
@@ -2009,7 +2042,15 @@ async function automateAutoRetry(email, password, proxyUrl = null, browserscanUr
     if (contaBloqueadaBM) {
       logger.error('\n🔒 CONTA BLOQUEADA DETECTADA NO BUSINESS MANAGER!\n');
       logger.error('❌ A conta foi bloqueada pela Facebook (possível hack)');
-      logger.error('   Fechar navegador e marcando como BLOQUEADA...\n');
+      logger.error('   Marcando como BLOQUEADA no lista.txt...\n');
+
+      // Marcar conta como bloqueada no lista.txt
+      if (email && cookiesString) {
+        const uidMatch = cookiesString.match(/c_user=(\d+)/);
+        if (uidMatch) {
+          marcarContaBloqueada(uidMatch[1]);
+        }
+      }
 
       if (page3) await page3.close();
       if (browser) await browser.close();
@@ -2956,6 +2997,55 @@ async function automateAutoRetry(email, password, proxyUrl = null, browserscanUr
 }
 
 /**
+ * 📝 Marcar conta como bloqueada no lista.txt
+ */
+function marcarContaBloqueada(uid) {
+  try {
+    const fs = require('fs');
+    const path = require('path');
+    const caminhoLista = path.join(__dirname, 'lista.txt');
+
+    if (!fs.existsSync(caminhoLista)) {
+      logger.warn('⚠️ arquivo lista.txt não encontrado');
+      return false;
+    }
+
+    let conteudo = fs.readFileSync(caminhoLista, 'utf8');
+    const linhas = conteudo.split('\n');
+    let updated = false;
+
+    // Procurar pelo UID e adicionar STATUS: BLOQUEADA após encontrá-lo
+    for (let i = 0; i < linhas.length; i++) {
+      if (linhas[i].includes(`UID: ${uid}`) || linhas[i].includes(`UID:${uid}`)) {
+        // Procurar pela próxima linha em branco e adicionar STATUS antes dela
+        for (let j = i + 1; j < linhas.length; j++) {
+          if (linhas[j].trim() === '') {
+            // Verificar se já não tem STATUS: BLOQUEADA
+            if (!linhas[j - 1].includes('STATUS:')) {
+              linhas.splice(j, 0, 'STATUS: BLOQUEADA');
+              updated = true;
+            }
+            break;
+          }
+        }
+        break;
+      }
+    }
+
+    if (updated) {
+      fs.writeFileSync(caminhoLista, linhas.join('\n'), 'utf8');
+      logger.success(`✅ Conta ${uid} marcada como BLOQUEADA no lista.txt`);
+      return true;
+    }
+
+    return false;
+  } catch (e) {
+    logger.warn(`⚠️ Erro ao atualizar lista.txt: ${e.message}`);
+    return false;
+  }
+}
+
+/**
  * 📋 Ler contas do lista.txt
  */
 function lerContasDeFacebook() {
@@ -2973,16 +3063,23 @@ function lerContasDeFacebook() {
     const linhas = conteudo.split('\n');
     const contas = [];
     let contaAtual = {};
+    let contaBloqueada = false;
 
     linhas.forEach((linha, idx) => {
       const linhaLimpa = linha.trim();
 
-      // Se encontrar UID e já temos dados, salvar conta anterior
+      // Se encontrar UID e já temos dados, salvar conta anterior (se não estiver bloqueada)
       if (linhaLimpa.includes('UID:') && contaAtual.email) {
-        if (contaAtual.email && contaAtual.senha) {
+        if (contaAtual.email && contaAtual.senha && !contaBloqueada) {
           contas.push(contaAtual);
         }
         contaAtual = {}; // Reset para nova conta
+        contaBloqueada = false; // Reset status bloqueado
+      }
+
+      // Verificar se conta está marcada como bloqueada
+      if (linhaLimpa.includes('STATUS: BLOQUEADA')) {
+        contaBloqueada = true;
       }
 
       // Extrair dados da linha
@@ -2998,8 +3095,8 @@ function lerContasDeFacebook() {
         contaAtual.cookies = linhaLimpa.split('COOKIES:')[1].trim();
       }
 
-      // Última linha: salvar conta final
-      if (idx === linhas.length - 1 && contaAtual.email && contaAtual.senha) {
+      // Última linha: salvar conta final (se não estiver bloqueada)
+      if (idx === linhas.length - 1 && contaAtual.email && contaAtual.senha && !contaBloqueada) {
         contas.push(contaAtual);
       }
     });
