@@ -594,13 +594,43 @@ async function verificarContaBloqueada(page) {
     // Verificar conteúdo
     const contaBloqueada = await page.evaluate(() => {
       const pageText = document.body.innerText || '';
-      return pageText.includes('locked your account') ||
-             pageText.includes('hacked') ||
-             pageText.includes('confirm this is your account') ||
-             pageText.toLowerCase().includes('account locked') ||
-             pageText.includes('Unlock this account') ||
-             pageText.includes('suspicious') ||
-             pageText.includes('We locked your account');
+      const pageTextLower = pageText.toLowerCase();
+
+      // Termos em inglês
+      const termsEN = [
+        'locked your account',
+        'hacked',
+        'confirm this is your account',
+        'account locked',
+        'unlock this account',
+        'suspicious',
+        'we locked your account',
+        'blocked this access',
+        'unusual activity'
+      ];
+
+      // Termos em português
+      const termsPT = [
+        'bloqueamos sua conta',
+        'sua conta foi bloqueada',
+        'foi hackeada',
+        'confirmar que é sua conta',
+        'desbloqueie sua conta',
+        'atividade suspeita',
+        'segurança da sua conta',
+        'proteger sua conta',
+        'pode ter sido hackeada'
+      ];
+
+      for (const term of termsEN) {
+        if (pageText.includes(term)) return true;
+      }
+
+      for (const term of termsPT) {
+        if (pageTextLower.includes(term)) return true;
+      }
+
+      return false;
     });
 
     return contaBloqueada;
