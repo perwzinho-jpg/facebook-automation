@@ -634,17 +634,53 @@ async function automateAutoRetry(email, password, proxyUrl = null, browserscanUr
       'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
     );
 
-    await page1.goto('https://www.facebook.com/login', {
-      waitUntil: 'load',
-      timeout: 60000,
-    });
-    logger.info('✅ Facebook carregado\n');
+    // Tentar carregar cookies salvos (modo rápido)
+    const cookieFile = path.join('storage/cookies', `${email}.json`);
+    let tentarModoRapido = fs.existsSync(cookieFile);
 
-    // Ação humana: ler a página
-    await acoeHumanas(page1);
+    if (tentarModoRapido) {
+      logger.info('💾 Tentando modo rápido (carregar cookies salvos)...\n');
+      try {
+        const cookies = JSON.parse(fs.readFileSync(cookieFile, 'utf8'));
+        await page1.setCookie(...cookies);
+        logger.info('✅ Cookies carregados\n');
 
-    // Login
-    logger.info('2️⃣ Preenchendo credenciais...');
+        // Acessar Home para verificar se ainda está logado
+        await page1.goto('https://www.facebook.com', {
+          waitUntil: 'load',
+          timeout: 30000,
+        });
+
+        // Se conseguiu e não redirecionou pra login, está logado!
+        const currentUrl = page1.url();
+        if (!currentUrl.includes('/login')) {
+          logger.info('✅ Sessão válida! Pulando login...\n');
+          logger.success('Continuando de onde parou!');
+          // Pular para Business Manager direto
+          tentarModoRapido = true;
+        } else {
+          logger.warning('Sessão expirada, fazendo login novamente...\n');
+          tentarModoRapido = false;
+        }
+      } catch (cookieErr) {
+        logger.warn(`Erro ao carregar cookies: ${cookieErr.message}\n`);
+        tentarModoRapido = false;
+      }
+    }
+
+    // Se modo rápido falhou, fazer login normal
+    if (!tentarModoRapido) {
+      await page1.goto('https://www.facebook.com/login', {
+        waitUntil: 'load',
+        timeout: 60000,
+      });
+      logger.info('✅ Facebook carregado\n');
+
+      // Ação humana: ler a página
+      await acoeHumanas(page1);
+
+      // Login
+      logger.info('2️⃣ Preenchendo credenciais...');
     await page1.waitForSelector('input[name="email"]', { timeout: 10000 });
     await page1.waitForSelector('input[name="pass"]', { timeout: 10000 });
 
