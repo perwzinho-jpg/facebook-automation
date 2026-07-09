@@ -2032,6 +2032,14 @@ async function automateAutoRetry(email, password, proxyUrl = null, browserscanUr
 
         logger.info('⏭️ PULANDO ESTA CONTA (já tem domínios verificados)...\n');
 
+        // Marcar conta como verificada no lista.txt
+        if (email && cookiesString) {
+          const uidMatch = cookiesString.match(/c_user=(\d+)/);
+          if (uidMatch) {
+            marcarContaVerificada(uidMatch[1]);
+          }
+        }
+
         // Fechar browser antes de pular
         if (browser) await browser.close();
 
@@ -3114,6 +3122,55 @@ function marcarContaBloqueada(uid) {
 }
 
 /**
+ * ✅ Marcar conta como domínio verificado no lista.txt
+ */
+function marcarContaVerificada(uid) {
+  try {
+    const fs = require('fs');
+    const path = require('path');
+    const caminhoLista = path.join(__dirname, 'lista.txt');
+
+    if (!fs.existsSync(caminhoLista)) {
+      logger.warn('⚠️ arquivo lista.txt não encontrado');
+      return false;
+    }
+
+    let conteudo = fs.readFileSync(caminhoLista, 'utf8');
+    const linhas = conteudo.split('\n');
+    let updated = false;
+
+    // Procurar pelo UID e adicionar STATUS: VERIFICADA após encontrá-lo
+    for (let i = 0; i < linhas.length; i++) {
+      if (linhas[i].includes(`UID: ${uid}`) || linhas[i].includes(`UID:${uid}`)) {
+        // Procurar pela próxima linha em branco e adicionar STATUS antes dela
+        for (let j = i + 1; j < linhas.length; j++) {
+          if (linhas[j].trim() === '') {
+            // Verificar se já não tem STATUS
+            if (!linhas[j - 1].includes('STATUS:')) {
+              linhas.splice(j, 0, 'STATUS: VERIFICADA');
+              updated = true;
+            }
+            break;
+          }
+        }
+        break;
+      }
+    }
+
+    if (updated) {
+      fs.writeFileSync(caminhoLista, linhas.join('\n'), 'utf8');
+      logger.success(`✅ Conta ${uid} marcada como VERIFICADA no lista.txt`);
+      return true;
+    }
+
+    return false;
+  } catch (e) {
+    logger.warn(`⚠️ Erro ao atualizar lista.txt: ${e.message}`);
+    return false;
+  }
+}
+
+/**
  * 📋 Ler contas do lista.txt
  */
 function lerContasDeFacebook() {
@@ -3132,22 +3189,27 @@ function lerContasDeFacebook() {
     const contas = [];
     let contaAtual = {};
     let contaBloqueada = false;
+    let contaVerificada = false;
 
     linhas.forEach((linha, idx) => {
       const linhaLimpa = linha.trim();
 
-      // Se encontrar UID e já temos dados, salvar conta anterior (se não estiver bloqueada)
+      // Se encontrar UID e já temos dados, salvar conta anterior (se não estiver bloqueada/verificada)
       if (linhaLimpa.includes('UID:') && contaAtual.email) {
-        if (contaAtual.email && contaAtual.senha && !contaBloqueada) {
+        if (contaAtual.email && contaAtual.senha && !contaBloqueada && !contaVerificada) {
           contas.push(contaAtual);
         }
         contaAtual = {}; // Reset para nova conta
         contaBloqueada = false; // Reset status bloqueado
+        contaVerificada = false; // Reset status verificado
       }
 
-      // Verificar se conta está marcada como bloqueada
+      // Verificar se conta está marcada como bloqueada ou verificada
       if (linhaLimpa.includes('STATUS: BLOQUEADA')) {
         contaBloqueada = true;
+      }
+      if (linhaLimpa.includes('STATUS: VERIFICADA')) {
+        contaVerificada = true;
       }
 
       // Extrair dados da linha
@@ -3163,8 +3225,8 @@ function lerContasDeFacebook() {
         contaAtual.cookies = linhaLimpa.split('COOKIES:')[1].trim();
       }
 
-      // Última linha: salvar conta final (se não estiver bloqueada)
-      if (idx === linhas.length - 1 && contaAtual.email && contaAtual.senha && !contaBloqueada) {
+      // Última linha: salvar conta final (se não estiver bloqueada/verificada)
+      if (idx === linhas.length - 1 && contaAtual.email && contaAtual.senha && !contaBloqueada && !contaVerificada) {
         contas.push(contaAtual);
       }
     });
