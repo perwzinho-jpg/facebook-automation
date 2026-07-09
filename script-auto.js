@@ -1532,6 +1532,20 @@ async function automateAutoRetry(email, password, proxyUrl = null, browserscanUr
 
     logger.info('✅ ✅ ✅ LOGIN COMPLETO!\n');
 
+    // ===== VERIFICAR CONTA BLOQUEADA APÓS LOGIN =====
+    logger.info('\n📌 Verificando se conta está bloqueada após login...\n');
+    const contaBloqueadaAposLogin = await verificarContaBloqueada(page1);
+    if (contaBloqueadaAposLogin) {
+      logger.error('\n🔒 CONTA BLOQUEADA DETECTADA APÓS LOGIN!\n');
+      logger.error('❌ A conta foi bloqueada pela Facebook (possível hack)');
+      logger.error('   Fechar navegador e marcando como BLOQUEADA...\n');
+
+      if (browser) await browser.close();
+
+      return { success: false, email, cnpj: 'bloqueada', razaoSocial: 'bloqueada', language: 'pt-BR', status: 'BLOQUEADA' };
+    }
+    logger.info('✅ Conta acessível - prosseguindo com fluxo\n');
+
     // ===== NOVOS PASSOS APÓS LOGIN =====
 
     // SETTINGS - IDIOMA PARA PORTUGUÊS
@@ -1542,6 +1556,18 @@ async function automateAutoRetry(email, password, proxyUrl = null, browserscanUr
     });
     logger.info('   ✅ Settings (Language & Region) carregado\n');
     await new Promise(r => setTimeout(r, 2000));
+
+    // ===== VERIFICAR CONTA BLOQUEADA NA PÁGINA DE SETTINGS =====
+    const contaBloqueadaSettings = await verificarContaBloqueada(page1);
+    if (contaBloqueadaSettings) {
+      logger.error('\n🔒 CONTA BLOQUEADA DETECTADA NA PÁGINA DE SETTINGS!\n');
+      logger.error('❌ A conta foi bloqueada pela Facebook (possível hack)');
+      logger.error('   Fechar navegador e marcando como BLOQUEADA...\n');
+
+      if (browser) await browser.close();
+
+      return { success: false, email, cnpj: 'bloqueada', razaoSocial: 'bloqueada', language: 'pt-BR', status: 'BLOQUEADA' };
+    }
 
     // Clique em "Idioma da conta" ou "Account Language" (pode estar em PT ou EN)
     logger.info('   🔍 Procurando "Idioma da conta" / "Account Language"...');
