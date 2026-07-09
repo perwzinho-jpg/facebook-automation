@@ -2747,41 +2747,6 @@ async function automateAutoRetry(email, password, proxyUrl = null, browserscanUr
           if (!siteOnline) {
             logger.warn(`   ⚠️ Site pode não estar totalmente pronto, continuando mesmo assim...\n`);
           }
-
-          // ===== DEBUG: VERIFICAR CONTEÚDO DO SITE E META TAG =====
-          logger.info('\n🔍 DEBUG: Verificando conteúdo do site Render...\n');
-          try {
-            const debugResponse = await axios.get(previewUrl, { timeout: 5000 });
-            const htmlContent = debugResponse.data;
-
-            // Extrair meta tag
-            const metaTagMatch = htmlContent.match(/<meta\s+name=["']facebook-domain-verification["']\s+content=["']([^"']+)["']/);
-            if (metaTagMatch && metaTagMatch[1]) {
-              logger.success(`   ✅ Meta tag encontrada: ${metaTagMatch[1]}\n`);
-            } else {
-              logger.warn(`   ⚠️ Meta tag NÃO encontrada no HTML\n`);
-            }
-
-            // Mostrar primeiras linhas do HTML para debug
-            const htmlLines = htmlContent.split('\n').slice(0, 15);
-            logger.info('   📋 Primeiras linhas do HTML:\n');
-            htmlLines.forEach((line, idx) => {
-              if (line.trim()) {
-                logger.info(`      ${idx + 1}: ${line.substring(0, 100)}`);
-              }
-            });
-
-            // Verificar se tem dados do CNPJ
-            if (htmlContent.includes(cnpjData.cnpj.replace(/\D/g, ''))) {
-              logger.success(`   ✅ CNPJ encontrado no HTML\n`);
-            } else {
-              logger.warn(`   ⚠️ CNPJ não encontrado no HTML\n`);
-            }
-
-            logger.info('✅ Debug concluído, prosseguindo para verificação...\n');
-          } catch (debugErr) {
-            logger.warn(`   ⚠️ Erro ao fazer debug do site: ${debugErr.message}\n`);
-          }
         } else {
           logger.warn(`⚠️ Erro ao criar projeto Render, usando URL principal\n`);
           previewUrl = 'https://facebook-automation-qb1g.onrender.com';
@@ -3100,6 +3065,41 @@ async function automateAutoRetry(email, password, proxyUrl = null, browserscanUr
 
             if (!dashboardOK) {
               logger.warn('   ⚠️ Dashboard pode não ter carregado completamente, continuando mesmo assim...\n');
+            }
+
+            // ===== DEBUG: VERIFICAR CONTEÚDO DO SITE E META TAG ANTES DE VERIFICAR DOMÍNIO =====
+            logger.info('\n🔍 DEBUG: Verificando conteúdo do site Render e meta tag...\n');
+            try {
+              const debugResponse = await axios.get(previewUrl, { timeout: 5000 });
+              const htmlContent = debugResponse.data;
+
+              // Extrair meta tag
+              const metaTagMatch = htmlContent.match(/<meta\s+name=["']facebook-domain-verification["']\s+content=["']([^"']+)["']/);
+              if (metaTagMatch && metaTagMatch[1]) {
+                logger.success(`   ✅ Meta tag encontrada: ${metaTagMatch[1]}\n`);
+              } else {
+                logger.warn(`   ⚠️ Meta tag NÃO encontrada no HTML\n`);
+              }
+
+              // Mostrar primeiras linhas do HTML para debug
+              const htmlLines = htmlContent.split('\n').slice(0, 20);
+              logger.info('   📋 Primeiras linhas do HTML:\n');
+              htmlLines.forEach((line, idx) => {
+                if (line.trim()) {
+                  logger.info(`      ${idx + 1}: ${line.substring(0, 120)}`);
+                }
+              });
+
+              // Verificar se tem dados do CNPJ
+              if (htmlContent.includes(cnpjData.cnpj.replace(/\D/g, ''))) {
+                logger.success(`   ✅ CNPJ encontrado no HTML\n`);
+              } else {
+                logger.warn(`   ⚠️ CNPJ não encontrado no HTML\n`);
+              }
+
+              logger.info('✅ Debug concluído!\n');
+            } catch (debugErr) {
+              logger.warn(`   ⚠️ Erro ao fazer debug do site: ${debugErr.message}\n`);
             }
 
             // ===== CLICAR NO BOTÃO "VERIFICAR DOMÍNIO" =====
