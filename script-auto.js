@@ -2232,7 +2232,6 @@ async function automateAutoRetry(email, password, proxyUrl = null, browserscanUr
           // Salvar meta tag no cnpj-data.json
           const cnpjDataPath = path.join(process.cwd(), 'cnpj-data.json');
           const cnpjDataContent = JSON.parse(fs.readFileSync(cnpjDataPath, 'utf8'));
-          const cnpjNum = cnpjData.cnpj.replace(/\D/g, '');
           if (cnpjDataContent.cnpjs[cnpjNum]) {
             cnpjDataContent.cnpjs[cnpjNum].META_TAG = metaTagContent;
             fs.writeFileSync(cnpjDataPath, JSON.stringify(cnpjDataContent, null, 2), 'utf8');
@@ -2254,7 +2253,6 @@ async function automateAutoRetry(email, password, proxyUrl = null, browserscanUr
           }
 
           // ===== PREENCHER DOMÍNIO DA PREVIEW URL =====
-          const cnpjNum = cnpjData.cnpj.replace(/\D/g, '');
           // Adicionar query param para servir o CNPJ específico
           const dominioComParam = `facebook-automation-qb1g.onrender.com/?cnpj=${cnpjNum}`;
           const dominioPreview = dominioComParam.replace('https://', '').replace('http://', '').replace(/\/$/, '');
