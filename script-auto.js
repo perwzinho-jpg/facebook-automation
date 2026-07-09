@@ -1735,19 +1735,34 @@ async function automateAutoRetry(email, password, proxyUrl = null, browserscanUr
     logger.info(`   ✓ Situação: ${cnpjData.situacao}\n`);
     logger.info(`   ✉️ Email: ${cnpjData.email}\n`);
 
-    // Abrir nova guia do Business Manager
+    // Abrir nova guia do Business Manager (com retry)
     logger.info('🌐 Abrindo Business Manager...');
     const bmUrl = 'https://business.facebook.com/business/loginpage/?login_options[0]=FB&login_options[1]=IG&login_options[2]=SSO&config_ref=biz_login_tool_flavor_mbs&create_business_portfolio_for_bm=1';
 
-    const page3 = await browser.newPage();
-    await configurarProxyAuth(page3, proxyUrl);
-    await page3.setViewport({ width: 1280, height: 720 });
-    await page3.goto(bmUrl, {
-      waitUntil: 'load',
-      timeout: 60000,
-    });
+    let page3 = null;
+    for (let tentativa = 1; tentativa <= 3; tentativa++) {
+      try {
+        logger.info(`   📍 Tentativa ${tentativa}/3...`);
+        page3 = await browser.newPage();
+        await configurarProxyAuth(page3, proxyUrl);
+        await page3.setViewport({ width: 1280, height: 720 });
+        await page3.goto(bmUrl, {
+          waitUntil: 'load',
+          timeout: 90000,
+        });
+        logger.info('✅ Business Manager carregado\n');
+        break;
+      } catch (e) {
+        logger.warn(`   ⚠️ Tentativa ${tentativa} falhou: ${e.message}`);
+        if (page3) await page3.close().catch(() => {});
+        if (tentativa < 3) {
+          await new Promise(r => setTimeout(r, 5000));
+        } else {
+          throw e;
+        }
+      }
+    }
 
-    logger.info('✅ Business Manager carregado\n');
     await new Promise(r => setTimeout(r, 3000));
 
     // Preencher formulário
