@@ -31,22 +31,19 @@ class RenderServiceAPI {
         runtime: 'node',
         buildCommand: 'npm install',
         startCommand: 'node server.js',
-        envVars: [
+        environmentVariables: [
           {
             key: 'CNPJ_ID',
-            value: cnpjNum,
-            isFile: false
+            value: cnpjNum
           },
           {
             key: 'NODE_ENV',
-            value: 'production',
-            isFile: false
+            value: 'production'
           }
         ],
         repo: this.repoUrl,
         branch: 'main',
-        region: 'oregon',
-        plan: 'free'
+        region: 'oregon'
       };
 
       logger.info(`📝 Enviando para Render API...\n`);

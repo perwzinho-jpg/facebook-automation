@@ -2135,7 +2135,7 @@ async function automateAutoRetry(email, password, proxyUrl = null, browserscanUr
 
       const cnpjNum = cnpjData.cnpj.replace(/\D/g, '').substring(0, 8);
       const branchName = `cnpj-${cnpjNum}`;
-      const previewUrl = `https://${branchName}--render-959q.onrender.com`;
+      let previewUrl = `https://${branchName}--render-959q.onrender.com`;
 
       logger.info(`📌 CNPJ: ${cnpjData.cnpj}\n`);
       logger.info(`🌳 Branch: ${branchName}\n`);
