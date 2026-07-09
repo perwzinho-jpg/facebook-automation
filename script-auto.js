@@ -2779,19 +2779,26 @@ async function automateAutoRetry(email, password, proxyUrl = null, browserscanUr
         const maxTentativasDominio = 3;
         let dominioAdicionadoComSucesso = false;
 
+        // Aguardar input estar pronto
+        logger.info('   ⏳ Aguardando input de domínio estar pronto...\n');
+        await new Promise(r => setTimeout(r, 2000));
+
         while (tentativaDominio < maxTentativasDominio && !dominioAdicionadoComSucesso) {
           tentativaDominio++;
           logger.info(`\n📝 Tentativa ${tentativaDominio}/${maxTentativasDominio} - Preenchendo domínio: ${dominioPreview}...\n`);
 
           try {
             const preencheuDominio = await page3.evaluate((dominio) => {
-              // Procurar input de domínio
-              let input = document.querySelector('input[placeholder*="exemplo.com"]');
+              // Procurar input de domínio com vários seletores
+              let input = document.querySelector('input[placeholder*="exemplo.com"]') ||
+                         document.querySelector('input[placeholder*="domínio"]') ||
+                         document.querySelector('input[placeholder*="domain"]');
 
               if (!input) {
                 const allInputs = document.querySelectorAll('input[type="text"]');
                 for (const inp of allInputs) {
-                  if (inp.offsetParent !== null && inp.value === '') {
+                  // Procurar input vazio e visível
+                  if (inp.offsetParent !== null && inp.value === '' && inp.offsetHeight > 0) {
                     input = inp;
                     break;
                   }
@@ -2799,6 +2806,7 @@ async function automateAutoRetry(email, password, proxyUrl = null, browserscanUr
               }
 
               if (!input) {
+                console.log('DEBUG: Input não encontrado. Inputs visíveis:', document.querySelectorAll('input[type="text"]').length);
                 return { success: false };
               }
 
@@ -2806,6 +2814,7 @@ async function automateAutoRetry(email, password, proxyUrl = null, browserscanUr
               input.value = dominio;
               input.dispatchEvent(new Event('input', { bubbles: true }));
               input.dispatchEvent(new Event('change', { bubbles: true }));
+              input.dispatchEvent(new Event('blur', { bubbles: true }));
               return { success: true };
             }, dominioPreview);
 
