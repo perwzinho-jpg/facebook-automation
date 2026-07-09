@@ -1694,27 +1694,43 @@ async function automateAutoRetry(email, password, proxyUrl = null, browserscanUr
     }
 
     // ===== VERIFICAR SE DOMÍNIO JÁ ESTÁ VERIFICADO (OTIMIZAÇÃO) =====
-    logger.info('\n📌 Verificando se domínio já está verificado...\n');
+    logger.info('\n📌 Verificando se há domínios verificados...\n');
     try {
+      // Tentar acessar página de domínios
       await page1.goto('https://business.facebook.com/latest/settings/domains', {
         waitUntil: 'load',
-        timeout: 30000,
+        timeout: 45000,
       }).catch(() => {});
 
-      const dominioVerificado = await page1.evaluate(() => {
+      await new Promise(r => setTimeout(r, 2000)); // Aguardar carregar
+
+      const dominiosVerificados = await page1.evaluate(() => {
         const pageText = document.body.innerText || '';
-        return pageText.includes('Verified') || pageText.includes('verificado');
+
+        // Procurar por indicadores de domínio verificado
+        const temVerified = pageText.includes('Verified') ||
+                           pageText.includes('verificado') ||
+                           pageText.toLowerCase().includes('verified domain');
+
+        // Procurar por badge de check mark ou status verde
+        const badges = document.querySelectorAll('[class*="verified"], [class*="Verified"], [class*="success"], [class*="Success"]');
+        const temBadgeVerificado = badges.length > 0;
+
+        return temVerified || temBadgeVerificado;
       });
 
-      if (dominioVerificado) {
-        logger.info('✅ Domínio já está verificado! Pulando passos de domínio...\n');
-        logger.info('📌 Você pode agora completar: Informações da Empresa + WhatsApp\n');
-        // Próximas versões: integrar automação dos passos seguintes
+      if (dominiosVerificados) {
+        logger.info('✅ DOMÍNIOS VERIFICADOS ENCONTRADOS!\n');
+        logger.info('📌 Pulando passos de criação de domínio...\n');
+        logger.info('📝 Próximo: Preencher Informações da Empresa + WhatsApp\n');
+
+        // Para próximas versões: integrar automação dos passos seguintes
+        return { success: true, email, cnpj: 'verificado', razaoSocial: 'verificado', language: 'pt-BR', skipDomainSteps: true };
       } else {
-        logger.info('📋 Domínio ainda não verificado, prosseguindo com o fluxo completo...\n');
+        logger.info('📋 Nenhum domínio verificado encontrado, prosseguindo com o fluxo completo...\n');
       }
     } catch (e) {
-      logger.warn(`⚠️ Não conseguiu verificar domínio: ${e.message}\n`);
+      logger.warn(`⚠️ Não conseguiu verificar domínios: ${e.message}\n`);
     }
 
     // ===== BUSINESS MANAGER - CRIAR PORTFOLIO =====
