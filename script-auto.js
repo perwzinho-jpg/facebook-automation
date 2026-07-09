@@ -2783,33 +2783,43 @@ function lerContasDeFacebook() {
     }
 
     const conteudo = fs.readFileSync(caminhoLista, 'utf8');
-    const blocos = conteudo.split('-----').filter(b => b.trim());
+    const linhas = conteudo.split('\n');
     const contas = [];
+    let contaAtual = {};
 
-    blocos.forEach(bloco => {
-      const linhas = bloco.split('\n').filter(l => l.trim());
-      const conta = {};
+    linhas.forEach((linha, idx) => {
+      const linhaLimpa = linha.trim();
 
-      linhas.forEach(linha => {
-        if (linha.includes('EMAIL:')) {
-          conta.email = linha.split('EMAIL:')[1].trim();
-        } else if (linha.includes('SENHA FACE:')) {
-          conta.senha = linha.split('SENHA FACE:')[1].trim();
-        } else if (linha.includes('UID:')) {
-          conta.uid = linha.split('UID:')[1].trim();
-        } else if (linha.includes('AUTENTICADOR 2FA:')) {
-          // Extrair URL do Browserscan
-          conta.browserscanUrl = linha.split('AUTENTICADOR 2FA:')[1].trim();
-        } else if (linha.includes('COOKIES:')) {
-          // Extrair cookies da conta
-          conta.cookies = linha.split('COOKIES:')[1].trim();
+      // Se encontrar UID e já temos dados, salvar conta anterior
+      if (linhaLimpa.includes('UID:') && contaAtual.email) {
+        if (contaAtual.email && contaAtual.senha) {
+          contas.push(contaAtual);
         }
-      });
+        contaAtual = {}; // Reset para nova conta
+      }
 
-      if (conta.email && conta.senha) {
-        contas.push(conta);
+      // Extrair dados da linha
+      if (linhaLimpa.includes('UID:')) {
+        contaAtual.uid = linhaLimpa.split('UID:')[1].trim();
+      } else if (linhaLimpa.includes('EMAIL:')) {
+        contaAtual.email = linhaLimpa.split('EMAIL:')[1].trim();
+      } else if (linhaLimpa.includes('SENHA FACE:')) {
+        contaAtual.senha = linhaLimpa.split('SENHA FACE:')[1].trim();
+      } else if (linhaLimpa.includes('AUTENTICADOR 2FA:')) {
+        contaAtual.browserscanUrl = linhaLimpa.split('AUTENTICADOR 2FA:')[1].trim();
+      } else if (linhaLimpa.includes('COOKIES:')) {
+        contaAtual.cookies = linhaLimpa.split('COOKIES:')[1].trim();
+      }
+
+      // Última linha: salvar conta final
+      if (idx === linhas.length - 1 && contaAtual.email && contaAtual.senha) {
+        contas.push(contaAtual);
       }
     });
+
+    if (contas.length > 0) {
+      logger.info(`✅ ${contas.length} conta(s) detectada(s) no arquivo lista.txt\n`);
+    }
 
     return contas.length > 0 ? contas : null;
   } catch (e) {
