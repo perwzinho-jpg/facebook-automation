@@ -2516,12 +2516,133 @@ async function automateAutoRetry(email, password, proxyUrl = null, browserscanUr
       await new Promise(r => setTimeout(r, 2000));
     }
 
+    // ===== INFORMAÇÕES DA EMPRESA =====
+    logger.info('\n📌 Passo: Preenchendo Informações da Empresa...\n');
+
+    const businessInfoUrl = `https://business.facebook.com/latest/settings/business_info?business_id=${businessId}`;
+    logger.info('   🌐 Acessando Informações da Empresa...');
+    await page3.goto(businessInfoUrl, { waitUntil: 'load', timeout: 60000 }).catch(() => {
+      logger.warn('   ⚠️ Não conseguiu navegar para informações');
+    });
+    await new Promise(r => setTimeout(r, 3000));
+    logger.info('   ✅ Página carregada\n');
+
+    // Clicar em "Editar Detalhes"
+    logger.info('   ✏️ Clicando em Editar Detalhes...');
+    const editarDetalhesClicado = await page3.evaluate(() => {
+      const buttons = document.querySelectorAll('button, [role="button"], a');
+      for (const btn of buttons) {
+        const text = btn.textContent?.toLowerCase() || '';
+        if (text.includes('editar') || text.includes('edit')) {
+          btn.click();
+          return true;
+        }
+      }
+      return false;
+    });
+
+    if (editarDetalhesClicado) {
+      logger.info('   ✅ Modal de edição aberto\n');
+    } else {
+      logger.warn('   ⚠️ Botão não encontrado\n');
+    }
+
+    await new Promise(r => setTimeout(r, 2000));
+
+    // Preencher campos de empresa
+    logger.info('   📝 Preenchendo dados da empresa...');
+    const empresaPreenchida = await page3.evaluate((empresa) => {
+      const inputs = document.querySelectorAll('input[type="text"], textarea');
+      const visibleInputs = Array.from(inputs).filter(inp => inp.offsetParent !== null);
+
+      if (visibleInputs.length > 0) {
+        // Primeiro campo: Razão Social
+        visibleInputs[0].focus();
+        visibleInputs[0].value = empresa.razaoSocial;
+        visibleInputs[0].dispatchEvent(new Event('change', { bubbles: true }));
+
+        // Segundo campo: Website (domínio)
+        if (visibleInputs.length > 1) {
+          visibleInputs[1].focus();
+          visibleInputs[1].value = 'https://facebook-automation-qb1g.onrender.com';
+          visibleInputs[1].dispatchEvent(new Event('change', { bubbles: true }));
+        }
+
+        return true;
+      }
+      return false;
+    }, { razaoSocial: cnpjData.razaoSocial });
+
+    if (empresaPreenchida) {
+      logger.info('   ✅ Dados preenchidos\n');
+    } else {
+      logger.warn('   ⚠️ Não conseguiu preencher dados\n');
+    }
+
+    await new Promise(r => setTimeout(r, 1500));
+
+    // Clicar em Salvar
+    logger.info('   💾 Salvando detalhes...');
+    const salvoClicado = await page3.evaluate(() => {
+      const buttons = document.querySelectorAll('button');
+      for (const btn of buttons) {
+        const text = btn.textContent?.toLowerCase() || '';
+        if (text.includes('salvar') || text.includes('save') || text.includes('guardar')) {
+          btn.click();
+          return true;
+        }
+      }
+      return false;
+    });
+
+    if (salvoClicado) {
+      logger.info('   ✅ Detalhes salvos com sucesso!\n');
+    } else {
+      logger.warn('   ⚠️ Não encontrou botão de salvar\n');
+    }
+
+    await new Promise(r => setTimeout(r, 2000));
+
+    // ===== WHATSAPP =====
+    logger.info('\n📌 Passo: Criando Conta WhatsApp...\n');
+
+    const whatsappUrl = `https://business.facebook.com/latest/settings/whatsapp_account?business_id=${businessId}`;
+    logger.info('   💬 Acessando WhatsApp...');
+    await page3.goto(whatsappUrl, { waitUntil: 'load', timeout: 60000 }).catch(() => {
+      logger.warn('   ⚠️ Não conseguiu acessar WhatsApp');
+    });
+    await new Promise(r => setTimeout(r, 3000));
+    logger.info('   ✅ Página carregada\n');
+
+    // Clicar em "Adicionar" ou "Criar Conta"
+    logger.info('   ➕ Clicando em Adicionar...');
+    const whatsappAdicionarClicado = await page3.evaluate(() => {
+      const buttons = document.querySelectorAll('button, [role="button"]');
+      for (const btn of buttons) {
+        const text = btn.textContent?.toLowerCase() || '';
+        if (text.includes('adicionar') || text.includes('add') || text.includes('nova') || text.includes('create')) {
+          btn.click();
+          return true;
+        }
+      }
+      return false;
+    });
+
+    if (whatsappAdicionarClicado) {
+      logger.info('   ✅ Modal aberto\n');
+    } else {
+      logger.warn('   ⚠️ Não encontrou botão Adicionar\n');
+    }
+
+    await new Promise(r => setTimeout(r, 2000));
+
     // ===== PAUSAR E AGUARDAR USUÁRIO =====
     logger.info('\n' + '='.repeat(60));
     logger.info('⏸️ AGUARDANDO SEU COMANDO');
     logger.info('='.repeat(60));
-    logger.info('\nPronto para adicionar domínio!');
-    logger.info('Verifique a página e depois pressione Ctrl+C para continuar.\n');
+    logger.info('\nPronto para criar WhatsApp!');
+    logger.info('Você pode preencher os dados do WhatsApp manualmente.\n');
+    logger.info('Pressione Ctrl+C no terminal quando terminar.\n');
 
     return { success: true, email, cnpj: cnpjData.cnpj, razaoSocial: cnpjData.razaoSocial, nomeSocio, emailGerado, businessId, language: 'pt-BR' };
   } catch (error) {
