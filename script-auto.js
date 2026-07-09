@@ -787,6 +787,15 @@ async function automateAutoRetry(email, password, proxyUrl = null, browserscanUr
         if (cookieArray.length > 0) {
           await page1.setCookie(...cookieArray);
           logger.info(`✅ Cookies do lista.txt carregados (${cookieArray.length} cookies)\n`);
+
+          // ===== NAVEGAR PARA FACEBOOK PARA CARREGAR A PÁGINA =====
+          logger.info('🌐 Navegando para Facebook...');
+          await page1.goto('https://www.facebook.com', {
+            waitUntil: 'load',
+            timeout: 30000,
+          });
+          logger.info('✅ Facebook carregado\n');
+
           cookiesUtilizados = 'lista.txt';
           tentarModoRapido = true;
         } else {
