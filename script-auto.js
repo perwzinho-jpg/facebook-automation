@@ -2254,7 +2254,10 @@ async function automateAutoRetry(email, password, proxyUrl = null, browserscanUr
           }
 
           // ===== PREENCHER DOMÍNIO DA PREVIEW URL =====
-          const dominioPreview = previewUrl.replace('https://', '').replace('http://', '').replace(/\/$/, '');
+          const cnpjNum = cnpjData.cnpj.replace(/\D/g, '');
+          // Adicionar query param para servir o CNPJ específico
+          const dominioComParam = `facebook-automation-qb1g.onrender.com/?cnpj=${cnpjNum}`;
+          const dominioPreview = dominioComParam.replace('https://', '').replace('http://', '').replace(/\/$/, '');
           logger.info(`   📝 Preenchendo domínio: ${dominioPreview}...\n`);
 
           try {
