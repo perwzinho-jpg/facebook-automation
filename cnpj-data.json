@@ -10,6 +10,52 @@
       "SITUACAO": "Baixada",
       "PORTE": "Demais",
       "DATA_GERACAO": "06/07/2026"
+    },
+    "22606532000100": {
+      "CNPJ": "22606532000100",
+      "RAZAO_SOCIAL": "APARECIDA MARQUES 16558586886",
+      "NOME_FANTASIA": "MARQUES ARTESANATO",
+      "EMAIL": "cida.marques1007@gmail.com",
+      "TELEFONE": "(18) 36229091",
+      "DATA_ABERTURA": "2015-06-09",
+      "SITUACAO": "Baixada",
+      "PORTE": "Microempresa (ME)",
+      "DATA_GERACAO": "09/07/2026"
+    },
+    "03937506000110": {
+      "CNPJ": "03937506000110",
+      "RAZAO_SOCIAL": "L.C.PLASTICOS",
+      "NOME_FANTASIA": "PLASTICU  L",
+      "EMAIL": "contato8qoye8@gmail.com",
+      "TELEFONE": "2433372086",
+      "DATA_ABERTURA": "2000-07-05",
+      "SITUACAO": "Baixada",
+      "PORTE": "Microempresa (ME)",
+      "DATA_GERACAO": "09/07/2026"
+    },
+    "09833043000122": {
+      "CNPJ": "09833043000122",
+      "RAZAO_SOCIAL": "ELEICAO 2008 GERALDO JOSE BITTENCOURT DA COSTA VEREADOR",
+      "NOME_FANTASIA": "VIRIADUR  ILICAU",
+      "EMAIL": "contatowfgme@gmail.com",
+      "TELEFONE": "(0) 0",
+      "DATA_ABERTURA": "2008-07-08",
+      "SITUACAO": "Baixada",
+      "PORTE": "Demais",
+      "DATA_GERACAO": "09/07/2026",
+      "META_TAG": "e1foaw58e98y4xojp7ok7ryn1a0eve"
+    },
+    "16233794000173": {
+      "CNPJ": "16233794000173",
+      "RAZAO_SOCIAL": "ELEICAO 2012 ZENIR SCHMITZ BOING PREFEITO",
+      "NOME_FANTASIA": "PRIFITU   ILICAU",
+      "EMAIL": "contato0ieha@gmail.com",
+      "TELEFONE": "(0) 0",
+      "DATA_ABERTURA": "2012-07-07",
+      "SITUACAO": "Baixada",
+      "PORTE": "Demais",
+      "DATA_GERACAO": "09/07/2026",
+      "META_TAG": "2a3994f51aa3940e7d9f2dc35d7763ddb40"
     }
   }
 }
