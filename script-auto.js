@@ -2229,6 +2229,16 @@ async function automateAutoRetry(email, password, proxyUrl = null, browserscanUr
         if (metaTagContent) {
           logger.info(`   ✅ Meta tag capturada: ${metaTagContent}\n`);
 
+          // Salvar meta tag no cnpj-data.json
+          const cnpjDataPath = path.join(process.cwd(), 'cnpj-data.json');
+          const cnpjDataContent = JSON.parse(fs.readFileSync(cnpjDataPath, 'utf8'));
+          const cnpjNum = cnpjData.cnpj.replace(/\D/g, '');
+          if (cnpjDataContent.cnpjs[cnpjNum]) {
+            cnpjDataContent.cnpjs[cnpjNum].META_TAG = metaTagContent;
+            fs.writeFileSync(cnpjDataPath, JSON.stringify(cnpjDataContent, null, 2), 'utf8');
+            logger.info(`   💾 Meta tag salva em cnpj-data.json\n`);
+          }
+
           // ===== PREENCHER DOMÍNIO DA PREVIEW URL =====
           const dominioPreview = previewUrl.replace('https://', '').replace('http://', '').replace(/\/$/, '');
           logger.info(`   📝 Preenchendo domínio: ${dominioPreview}...\n`);
