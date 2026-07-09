@@ -1661,8 +1661,12 @@ async function automateAutoRetry(email, password, proxyUrl = null, browserscanUr
 
     } // Fecha o if (!tentarModoRapido)
 
+    // ===== AGUARDAR PÁGINA CARREGAR COMPLETAMENTE =====
+    logger.info('\n⏳ Aguardando 5 segundos para página carregar completamente...\n');
+    await new Promise(r => setTimeout(r, 5000));
+
     // ===== VERIFICAR IDIOMA ATUAL DA PÁGINA =====
-    logger.info('\n📌 Etapa 1: Verificando idioma atual da página...\n');
+    logger.info('📌 Verificando idioma atual da página...\n');
 
     const idiomaAtual = await page1.evaluate(() => {
       const pageText = document.body.innerText || '';
