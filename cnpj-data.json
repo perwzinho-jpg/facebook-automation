@@ -245,6 +245,29 @@
       "SITUACAO": "Baixada",
       "PORTE": "Microempresa (ME)",
       "DATA_GERACAO": "09/07/2026"
+    },
+    "05827160000122": {
+      "CNPJ": "05827160000122",
+      "RAZAO_SOCIAL": "ROMARIO KONIG BECK",
+      "NOME_FANTASIA": "BICI      RUMARIU",
+      "EMAIL": "contatoxi2fjb@gmail.com",
+      "TELEFONE": "5133648285",
+      "DATA_ABERTURA": "2003-07-22",
+      "SITUACAO": "Inapta",
+      "PORTE": "Microempresa (ME)",
+      "DATA_GERACAO": "09/07/2026"
+    },
+    "34910739000152": {
+      "CNPJ": "34910739000152",
+      "RAZAO_SOCIAL": "DANIEL DA SILVA GENEROSO 17092093724",
+      "NOME_FANTASIA": "JINIRUSU  DANIU",
+      "EMAIL": "contato0et4yw@gmail.com",
+      "TELEFONE": "(24) 0",
+      "DATA_ABERTURA": "2019-09-18",
+      "SITUACAO": "Ativa",
+      "PORTE": "Microempresa (ME)",
+      "DATA_GERACAO": "09/07/2026",
+      "META_TAG": "wosof2a7ohl8cq6rn9gbg4uebkio6l"
     }
   }
 }
