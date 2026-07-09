@@ -1693,6 +1693,30 @@ async function automateAutoRetry(email, password, proxyUrl = null, browserscanUr
       throw e;
     }
 
+    // ===== VERIFICAR SE DOMÍNIO JÁ ESTÁ VERIFICADO (OTIMIZAÇÃO) =====
+    if (tentarModoRapido) {
+      logger.info('\n📌 Verificando se domínio já está verificado...\n');
+      try {
+        await page1.goto('https://business.facebook.com/latest/settings/domains', {
+          waitUntil: 'load',
+          timeout: 30000,
+        }).catch(() => {});
+
+        const dominioVerificado = await page1.evaluate(() => {
+          const pageText = document.body.innerText || '';
+          return pageText.includes('Verified') || pageText.includes('verificado');
+        });
+
+        if (dominioVerificado) {
+          logger.info('✅ Domínio já está verificado! Pulando passos de domínio...\n');
+          // Nota: Próximos passos (Informações + WhatsApp) podem ser adicionados aqui
+          logger.info('📌 Você pode agora completar: Informações da Empresa + WhatsApp\n');
+        }
+      } catch (e) {
+        logger.warn(`⚠️ Não conseguiu verificar domínio: ${e.message}\n`);
+      }
+    }
+
     // ===== BUSINESS MANAGER - CRIAR PORTFOLIO =====
     logger.info('\n📌 Etapa 3: Abrindo Business Manager para criar portfolio\n');
 
