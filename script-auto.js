@@ -3094,13 +3094,13 @@ const PASSWORD = CONTAS_FACEBOOK ? CONTAS_FACEBOOK[0].senha : 'XXNKGTGlw97EXX';
 if (require.main === module) {
   // Mostrar quantas contas foram detectadas
   if (CONTAS_FACEBOOK && CONTAS_FACEBOOK.length > 0) {
-    logger.info('\n' + '='.repeat(60));
-    logger.info(`📱 CONTAS DE FACEBOOK DETECTADAS: ${CONTAS_FACEBOOK.length}`);
-    logger.info('='.repeat(60));
+    logger.section('🚀 FACEBOOK AUTOMATION - INICIANDO');
+    logger.status('📱', `${CONTAS_FACEBOOK.length} conta(s) detectada(s)`);
+    logger.divider();
     CONTAS_FACEBOOK.forEach((conta, idx) => {
-      logger.info(`${idx + 1}. Email: ${conta.email} (UID: ${conta.uid || 'N/A'})`);
+      logger.info(`  ${idx + 1}. ${conta.email}`);
     });
-    logger.info('');
+    logger.divider('');
 
     // Executar até 5 contas simultaneamente
     executarMultiplasContas(CONTAS_FACEBOOK, 5)
