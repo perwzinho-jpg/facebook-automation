@@ -38,32 +38,30 @@ const server = http.createServer((req, res) => {
   const query = parsedUrl.query;
   const cnpjData = loadCNPJData();
 
-  if (pathname === '/' && query.cnpj) {
-    const cnpjKey = query.cnpj.replace(/\D/g, '');
-    const companyData = cnpjData.cnpjs[cnpjKey];
+  if (pathname === '/') {
+    let cnpjKey = query.cnpj ? query.cnpj.replace(/\D/g, '') : null;
 
-    if (!companyData) {
-      res.writeHead(404, { 'Content-Type': 'text/html' });
-      res.end('<h1>❌ CNPJ não encontrado</h1>');
+    // Se não há query param, usar o ÚLTIMO CNPJ adicionado
+    if (!cnpjKey) {
+      const cnpjKeys = Object.keys(cnpjData.cnpjs);
+      if (cnpjKeys.length > 0) {
+        cnpjKey = cnpjKeys[cnpjKeys.length - 1];
+      }
+    }
+
+    // Se encontrou um CNPJ, servir o dashboard
+    if (cnpjKey && cnpjData.cnpjs[cnpjKey]) {
+      const companyData = cnpjData.cnpjs[cnpjKey];
+      const template = getDashboardTemplate();
+      const html = fillTemplate(template, companyData);
+      res.writeHead(200, { 'Content-Type': 'text/html' });
+      res.end(html);
       return;
     }
 
-    const template = getDashboardTemplate();
-    const html = fillTemplate(template, companyData);
-    res.writeHead(200, { 'Content-Type': 'text/html' });
-    res.end(html);
-    return;
-  }
-
-  if (pathname === '/') {
-    let html = '<h1>Dashboards Disponíveis</h1><ul>';
-    Object.keys(cnpjData.cnpjs).forEach(cnpjKey => {
-      const company = cnpjData.cnpjs[cnpjKey];
-      html += `<li><a href="/?cnpj=${cnpjKey}">${company.NOME_FANTASIA} (${company.CNPJ})</a></li>`;
-    });
-    html += '</ul>';
-    res.writeHead(200, { 'Content-Type': 'text/html' });
-    res.end(html);
+    // Se não há CNPJs, mostrar mensagem
+    res.writeHead(404, { 'Content-Type': 'text/html' });
+    res.end('<h1>❌ Nenhum CNPJ cadastrado</h1>');
     return;
   }
 
