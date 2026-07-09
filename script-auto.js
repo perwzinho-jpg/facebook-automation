@@ -1987,8 +1987,6 @@ async function automateAutoRetry(email, password, proxyUrl = null, browserscanUr
 
     // OK no modal de Refresh (se houver)
     logger.info('   ⏳ Confirmando mudança de idioma...');
-    logger.info('   🤖 Aplicando anti-bot antes de enviar...');
-    await applicarAntiBot(page1);
     await clickIfExists(page1, ['button:has-text("OK")', 'button:has-text("Confirm")', 'button[type="submit"]', 'button[aria-label="OK"]']);
     await new Promise(r => setTimeout(r, 2000));
     logger.info('   ✅ Idioma alterado\n');
