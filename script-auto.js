@@ -1912,50 +1912,47 @@ async function automateAutoRetry(email, password, proxyUrl = null, browserscanUr
         const pageText = document.body.innerText || '';
         const dominios = [];
 
-        // Procurar por indicadores de domínio verificado
-        const temVerified = pageText.includes('Verified') ||
-                           pageText.includes('verificado') ||
-                           pageText.toLowerCase().includes('verified domain');
-
-        // Procurar por badge de check mark ou status verde
-        const badges = document.querySelectorAll('[class*="verified"], [class*="Verified"], [class*="success"], [class*="Success"]');
-        const temBadgeVerificado = badges.length > 0;
-
-        // Tentar extrair informações dos domínios
+        // Procurar apenas por domínios que tenham o status "Verified"
+        // Ser mais específico: procurar por padrão de domínio + "Verified" na mesma linha
         const domainRows = document.querySelectorAll('[data-testid*="domain"], tr, [role="row"]');
+
         domainRows.forEach(row => {
           const text = row.innerText || row.textContent || '';
+
+          // Procurar por padrão: domínio + Verified/verificado na mesma linha
+          const hasDomain = /([a-zA-Z0-9\-]+\.[a-zA-Z0-9\.]+)/.test(text);
           const hasVerified = text.includes('Verified') || text.includes('verificado');
 
-          if (hasVerified) {
-            // Tentar extrair domínio e ID
-            const parts = text.split(/\n|,|\s+/);
+          // Só contar se tiver TANTO domínio QUANTO status verificado
+          if (hasDomain && hasVerified) {
             let domain = null;
             let id = null;
 
-            // Procurar por domínio (padrão: xxx.com ou xxx.onrender.com)
+            // Extrair domínio
             const domainMatch = text.match(/([a-zA-Z0-9\-]+\.[a-zA-Z0-9\.]+)/);
             if (domainMatch) {
               domain = domainMatch[1];
             }
 
-            // Procurar por ID (números longos)
+            // Extrair ID (números longos)
             const idMatch = text.match(/(\d{15,})/);
             if (idMatch) {
               id = idMatch[1];
             }
 
-            dominios.push({
-              domain: domain || 'Domínio desconhecido',
-              id: id || 'ID não encontrado',
-              status: 'Verified'
-            });
+            if (domain) {
+              dominios.push({
+                domain: domain,
+                id: id || 'ID não encontrado',
+                status: 'Verified'
+              });
+            }
           }
         });
 
         return {
-          temVerified: temVerified || temBadgeVerificado,
-          dominios: dominios.length > 0 ? dominios : []
+          temVerified: dominios.length > 0,
+          dominios: dominios
         };
       });
 
