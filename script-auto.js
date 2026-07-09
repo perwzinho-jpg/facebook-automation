@@ -1742,8 +1742,30 @@ async function automateAutoRetry(email, password, proxyUrl = null, browserscanUr
       throw e;
     }
 
+    // ===== VERIFICAR CONTA BLOQUEADA =====
+    logger.info('\n📌 Verificando status da conta...\n');
+    const contaBloqueada = await page1.evaluate(() => {
+      const pageText = document.body.innerText || '';
+      const temBloqueio = pageText.includes('locked your account') ||
+                         pageText.includes('hacked') ||
+                         pageText.includes('confirm this is your account') ||
+                         pageText.toLowerCase().includes('account locked');
+      return temBloqueio;
+    });
+
+    if (contaBloqueada) {
+      logger.error('\n🔒 CONTA BLOQUEADA DETECTADA!\n');
+      logger.error('❌ A conta foi bloqueada pela Facebook (possível hack)');
+      logger.error('   Fechar navegador e marcando como BLOQUEADA...\n');
+
+      if (browser) await browser.close();
+
+      return { success: false, email, cnpj: 'bloqueada', razaoSocial: 'bloqueada', language: 'pt-BR', status: 'BLOQUEADA' };
+    }
+
     // ===== VERIFICAR SE DOMÍNIO JÁ ESTÁ VERIFICADO (OTIMIZAÇÃO) =====
-    logger.info('\n📌 Verificando se há domínios verificados...\n');
+    logger.info('✅ Conta acessível\n');
+    logger.info('📌 Verificando se há domínios verificados...\n');
     try {
       // Tentar acessar página de domínios
       await page1.goto('https://business.facebook.com/latest/settings/domains', {
@@ -2901,8 +2923,21 @@ async function executarMultiplasContas(contas, quantidade = 5) {
       const proxy = null; // PROXY DESABILITADA POR ENQUANTO
       const resultado = await automateAutoRetry(conta.email, conta.senha, proxy, conta.browserscanUrl, conta.cookies);
 
-      // Se tem domínio verificado, pular conta
-      if (resultado.skipAccount) {
+      // Se a conta está bloqueada
+      if (resultado.status === 'BLOQUEADA') {
+        logger.error(`\n[${'='.repeat(50)}]`);
+        logger.error(`[${idx + 1}/${contasParaExecutar.length}] 🔒 BLOQUEADA: ${conta.email}`);
+        logger.error(`   Motivo: Conta bloqueada pela Facebook`);
+        logger.error(`[${'='.repeat(50)}]\n`);
+
+        resultados.push({
+          email: conta.email,
+          uid: conta.uid,
+          sucesso: false,
+          status: 'BLOQUEADA',
+          resultado
+        });
+      } else if (resultado.skipAccount) {
         logger.info(`\n[${'='.repeat(50)}]`);
         logger.info(`[${idx + 1}/${contasParaExecutar.length}] ⏭️ PULADA: ${conta.email}`);
         logger.info(`   Motivo: Domínio já verificado`);
