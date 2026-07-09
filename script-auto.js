@@ -2704,8 +2704,74 @@ async function automateAutoRetry(email, password, proxyUrl = null, browserscanUr
             logger.info(`   ✅ Domínio preenchido: ${valorFinal}\n`);
 
             if (preencheuDominio.success) {
-              // Aguardar um pouco
-              await new Promise(r => setTimeout(r, 1000));
+              // Aguardar um pouco para validação inicial
+              await new Promise(r => setTimeout(r, 1500));
+
+              // ===== VERIFICAR ERRO IMEDIATAMENTE APÓS PREENCHER =====
+              logger.info('   🔍 Verificando se há erro de validação...');
+              const erroImediato = await page3.evaluate(() => {
+                // Procurar por mensagem de erro no campo ou perto dele
+                const errorDiv = document.querySelector('[id*="js_zu"], [role="alert"], .x1gslohp');
+                if (errorDiv) {
+                  return errorDiv.innerText || errorDiv.textContent || '';
+                }
+
+                // Procurar por ícone de erro
+                const errorIcons = document.querySelectorAll('[color="red"], .x3nfvp2 svg');
+                for (const icon of errorIcons) {
+                  const parent = icon.closest('[role="presentation"], div[class*="error"]');
+                  if (parent) {
+                    const text = parent.parentElement?.innerText;
+                    if (text) return text;
+                  }
+                }
+
+                return null;
+              });
+
+              if (erroImediato && erroImediato.toLowerCase().includes('domínio já foi verificado')) {
+                logger.warn(`   ❌ ERRO DETECTADO: ${erroImediato}\n`);
+                logger.warn(`   🔄 Domínio ${dominioPreview} já foi verificado, mudando para novo domínio...\n`);
+
+                // Tentar trocar de domínio sem clicar em Adicionar
+                if (tentativaDominio < maxTentativasDominio) {
+                  // Criar novo domínio
+                  try {
+                    const renderAPI = new RenderServiceAPI(process.env.RENDER_API_KEY);
+                    const sufixo = Date.now().toString().slice(-6);
+                    const renderProject = await renderAPI.createWebService({
+                      cnpj: cnpjData.cnpj,
+                      suffix: sufixo
+                    });
+
+                    if (renderProject && renderProject.service && renderProject.service.name) {
+                      dominioPreview = renderProject.service.name + '.onrender.com';
+                      logger.success(`   ✅ Novo domínio criado: ${dominioPreview}\n`);
+                    }
+                  } catch (renderError) {
+                    logger.warn(`   ⚠️ Erro ao criar novo projeto Render: ${renderError.message}\n`);
+                    dominioPreview = `facebook-automation-${Date.now().toString().slice(-6)}.onrender.com`;
+                  }
+
+                  // Limpar o campo e tentar novamente
+                  await page3.evaluate(() => {
+                    const input = document.querySelector('input[placeholder*="exemplo.com"]') ||
+                                  document.querySelector('input[type="text"]');
+                    if (input) {
+                      input.value = '';
+                      input.focus();
+                    }
+                  });
+
+                  // Continuar o while loop para tentar novamente
+                  await new Promise(r => setTimeout(r, 1000));
+                  continue;
+                }
+              } else if (erroImediato) {
+                logger.warn(`   ⚠️ Outro erro detectado: ${erroImediato}\n`);
+              } else {
+                logger.info('   ✅ Nenhum erro encontrado, prosseguindo...\n');
+              }
 
               // Anti-bot antes de enviar
               logger.info('   🤖 Aplicando anti-bot antes de enviar...');
