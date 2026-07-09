@@ -58,19 +58,20 @@ class RenderServiceAPI {
       logger.info(`📝 Enviando para Render API...\n`);
       const response = await this.client.post('/services', payload);
 
-      const service = response.data;
-      const serviceUrl = `https://${service.slug}.onrender.com`;
+      const service = response.data.service;
+      const serviceUrl = service.serviceDetails.url;
 
-      logger.info(`✅ Projeto criado: ${serviceName}`);
+      logger.info(`✅ Projeto criado: ${service.name}`);
       logger.info(`🌐 URL: ${serviceUrl}`);
-      logger.info(`📊 Status: ${service.status}\n`);
+      logger.info(`📊 Status: ${service.suspended}\n`);
 
       return {
         serviceId: service.id,
         serviceName: service.name,
         slug: service.slug,
         url: serviceUrl,
-        status: service.status
+        status: service.suspended,
+        dashboardUrl: service.dashboardUrl
       };
     } catch (err) {
       logger.error(`\n❌ Erro ao criar projeto Render:`);
