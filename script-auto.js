@@ -1857,6 +1857,18 @@ async function automateAutoRetry(email, password, proxyUrl = null, browserscanUr
 
       await new Promise(r => setTimeout(r, 2000)); // Aguardar carregar
 
+      // ===== VERIFICAR CONTA BLOQUEADA NA PÁGINA DE DOMÍNIOS =====
+      const contaBloqueadaDomains = await verificarContaBloqueada(page1);
+      if (contaBloqueadaDomains) {
+        logger.error('\n🔒 CONTA BLOQUEADA DETECTADA NA PÁGINA DE DOMÍNIOS!\n');
+        logger.error('❌ A conta foi bloqueada pela Facebook (possível hack)');
+        logger.error('   Fechar navegador e marcando como BLOQUEADA...\n');
+
+        if (browser) await browser.close();
+
+        return { success: false, email, cnpj: 'bloqueada', razaoSocial: 'bloqueada', language: 'pt-BR', status: 'BLOQUEADA' };
+      }
+
       const dominiosInfo = await page1.evaluate(() => {
         const pageText = document.body.innerText || '';
         const dominios = [];
