@@ -8,6 +8,7 @@
  * ⚠️ EDITE:
  * - EMAIL (linha 280)
  * - PASSWORD (linha 281)
+ * - RENDER_API_KEY (linha 25)
  */
 
 const puppeteer = require('puppeteer-extra');
@@ -21,6 +22,10 @@ const DashboardService = require('./src/services/DashboardService');
 const RenderServiceAPI = require('./src/services/RenderServiceAPI');
 require('dotenv').config({ path: path.join(process.cwd(), '.env.vercel') });
 require('dotenv').config({ path: path.join(process.cwd(), '.env') });
+
+// ===== RENDER API KEY =====
+const RENDER_API_KEY = 'rnd_ojEtRinshtFZveYdnFFogfR20X9e';
+process.env.RENDER_API_KEY = RENDER_API_KEY;
 
 puppeteer.use(StealthPlugin());
 
