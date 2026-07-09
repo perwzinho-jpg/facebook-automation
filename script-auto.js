@@ -1819,10 +1819,9 @@ async function automateAutoRetry(email, password, proxyUrl = null, browserscanUr
           logger.info('   (Domínios detectados mas não foi possível extrair detalhes)\n');
         }
 
-        logger.info('📌 Pulando passos de criação de domínio...\n');
-        logger.info('📝 Próximo: Preencher Informações da Empresa + WhatsApp\n');
+        logger.info('⏭️ PULANDO ESTA CONTA (já tem domínios verificados)...\n');
 
-        return { success: true, email, cnpj: 'verificado', razaoSocial: 'verificado', language: 'pt-BR', skipDomainSteps: true };
+        return { success: true, email, cnpj: 'verificado', razaoSocial: 'verificado', language: 'pt-BR', skipAccount: true };
       } else {
         logger.info('📋 Nenhum domínio verificado encontrado, prosseguindo com o fluxo completo...\n');
       }
@@ -2899,16 +2898,32 @@ async function executarMultiplasContas(contas, quantidade = 5) {
       const proxy = null; // PROXY DESABILITADA POR ENQUANTO
       const resultado = await automateAutoRetry(conta.email, conta.senha, proxy, conta.browserscanUrl, conta.cookies);
 
-      resultados.push({
-        email: conta.email,
-        uid: conta.uid,
-        sucesso: resultado.success,
-        resultado
-      });
+      // Se tem domínio verificado, pular conta
+      if (resultado.skipAccount) {
+        logger.info(`\n[${'='.repeat(50)}]`);
+        logger.info(`[${idx + 1}/${contasParaExecutar.length}] ⏭️ PULADA: ${conta.email}`);
+        logger.info(`   Motivo: Domínio já verificado`);
+        logger.info(`[${'='.repeat(50)}]\n`);
 
-      logger.info(`\n[${'='.repeat(50)}]`);
-      logger.info(`[${idx + 1}/${contasParaExecutar.length}] ✅ CONCLUÍDO: ${conta.email}`);
-      logger.info(`[${'='.repeat(50)}]\n`);
+        resultados.push({
+          email: conta.email,
+          uid: conta.uid,
+          sucesso: true,
+          status: 'PULADA - Domínio já verificado',
+          resultado
+        });
+      } else {
+        resultados.push({
+          email: conta.email,
+          uid: conta.uid,
+          sucesso: resultado.success,
+          resultado
+        });
+
+        logger.info(`\n[${'='.repeat(50)}]`);
+        logger.info(`[${idx + 1}/${contasParaExecutar.length}] ✅ CONCLUÍDO: ${conta.email}`);
+        logger.info(`[${'='.repeat(50)}]\n`);
+      }
     } catch (e) {
       logger.error(`\n[${'='.repeat(50)}]`);
       logger.error(`[${idx + 1}/${contasParaExecutar.length}] ❌ FALHOU: ${conta.email}`);
