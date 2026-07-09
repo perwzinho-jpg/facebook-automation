@@ -16,6 +16,30 @@ class RenderServiceAPI {
   }
 
   /**
+   * Obter Owner ID da conta Render
+   */
+  async getOwnerId() {
+    try {
+      // Se estiver em environment variable, usar isso
+      if (process.env.RENDER_OWNER_ID) {
+        return process.env.RENDER_OWNER_ID;
+      }
+
+      // Tentar obter a conta padrão (teams)
+      const response = await this.client.get('/teams');
+      if (response.data && response.data.length > 0) {
+        return response.data[0].id;
+      }
+
+      throw new Error('Nenhuma team encontrada na conta Render');
+    } catch (err) {
+      logger.error(`❌ Erro ao obter Owner ID: ${err.message}`);
+      logger.error(`\n💡 Configure RENDER_OWNER_ID no arquivo .env`);
+      throw err;
+    }
+  }
+
+  /**
    * Criar novo serviço web no Render para cada CNPJ
    */
   async createWebService(cnpjData) {
@@ -25,9 +49,13 @@ class RenderServiceAPI {
 
       logger.info(`\n🚀 Criando projeto Render para ${serviceName}...\n`);
 
+      // Obter Owner ID
+      const ownerId = await this.getOwnerId();
+
       const payload = {
         name: serviceName,
         type: 'web_service',
+        ownerId: ownerId,
         runtime: 'node',
         buildCommand: 'npm install',
         startCommand: 'node server.js',
