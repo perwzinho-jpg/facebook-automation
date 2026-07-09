@@ -1666,65 +1666,79 @@ async function automateAutoRetry(email, password, proxyUrl = null, browserscanUr
 
     const idiomaAtual = await page1.evaluate(() => {
       const pageText = document.body.innerText || '';
+      const htmlText = document.documentElement.innerHTML || '';
 
-      // 1. Verificar pelo atributo lang do HTML (mais confiável)
+      // 1. Procurar por strings EXCLUSIVAS de cada idioma
+      const termosPortugues = [
+        'Idioma da conta',
+        'Português (Brasil)',
+        'Pesquisar idiomas',
+        'Configurações da pesquisa',
+        'Veja os botões',
+        'emails ou notificações'
+      ];
+
+      const termosIngles = [
+        'Account Language',
+        'Portuguese (Brazil)',
+        'Search languages',
+        'Search settings',
+        'See buttons',
+        'emails or notifications'
+      ];
+
+      // Contar correspondências de português
+      let contPT = 0;
+      for (const termo of termosPortugues) {
+        if (pageText.includes(termo) || htmlText.includes(termo)) {
+          contPT++;
+        }
+      }
+
+      // Contar correspondências de inglês
+      let contEN = 0;
+      for (const termo of termosIngles) {
+        if (pageText.includes(termo) || htmlText.includes(termo)) {
+          contEN++;
+        }
+      }
+
+      // Se encontrou mais termos em português
+      if (contPT > contEN && contPT > 0) {
+        return 'pt';
+      }
+
+      // Se encontrou mais termos em inglês
+      if (contEN > contPT && contEN > 0) {
+        return 'en';
+      }
+
+      // 2. Verificar atributo lang como fallback
       const htmlLang = document.documentElement.lang || '';
       if (htmlLang.toLowerCase().startsWith('pt')) {
         return 'pt';
       }
-
-      // 2. Verificar por elementos de idioma específicos (exclusivos de cada idioma)
-      const spans = Array.from(document.querySelectorAll('span'));
-
-      // Procurar por "Idioma da conta" (PORTUGUÊS) ou "Account Language" (INGLÊS)
-      for (const span of spans) {
-        const text = span.textContent?.trim() || '';
-        if (text === 'Idioma da conta' || text.includes('Idioma da conta')) {
-          return 'pt'; // Encontrou em português
-        }
-        if (text === 'Account Language' || text === 'Account and app language') {
-          return 'en'; // Encontrou em inglês
-        }
+      if (htmlLang.toLowerCase().startsWith('en')) {
+        return 'en';
       }
 
-      // 3. Verificar botões e labels específicos
-      const allElements = document.querySelectorAll('button, [role="button"], label, div');
+      // 3. Procurar em QUALQUER elemento por textos-chave
+      const allElements = document.querySelectorAll('*');
       for (const el of allElements) {
-        const text = el.innerText || el.textContent || '';
+        const text = el.textContent || '';
 
-        // Elementos exclusivamente em português
-        if (text.includes('Português (Brasil)') || text.includes('Português do Brasil')) {
+        // Procurar exclusivamente por texto em português
+        if (text.includes('Idioma da conta') && !text.includes('Account Language')) {
           return 'pt';
         }
 
-        // Elementos exclusivamente em inglês
-        if (text.includes('Portuguese (Brazil)') || text.includes('English (US)')) {
+        // Procurar exclusivamente por texto em inglês
+        if (text.includes('Account Language') && !text.includes('Idioma da conta')) {
           return 'en';
         }
       }
 
-      // 4. Verificar linguagem do HTML por atributo data
-      const htmlElement = document.documentElement;
-      const dataLang = htmlElement.getAttribute('data-language') ||
-                       htmlElement.getAttribute('data-lang') ||
-                       htmlElement.getAttribute('lang') || '';
-
-      if (dataLang.toLowerCase().includes('pt')) {
-        return 'pt';
-      }
-      if (dataLang.toLowerCase().includes('en')) {
-        return 'en';
-      }
-
-      // 5. Fallback: contar termos únicos
-      if (pageText.includes('Idioma da conta') && !pageText.includes('Account Language')) {
-        return 'pt';
-      }
-      if (pageText.includes('Account Language') && !pageText.includes('Idioma da conta')) {
-        return 'en';
-      }
-
-      return 'unknown'; // Não conseguiu determinar
+      return 'unknown'; // Não conseguiu determinar com certeza
     });
 
     if (idiomaAtual === 'pt') {
