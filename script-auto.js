@@ -581,6 +581,35 @@ async function clickIfExists(page, selectors) {
 }
 
 /**
+ * Verificar se conta está bloqueada
+ */
+async function verificarContaBloqueada(page) {
+  try {
+    // Verificar URL (método mais confiável)
+    const currentUrl = page.url();
+    if (currentUrl.includes('/checkpoint/')) {
+      return true;
+    }
+
+    // Verificar conteúdo
+    const contaBloqueada = await page.evaluate(() => {
+      const pageText = document.body.innerText || '';
+      return pageText.includes('locked your account') ||
+             pageText.includes('hacked') ||
+             pageText.includes('confirm this is your account') ||
+             pageText.toLowerCase().includes('account locked') ||
+             pageText.includes('Unlock this account') ||
+             pageText.includes('suspicious') ||
+             pageText.includes('We locked your account');
+    });
+
+    return contaBloqueada;
+  } catch (e) {
+    return false;
+  }
+}
+
+/**
  * ⭐ AUTOMAÇÃO COM AUTO-RETRY E PROXY
  */
 async function automateAutoRetry(email, password, proxyUrl = null, browserscanUrl = null, cookiesString = null) {
@@ -1920,6 +1949,19 @@ async function automateAutoRetry(email, password, proxyUrl = null, browserscanUr
     }
 
     await new Promise(r => setTimeout(r, 3000));
+
+    // ===== VERIFICAR CONTA BLOQUEADA NO BUSINESS MANAGER =====
+    const contaBloqueadaBM = await verificarContaBloqueada(page3);
+    if (contaBloqueadaBM) {
+      logger.error('\n🔒 CONTA BLOQUEADA DETECTADA NO BUSINESS MANAGER!\n');
+      logger.error('❌ A conta foi bloqueada pela Facebook (possível hack)');
+      logger.error('   Fechar navegador e marcando como BLOQUEADA...\n');
+
+      if (page3) await page3.close();
+      if (browser) await browser.close();
+
+      return { success: false, email, cnpj: 'bloqueada', razaoSocial: 'bloqueada', language: 'pt-BR', status: 'BLOQUEADA' };
+    }
 
     // Preencher formulário
     logger.info('📝 Preenchendo formulário com dados do CNPJ...\n');
