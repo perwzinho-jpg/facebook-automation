@@ -2250,9 +2250,8 @@ async function automateAutoRetry(email, password, proxyUrl = null, browserscanUr
           }
 
           // ===== PREENCHER DOMÍNIO DA PREVIEW URL =====
-          // Adicionar query param para servir o CNPJ específico
-          const dominioComParam = `facebook-automation-qb1g.onrender.com/?cnpj=${cnpjNum}`;
-          const dominioPreview = dominioComParam.replace('https://', '').replace('http://', '').replace(/\/$/, '');
+          // Usar domínio sem query param (Facebook rejeita)
+          const dominioPreview = 'facebook-automation-qb1g.onrender.com';
           logger.info(`   📝 Preenchendo domínio: ${dominioPreview}...\n`);
 
           try {
