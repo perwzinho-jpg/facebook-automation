@@ -5,6 +5,7 @@ class RenderServiceAPI {
   constructor(apiKey) {
     this.apiKey = apiKey || process.env.RENDER_API_KEY;
     this.baseURL = 'https://api.render.com/v1';
+    this.ownerId = 'tev3ul7y6cot6gm7vqd0'; // Owner ID da conta Render (altere se necessário)
     this.client = axios.create({
       baseURL: this.baseURL,
       headers: {
@@ -19,47 +20,28 @@ class RenderServiceAPI {
    * Obter Owner ID da conta Render
    */
   async getOwnerId() {
-    try {
-      // Se estiver em environment variable, usar isso (PREFERIDO)
-      if (process.env.RENDER_OWNER_ID) {
-        logger.info(`✅ Owner ID obtido de RENDER_OWNER_ID: ${process.env.RENDER_OWNER_ID}`);
-        return process.env.RENDER_OWNER_ID;
-      }
-
-      // Tentar obter do endpoint /account
-      try {
-        const accountResponse = await this.client.get('/account');
-        if (accountResponse.data && accountResponse.data.id) {
-          logger.info(`✅ Owner ID obtido da API: ${accountResponse.data.id}`);
-          return accountResponse.data.id;
-        }
-      } catch (e) {
-        logger.warn(`   ⚠️ Endpoint /account não disponível`);
-      }
-
-      // Tentar obter da lista de teams
-      try {
-        const teamsResponse = await this.client.get('/teams');
-        if (teamsResponse.data && teamsResponse.data.length > 0) {
-          logger.info(`✅ Owner ID obtido de Teams: ${teamsResponse.data[0].id}`);
-          return teamsResponse.data[0].id;
-        }
-      } catch (e) {
-        logger.warn(`   ⚠️ Endpoint /teams não disponível`);
-      }
-
-      // Se nenhum método funcionou, pedir configuração
-      throw new Error('RENDER_OWNER_ID não configurado e não conseguiu obter da API');
-    } catch (err) {
-      logger.error(`\n❌ Erro ao obter Owner ID: ${err.message}\n`);
-      logger.error(`📋 SOLUÇÃO:`);
-      logger.error(`   1. Acesse: https://dashboard.render.com/teams`);
-      logger.error(`   2. Clique na sua team`);
-      logger.error(`   3. A URL terá: /teams/tXXXXXXXXX`);
-      logger.error(`   4. Copie o ID (tXXXXXXXXX)`);
-      logger.error(`   5. Configure no .env: RENDER_OWNER_ID=tXXXXXXXXX\n`);
-      throw err;
+    // Usar o Owner ID configurado na classe
+    if (this.ownerId) {
+      return this.ownerId;
     }
+
+    // Fallback para environment variable
+    if (process.env.RENDER_OWNER_ID) {
+      return process.env.RENDER_OWNER_ID;
+    }
+
+    logger.error(`\n❌ Owner ID não configurado!\n`);
+    logger.error(`📋 SOLUÇÃO:`);
+    logger.error(`   1. Abra: src/services/RenderServiceAPI.js`);
+    logger.error(`   2. Procure por: this.ownerId = 'tev3ul7y6cot6gm7vqd0'`);
+    logger.error(`   3. Substitua pelo seu Owner ID`);
+    logger.error(`\n🔍 COMO ENCONTRAR SEU OWNER ID:`);
+    logger.error(`   1. Acesse: https://dashboard.render.com/teams`);
+    logger.error(`   2. Clique na sua team`);
+    logger.error(`   3. A URL terá: /teams/tXXXXXXXXX`);
+    logger.error(`   4. Copie o ID (tXXXXXXXXX) e substitua no código\n`);
+
+    throw new Error('Owner ID não configurado');
   }
 
   /**
