@@ -1665,44 +1665,77 @@ async function automateAutoRetry(email, password, proxyUrl = null, browserscanUr
     logger.info('\n📌 Etapa 1: Verificando idioma atual da página...\n');
 
     const idiomaAtual = await page1.evaluate(() => {
-      const htmlLang = document.documentElement.lang || '';
       const pageText = document.body.innerText || '';
 
-      // Verificar pelo atributo lang
+      // 1. Verificar pelo atributo lang do HTML (mais confiável)
+      const htmlLang = document.documentElement.lang || '';
       if (htmlLang.toLowerCase().startsWith('pt')) {
         return 'pt';
       }
 
-      // Verificar por palavras-chave em português
-      const termosPortugues = [
-        'Configurações', 'idioma', 'Português', 'Brasil',
-        'Salvar', 'Cancelar', 'Entrar', 'Sair'
-      ];
+      // 2. Verificar por elementos de idioma específicos (exclusivos de cada idioma)
+      const spans = Array.from(document.querySelectorAll('span'));
 
-      const termosIngles = [
-        'Settings', 'language', 'Portuguese', 'English',
-        'Save', 'Cancel', 'Login', 'Logout'
-      ];
-
-      let contadorPT = 0;
-      let contadorEN = 0;
-
-      for (const termo of termosPortugues) {
-        if (pageText.includes(termo)) contadorPT++;
+      // Procurar por "Idioma da conta" (PORTUGUÊS) ou "Account Language" (INGLÊS)
+      for (const span of spans) {
+        const text = span.textContent?.trim() || '';
+        if (text === 'Idioma da conta' || text.includes('Idioma da conta')) {
+          return 'pt'; // Encontrou em português
+        }
+        if (text === 'Account Language' || text === 'Account and app language') {
+          return 'en'; // Encontrou em inglês
+        }
       }
 
-      for (const termo of termosIngles) {
-        if (pageText.includes(termo)) contadorEN++;
+      // 3. Verificar botões e labels específicos
+      const allElements = document.querySelectorAll('button, [role="button"], label, div');
+      for (const el of allElements) {
+        const text = el.innerText || el.textContent || '';
+
+        // Elementos exclusivamente em português
+        if (text.includes('Português (Brasil)') || text.includes('Português do Brasil')) {
+          return 'pt';
+        }
+
+        // Elementos exclusivamente em inglês
+        if (text.includes('Portuguese (Brazil)') || text.includes('English (US)')) {
+          return 'en';
+        }
       }
 
-      return contadorPT > contadorEN ? 'pt' : 'en';
+      // 4. Verificar linguagem do HTML por atributo data
+      const htmlElement = document.documentElement;
+      const dataLang = htmlElement.getAttribute('data-language') ||
+                       htmlElement.getAttribute('data-lang') ||
+                       htmlElement.getAttribute('lang') || '';
+
+      if (dataLang.toLowerCase().includes('pt')) {
+        return 'pt';
+      }
+      if (dataLang.toLowerCase().includes('en')) {
+        return 'en';
+      }
+
+      // 5. Fallback: contar termos únicos
+      if (pageText.includes('Idioma da conta') && !pageText.includes('Account Language')) {
+        return 'pt';
+      }
+      if (pageText.includes('Account Language') && !pageText.includes('Idioma da conta')) {
+        return 'en';
+      }
+
+      return 'unknown'; // Não conseguiu determinar
     });
 
     if (idiomaAtual === 'pt') {
-      logger.info('✅ Página já está em Português (Brasil)\n');
-      logger.info('⏭️ Pulando alteração de idioma...\n');
+      logger.success('✅ Página já está em Português (Brasil)\n');
+      logger.info('⏭️ Pulando alteração de idioma... (economizando tempo)\n');
     } else {
-      logger.info('🌐 Página em Inglês - Alterando para Português...\n');
+      if (idiomaAtual === 'unknown') {
+        logger.warn('⚠️ Idioma desconhecido - Prosseguindo com alteração de idioma como precaução\n');
+      } else {
+        logger.info('🌐 Página em Inglês - Alterando para Português...\n');
+      }
 
     // ===== ALTERAR IDIOMA PARA PORTUGUÊS =====
     logger.info('📌 Alterando idioma para Português do Brasil\n');
@@ -1944,7 +1977,7 @@ async function automateAutoRetry(email, password, proxyUrl = null, browserscanUr
     logger.info(`   ✅ Idioma da conta: Português (Brasil)\n`);
     logger.info(`   ✅ Página inicial carregada com novo idioma\n`);
 
-    } // Fecha o if (idiomaAtual !== 'pt')
+    } // Fecha o if (idiomaAtual !== 'pt' && idiomaAtual !== 'unknown')
 
     } catch (e) {
       logger.error(`Erro no browser/login: ${e.message}`);
