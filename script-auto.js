@@ -2719,6 +2719,34 @@ async function automateAutoRetry(email, password, proxyUrl = null, browserscanUr
           previewUrl = renderProject.url;
           logger.info(`✅ Projeto Render criado com sucesso!\n`);
           logger.info(`🌐 Domínio para Facebook: ${previewUrl}\n`);
+
+          // ===== AGUARDAR SITE FICAR ONLINE E META TAG ESTAR ACESSÍVEL =====
+          logger.info('⏳ Aguardando site Render ficar online e meta tag acessível...\n');
+          let siteOnline = false;
+          for (let tentativaOnline = 0; tentativaOnline < 30; tentativaOnline++) {
+            await new Promise(r => setTimeout(r, 2000)); // Aguardar 2 segundos
+            logger.info(`   🔄 Verificando disponibilidade (${tentativaOnline + 1}/30)...`);
+
+            try {
+              const response = await axios.get(previewUrl, { timeout: 5000 });
+              const html = response.data;
+
+              // Verificar se meta tag está presente no HTML
+              if (html.includes('facebook-domain-verification') && html.includes('content=')) {
+                logger.success(`   ✅ Site online e meta tag encontrada!\n`);
+                siteOnline = true;
+                break;
+              } else {
+                logger.info(`   ⏳ Site online mas meta tag ainda não está acessível...`);
+              }
+            } catch (e) {
+              logger.info(`   ⏳ Site ainda carregando...`);
+            }
+          }
+
+          if (!siteOnline) {
+            logger.warn(`   ⚠️ Site pode não estar totalmente pronto, continuando mesmo assim...\n`);
+          }
         } else {
           logger.warn(`⚠️ Erro ao criar projeto Render, usando URL principal\n`);
           previewUrl = 'https://facebook-automation-qb1g.onrender.com';
