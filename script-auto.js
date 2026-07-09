@@ -1674,8 +1674,17 @@ async function automateAutoRetry(email, password, proxyUrl = null, browserscanUr
     logger.info('\n⏳ Aguardando 5 segundos para Facebook carregar completamente...\n');
     await new Promise(r => setTimeout(r, 5000));
 
+    // ===== NAVEGAR PARA PÁGINA DE IDIOMA PARA VERIFICAÇÃO =====
+    logger.info('📌 Navegando para página de idioma do Facebook...\n');
+    await page1.goto('https://www.facebook.com/settings/?tab=language_and_region', {
+      waitUntil: 'load',
+      timeout: 60000,
+    });
+    logger.info('   ✅ Página de idioma carregada\n');
+    await new Promise(r => setTimeout(r, 2000));
+
     // ===== VERIFICAR IDIOMA ATUAL DA PÁGINA =====
-    logger.info('📌 Verificando idioma atual da página...\n');
+    logger.info('📌 Verificando idioma atual...\n');
 
     const idiomaAtual = await page1.evaluate(() => {
       const pageText = document.body.innerText || '';
