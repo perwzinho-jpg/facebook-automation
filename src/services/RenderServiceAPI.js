@@ -47,6 +47,7 @@ class RenderServiceAPI {
         branch: 'main',
         region: 'oregon',
         serviceDetails: {
+          runtime: 'node',
           envSpecificDetails: {
             buildCommand: 'npm install',
             startCommand: 'node server.js'
