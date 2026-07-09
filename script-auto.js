@@ -581,6 +581,62 @@ async function clickIfExists(page, selectors) {
 }
 
 /**
+ * 🤖 Técnica Anti-Bot: Apagar e redigitar última letra do último input
+ */
+async function applicarAntiBot(page) {
+  try {
+    const ultimaLetra = await page.evaluate(() => {
+      // Procurar por todos os inputs/textareas visíveis
+      const inputs = Array.from(document.querySelectorAll('input[type="text"], input[type="email"], input[type="number"], textarea'));
+
+      // Filtrar por inputs que estão visíveis e têm valor
+      const inputsComValor = inputs.filter(inp => {
+        return inp.offsetParent !== null && // Visível
+               inp.value && inp.value.length > 0 && // Tem valor
+               !inp.readOnly && !inp.disabled; // Não é readonly/disabled
+      });
+
+      if (inputsComValor.length > 0) {
+        // Pegar o último input com valor
+        const ultimoInput = inputsComValor[inputsComValor.length - 1];
+
+        // Focar nele
+        ultimoInput.focus();
+
+        // Ir para o final
+        ultimoInput.setSelectionRange(ultimoInput.value.length, ultimoInput.value.length);
+
+        // Simular delete da última letra
+        const ultimaLetra = ultimoInput.value[ultimoInput.value.length - 1];
+        ultimoInput.value = ultimoInput.value.slice(0, -1);
+
+        // Trigger change event
+        ultimoInput.dispatchEvent(new Event('input', { bubbles: true }));
+        ultimoInput.dispatchEvent(new Event('change', { bubbles: true }));
+
+        // Retornar a última letra para que o script redigite
+        return ultimaLetra;
+      }
+
+      return null;
+    });
+
+    if (ultimaLetra) {
+      // Aguardar um pouco (humano vendo que apagou)
+      await new Promise(r => setTimeout(r, 400 + Math.random() * 300));
+
+      // Redigitar a letra
+      await page.keyboard.type(ultimaLetra, { delay: 100 + Math.random() * 100 });
+
+      // Aguardar antes de enviar
+      await new Promise(r => setTimeout(r, 300 + Math.random() * 200));
+    }
+  } catch (e) {
+    // Ignorar erros, continue com o envio
+  }
+}
+
+/**
  * Verificar se conta está bloqueada
  */
 async function verificarContaBloqueada(page) {
@@ -1824,6 +1880,8 @@ async function automateAutoRetry(email, password, proxyUrl = null, browserscanUr
 
     // OK no modal de Refresh (se houver)
     logger.info('   ⏳ Confirmando mudança de idioma...');
+    logger.info('   🤖 Aplicando anti-bot antes de enviar...');
+    await applicarAntiBot(page1);
     await clickIfExists(page1, ['button:has-text("OK")', 'button:has-text("Confirm")', 'button[type="submit"]', 'button[aria-label="OK"]']);
     await new Promise(r => setTimeout(r, 2000));
     logger.info('   ✅ Idioma alterado\n');
@@ -2186,6 +2244,10 @@ async function automateAutoRetry(email, password, proxyUrl = null, browserscanUr
 
     logger.info('✅ Formulário preenchido com sucesso!\n');
 
+    // Anti-bot antes de enviar
+    logger.info('   🤖 Aplicando anti-bot antes de enviar...');
+    await applicarAntiBot(page3);
+
     // Clicar em "Enviar" para confirmar
     logger.info('   🚀 Clicando em Enviar...');
     const enviarClicado = await page3.evaluate(() => {
@@ -2270,6 +2332,10 @@ async function automateAutoRetry(email, password, proxyUrl = null, browserscanUr
       logger.info('   ⏭️ Pulando criação de novo portfólio e continuando...\n');
     } else {
       // ===== CLICAR EM "CONCLUIR" =====
+      // Anti-bot antes de enviar
+      logger.info('   🤖 Aplicando anti-bot antes de enviar...');
+      await applicarAntiBot(page3);
+
       logger.info('   ✅ Clicando em Concluir...\n');
 
       const concluirClicado = await page3.evaluate(() => {
@@ -2626,6 +2692,10 @@ async function automateAutoRetry(email, password, proxyUrl = null, browserscanUr
             if (preencheuDominio.success) {
               // Aguardar um pouco
               await new Promise(r => setTimeout(r, 1000));
+
+              // Anti-bot antes de enviar
+              logger.info('   🤖 Aplicando anti-bot antes de enviar...');
+              await applicarAntiBot(page3);
 
               // Clicar em "Adicionar"
               logger.info('   🔗 Clicando em "Adicionar"...\n');
