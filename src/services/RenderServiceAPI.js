@@ -5,7 +5,7 @@ class RenderServiceAPI {
   constructor(apiKey) {
     this.apiKey = apiKey || process.env.RENDER_API_KEY;
     this.baseURL = 'https://api.render.com/v1';
-    this.ownerId = 'tev3ul7y6cot6gm7vqd0'; // Owner ID da conta Render (altere se necessário)
+    this.ownerId = process.env.RENDER_OWNER_ID || null; // Owner ID é opcional
     this.client = axios.create({
       baseURL: this.baseURL,
       headers: {
@@ -17,31 +17,15 @@ class RenderServiceAPI {
   }
 
   /**
-   * Obter Owner ID da conta Render
+   * Obter Owner ID se configurado
    */
   async getOwnerId() {
-    // Usar o Owner ID configurado na classe
+    // Se tiver Owner ID configurado, retornar
     if (this.ownerId) {
       return this.ownerId;
     }
-
-    // Fallback para environment variable
-    if (process.env.RENDER_OWNER_ID) {
-      return process.env.RENDER_OWNER_ID;
-    }
-
-    logger.error(`\n❌ Owner ID não configurado!\n`);
-    logger.error(`📋 SOLUÇÃO:`);
-    logger.error(`   1. Abra: src/services/RenderServiceAPI.js`);
-    logger.error(`   2. Procure por: this.ownerId = 'tev3ul7y6cot6gm7vqd0'`);
-    logger.error(`   3. Substitua pelo seu Owner ID`);
-    logger.error(`\n🔍 COMO ENCONTRAR SEU OWNER ID:`);
-    logger.error(`   1. Acesse: https://dashboard.render.com/teams`);
-    logger.error(`   2. Clique na sua team`);
-    logger.error(`   3. A URL terá: /teams/tXXXXXXXXX`);
-    logger.error(`   4. Copie o ID (tXXXXXXXXX) e substitua no código\n`);
-
-    throw new Error('Owner ID não configurado');
+    // Caso contrário, retornar null (será opcional no payload)
+    return null;
   }
 
   /**
