@@ -1753,8 +1753,9 @@ async function automateAutoRetry(email, password, proxyUrl = null, browserscanUr
 
       await new Promise(r => setTimeout(r, 2000)); // Aguardar carregar
 
-      const dominiosVerificados = await page1.evaluate(() => {
+      const dominiosInfo = await page1.evaluate(() => {
         const pageText = document.body.innerText || '';
+        const dominios = [];
 
         // Procurar por indicadores de domínio verificado
         const temVerified = pageText.includes('Verified') ||
@@ -1765,15 +1766,62 @@ async function automateAutoRetry(email, password, proxyUrl = null, browserscanUr
         const badges = document.querySelectorAll('[class*="verified"], [class*="Verified"], [class*="success"], [class*="Success"]');
         const temBadgeVerificado = badges.length > 0;
 
-        return temVerified || temBadgeVerificado;
+        // Tentar extrair informações dos domínios
+        const domainRows = document.querySelectorAll('[data-testid*="domain"], tr, [role="row"]');
+        domainRows.forEach(row => {
+          const text = row.innerText || row.textContent || '';
+          const hasVerified = text.includes('Verified') || text.includes('verificado');
+
+          if (hasVerified) {
+            // Tentar extrair domínio e ID
+            const parts = text.split(/\n|,|\s+/);
+            let domain = null;
+            let id = null;
+
+            // Procurar por domínio (padrão: xxx.com ou xxx.onrender.com)
+            const domainMatch = text.match(/([a-zA-Z0-9\-]+\.[a-zA-Z0-9\.]+)/);
+            if (domainMatch) {
+              domain = domainMatch[1];
+            }
+
+            // Procurar por ID (números longos)
+            const idMatch = text.match(/(\d{15,})/);
+            if (idMatch) {
+              id = idMatch[1];
+            }
+
+            dominios.push({
+              domain: domain || 'Domínio desconhecido',
+              id: id || 'ID não encontrado',
+              status: 'Verified'
+            });
+          }
+        });
+
+        return {
+          temVerified: temVerified || temBadgeVerificado,
+          dominios: dominios.length > 0 ? dominios : []
+        };
       });
 
-      if (dominiosVerificados) {
+      if (dominiosInfo.temVerified) {
         logger.info('✅ DOMÍNIOS VERIFICADOS ENCONTRADOS!\n');
+
+        // Mostrar detalhes de cada domínio verificado
+        if (dominiosInfo.dominios.length > 0) {
+          logger.info('🔍 Detalhes dos domínios verificados:\n');
+          dominiosInfo.dominios.forEach((dom, idx) => {
+            logger.info(`   ${idx + 1}️⃣ Domínio: ${dom.domain}`);
+            logger.info(`      ID: ${dom.id}`);
+            logger.info(`      Status: ${dom.status}\n`);
+          });
+        } else {
+          logger.info('   (Domínios detectados mas não foi possível extrair detalhes)\n');
+        }
+
         logger.info('📌 Pulando passos de criação de domínio...\n');
         logger.info('📝 Próximo: Preencher Informações da Empresa + WhatsApp\n');
 
-        // Para próximas versões: integrar automação dos passos seguintes
         return { success: true, email, cnpj: 'verificado', razaoSocial: 'verificado', language: 'pt-BR', skipDomainSteps: true };
       } else {
         logger.info('📋 Nenhum domínio verificado encontrado, prosseguindo com o fluxo completo...\n');
