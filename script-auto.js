@@ -583,7 +583,7 @@ async function clickIfExists(page, selectors) {
 /**
  * ⭐ AUTOMAÇÃO COM AUTO-RETRY E PROXY
  */
-async function automateAutoRetry(email, password, proxyUrl = null, browserscanUrl = null) {
+async function automateAutoRetry(email, password, proxyUrl = null, browserscanUrl = null, cookiesString = null) {
   let browser, page1, page2;
 
   try {
@@ -635,16 +635,48 @@ async function automateAutoRetry(email, password, proxyUrl = null, browserscanUr
       'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
     );
 
-    // Tentar carregar cookies salvos (modo rápido)
-    const cookieFile = path.join('storage/cookies', `${email}.json`);
-    let tentarModoRapido = fs.existsSync(cookieFile);
+    // Tentar carregar cookies (modo rápido)
+    // PRIORIDADE 1: Usar cookies do arquivo lista.txt (mais recentes)
+    // PRIORIDADE 2: Usar cookies salvos em storage/cookies/
+    let tentarModoRapido = false;
+    let cookiesUtilizados = 'Nenhum';
 
-    if (tentarModoRapido) {
-      logger.info('💾 Tentando modo rápido (carregar cookies salvos)...\n');
+    if (cookiesString) {
+      logger.info('💾 Usando cookies do arquivo lista.txt...\n');
       try {
-        const cookies = JSON.parse(fs.readFileSync(cookieFile, 'utf8'));
-        await page1.setCookie(...cookies);
-        logger.info('✅ Cookies carregados\n');
+        // Converter string de cookies em array de objetos
+        const cookieArray = cookiesString.split(';').map(cookie => {
+          const [name, value] = cookie.trim().split('=');
+          return {
+            name: name.trim(),
+            value: value.trim(),
+            domain: '.facebook.com',
+            path: '/',
+            httpOnly: true,
+            secure: true,
+            sameSite: 'Lax'
+          };
+        });
+        await page1.setCookie(...cookieArray);
+        logger.info('✅ Cookies do lista.txt carregados\n');
+        cookiesUtilizados = 'lista.txt';
+        tentarModoRapido = true;
+      } catch (err) {
+        logger.warn(`⚠️ Erro ao usar cookies do lista.txt: ${err.message}\n`);
+        tentarModoRapido = false;
+      }
+    }
+
+    // Se cookies do lista.txt falharam, tentar arquivo salvo
+    if (!tentarModoRapido) {
+      const cookieFile = path.join('storage/cookies', `${email}.json`);
+      if (fs.existsSync(cookieFile)) {
+        logger.info('💾 Tentando cookies salvos em storage/...\n');
+        try {
+          const cookies = JSON.parse(fs.readFileSync(cookieFile, 'utf8'));
+          await page1.setCookie(...cookies);
+          logger.info('✅ Cookies carregados\n');
+          cookiesUtilizados = 'storage';
 
         // Acessar Home para verificar se ainda está logado
         await page1.goto('https://www.facebook.com', {
@@ -659,13 +691,14 @@ async function automateAutoRetry(email, password, proxyUrl = null, browserscanUr
           logger.success('Continuando de onde parou!');
           // Pular para Business Manager direto
           tentarModoRapido = true;
-        } else {
-          logger.warning('Sessão expirada, fazendo login novamente...\n');
+          } else {
+            logger.warning('Sessão expirada, fazendo login novamente...\n');
+            tentarModoRapido = false;
+          }
+        } catch (cookieErr) {
+          logger.warn(`Erro ao carregar cookies storage: ${cookieErr.message}\n`);
           tentarModoRapido = false;
         }
-      } catch (cookieErr) {
-        logger.warn(`Erro ao carregar cookies: ${cookieErr.message}\n`);
-        tentarModoRapido = false;
       }
     }
 
@@ -2751,6 +2784,9 @@ function lerContasDeFacebook() {
         } else if (linha.includes('AUTENTICADOR 2FA:')) {
           // Extrair URL do Browserscan
           conta.browserscanUrl = linha.split('AUTENTICADOR 2FA:')[1].trim();
+        } else if (linha.includes('COOKIES:')) {
+          // Extrair cookies da conta
+          conta.cookies = linha.split('COOKIES:')[1].trim();
         }
       });
 
@@ -2787,7 +2823,7 @@ async function executarMultiplasContas(contas, quantidade = 5) {
       logger.info(`[${'='.repeat(50)}]\n`);
 
       const proxy = null; // PROXY DESABILITADA POR ENQUANTO
-      const resultado = await automateAutoRetry(conta.email, conta.senha, proxy, conta.browserscanUrl);
+      const resultado = await automateAutoRetry(conta.email, conta.senha, proxy, conta.browserscanUrl, conta.cookies);
 
       resultados.push({
         email: conta.email,
