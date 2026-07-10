@@ -326,6 +326,18 @@
       "PORTE": "Demais",
       "DATA_GERACAO": "09/07/2026",
       "META_TAG": "nd0kgukv2ue8lvxct6yhj09rh2wk9t"
+    },
+    "09034009000198": {
+      "CNPJ": "09034009000198",
+      "RAZAO_SOCIAL": "RAIMAR PESTANA GUEDES",
+      "NOME_FANTASIA": "RAI MOTOS",
+      "EMAIL": "RAIMAR@HOTMAIL.COM",
+      "TELEFONE": "(71) 99611005",
+      "DATA_ABERTURA": "2007-09-05",
+      "SITUACAO": "Inapta",
+      "PORTE": "Microempresa (ME)",
+      "DATA_GERACAO": "09/07/2026",
+      "META_TAG": "h5q1tpx0cthkjto53udfqu0qzoe5et"
     }
   }
 }
