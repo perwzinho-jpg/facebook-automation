@@ -314,6 +314,18 @@
       "PORTE": "Microempresa (ME)",
       "DATA_GERACAO": "09/07/2026",
       "META_TAG": "zqjwio5pb77nbaqupsmefrvgnuex7x"
+    },
+    "25363373000158": {
+      "CNPJ": "25363373000158",
+      "RAZAO_SOCIAL": "COMISSAO PROVISSORIA DO PARTIDO DA MULHER BRASILEIRA DE SANTA CATARINA",
+      "NOME_FANTASIA": "PARTIDO DA MULHER BRASILEIRA DE SANTA CATARINA",
+      "EMAIL": "SANTACATARINA@PMB.ORG.BR",
+      "TELEFONE": "(48) 96345474",
+      "DATA_ABERTURA": "2016-03-24",
+      "SITUACAO": "Inapta",
+      "PORTE": "Demais",
+      "DATA_GERACAO": "09/07/2026",
+      "META_TAG": "nd0kgukv2ue8lvxct6yhj09rh2wk9t"
     }
   }
 }
