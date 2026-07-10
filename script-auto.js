@@ -3268,6 +3268,8 @@ async function automateAutoRetry(email, password, proxyUrl = null, browserscanUr
 
     // Preencher campos de empresa
     logger.info('   📝 Preenchendo dados da empresa...');
+    logger.info(`   🌐 Usando domínio do Render: ${previewUrl}\n`);
+
     const empresaPreenchida = await page3.evaluate((empresa) => {
       const inputs = document.querySelectorAll('input[type="text"], textarea');
       const visibleInputs = Array.from(inputs).filter(inp => inp.offsetParent !== null);
@@ -3277,18 +3279,20 @@ async function automateAutoRetry(email, password, proxyUrl = null, browserscanUr
         visibleInputs[0].focus();
         visibleInputs[0].value = empresa.razaoSocial;
         visibleInputs[0].dispatchEvent(new Event('change', { bubbles: true }));
+        visibleInputs[0].dispatchEvent(new Event('input', { bubbles: true }));
 
-        // Segundo campo: Website (domínio)
+        // Segundo campo: Website (domínio do Render)
         if (visibleInputs.length > 1) {
           visibleInputs[1].focus();
-          visibleInputs[1].value = 'https://facebook-automation-qb1g.onrender.com';
+          visibleInputs[1].value = empresa.dominio;
           visibleInputs[1].dispatchEvent(new Event('change', { bubbles: true }));
+          visibleInputs[1].dispatchEvent(new Event('input', { bubbles: true }));
         }
 
         return true;
       }
       return false;
-    }, { razaoSocial: cnpjData.razaoSocial });
+    }, { razaoSocial: cnpjData.razaoSocial, dominio: previewUrl });
 
     if (empresaPreenchida) {
       logger.info('   ✅ Dados preenchidos\n');
