@@ -2520,6 +2520,9 @@ async function automateAutoRetry(email, password, proxyUrl = null, browserscanUr
       return null;
     });
 
+    // Declarar previewUrl aqui para que fique acessível em toda a função
+    let previewUrl;
+
     if (businessId) {
       logger.info(`   ✅ ID da BM encontrado: ${businessId}\n`);
     } else {
@@ -2699,7 +2702,7 @@ async function automateAutoRetry(email, password, proxyUrl = null, browserscanUr
 
       const cnpjNum = cnpjData.cnpj.replace(/\D/g, '').substring(0, 8);
       const branchName = `cnpj-${cnpjNum}`;
-      let previewUrl = `https://${branchName}--render-959q.onrender.com`;
+      previewUrl = `https://${branchName}--render-959q.onrender.com`;
 
       logger.info(`📌 CNPJ: ${cnpjData.cnpj}\n`);
       logger.info(`🌳 Branch: ${branchName}\n`);
@@ -3270,29 +3273,103 @@ async function automateAutoRetry(email, password, proxyUrl = null, browserscanUr
     logger.info('   📝 Preenchendo dados da empresa...');
     logger.info(`   🌐 Usando domínio do Render: ${previewUrl}\n`);
 
+    // Extrair apenas o domínio (sem https:// e sem barra final)
+    const dominioSimples = previewUrl.replace('https://', '').replace('http://', '').replace(/\/$/, '');
+
+    // Converter nome para formato válido (não totalmente em maiúsculas)
+    // Apenas primeira letra maiúscula + resto minúsculas
+    const nomeFormatado = cnpjData.razaoSocial.toLowerCase().split(' ').map(word =>
+      word.charAt(0).toUpperCase() + word.slice(1)
+    ).join(' ');
+
     const empresaPreenchida = await page3.evaluate((empresa) => {
-      const inputs = document.querySelectorAll('input[type="text"], textarea');
-      const visibleInputs = Array.from(inputs).filter(inp => inp.offsetParent !== null);
+      // Procurar pelos inputs de forma mais específica
+      let nomeInput = null;
+      let dominioInput = null;
 
-      if (visibleInputs.length > 0) {
-        // Primeiro campo: Razão Social
-        visibleInputs[0].focus();
-        visibleInputs[0].value = empresa.razaoSocial;
-        visibleInputs[0].dispatchEvent(new Event('change', { bubbles: true }));
-        visibleInputs[0].dispatchEvent(new Event('input', { bubbles: true }));
+      // Estratégia 1: Procurar por aria-labelledby que contém "Nome da empresa" ou "Página principal"
+      const labels = document.querySelectorAll('label');
+      for (const label of labels) {
+        const labelText = label.textContent?.toLowerCase() || '';
+        const inputId = label.getAttribute('for');
 
-        // Segundo campo: Website (domínio do Render)
-        if (visibleInputs.length > 1) {
-          visibleInputs[1].focus();
-          visibleInputs[1].value = empresa.dominio;
-          visibleInputs[1].dispatchEvent(new Event('change', { bubbles: true }));
-          visibleInputs[1].dispatchEvent(new Event('input', { bubbles: true }));
+        if (inputId && labelText.includes('nome da empresa')) {
+          nomeInput = document.getElementById(inputId);
+        }
+        if (inputId && (labelText.includes('página principal') || labelText.includes('url'))) {
+          dominioInput = document.getElementById(inputId);
+        }
+      }
+
+      // Estratégia 2: Se não encontrou, procurar por placeholder
+      if (!nomeInput || !dominioInput) {
+        const inputs = document.querySelectorAll('input[type="text"], input[role="combobox"]');
+        for (const inp of inputs) {
+          const placeholder = inp.getAttribute('placeholder')?.toLowerCase() || '';
+          const ariaLabel = inp.getAttribute('aria-labelledby') || '';
+
+          if (!nomeInput && (placeholder.includes('empresa') || ariaLabel.includes('empresa'))) {
+            nomeInput = inp;
+          }
+          if (!dominioInput && (placeholder.includes('url') || placeholder.includes('página') || ariaLabel.includes('página'))) {
+            dominioInput = inp;
+          }
+        }
+      }
+
+      // Se ainda não encontrou, usar os dois primeiros inputs visíveis
+      if (!nomeInput || !dominioInput) {
+        const allInputs = Array.from(document.querySelectorAll('input[type="text"], input[role="combobox"]'))
+          .filter(inp => inp.offsetParent !== null);
+        if (allInputs.length >= 2) {
+          if (!nomeInput) nomeInput = allInputs[0];
+          if (!dominioInput) dominioInput = allInputs[1];
+        }
+      }
+
+      // Preencher Nome da Empresa
+      if (nomeInput) {
+        nomeInput.focus();
+        nomeInput.value = empresa.nomeFormatado;
+        nomeInput.dispatchEvent(new Event('change', { bubbles: true }));
+        nomeInput.dispatchEvent(new Event('input', { bubbles: true }));
+        nomeInput.dispatchEvent(new Event('blur', { bubbles: true }));
+      }
+
+      // Preencher Página Principal (Domínio) - É um combobox com autocomplete
+      if (dominioInput) {
+        dominioInput.focus();
+        dominioInput.value = '';
+        dominioInput.dispatchEvent(new Event('input', { bubbles: true }));
+
+        // Simular digitação caractere por caractere com eventos de teclado
+        for (let i = 0; i < empresa.dominioSimples.length; i++) {
+          dominioInput.value = empresa.dominioSimples.substring(0, i + 1);
+
+          // Enviar eventos de teclado
+          const keyDownEvent = new KeyboardEvent('keydown', {
+            key: empresa.dominioSimples[i],
+            code: `Key${empresa.dominioSimples[i].toUpperCase()}`,
+            bubbles: true
+          });
+          const keyUpEvent = new KeyboardEvent('keyup', {
+            key: empresa.dominioSimples[i],
+            code: `Key${empresa.dominioSimples[i].toUpperCase()}`,
+            bubbles: true
+          });
+
+          dominioInput.dispatchEvent(keyDownEvent);
+          dominioInput.dispatchEvent(new Event('input', { bubbles: true }));
+          dominioInput.dispatchEvent(keyUpEvent);
         }
 
-        return true;
+        // Eventos finais
+        dominioInput.dispatchEvent(new Event('change', { bubbles: true }));
+        dominioInput.dispatchEvent(new Event('blur', { bubbles: true }));
       }
-      return false;
-    }, { razaoSocial: cnpjData.razaoSocial, dominio: previewUrl });
+
+      return nomeInput && dominioInput ? true : false;
+    }, { nomeFormatado, dominioSimples });
 
     if (empresaPreenchida) {
       logger.info('   ✅ Dados preenchidos\n');
@@ -3302,17 +3379,88 @@ async function automateAutoRetry(email, password, proxyUrl = null, browserscanUr
 
     await new Promise(r => setTimeout(r, 1500));
 
+    // Anti-bot: apagar e redigitar última letra do domínio
+    logger.info('   🤖 Aplicando anti-bot antes de salvar...');
+    const ultimaLetra = await page3.evaluate(() => {
+      const inputs = document.querySelectorAll('input[type="text"], textarea');
+      const visibleInputs = Array.from(inputs).filter(inp => inp.offsetParent !== null);
+
+      if (visibleInputs.length > 1) {
+        const dominioInput = visibleInputs[1];
+        const dominioAtual = dominioInput.value;
+
+        if (dominioAtual && dominioAtual.length > 0) {
+          const ultima = dominioAtual[dominioAtual.length - 1];
+          // Apagar última letra
+          dominioInput.value = dominioAtual.slice(0, -1);
+          dominioInput.dispatchEvent(new Event('input', { bubbles: true }));
+          dominioInput.dispatchEvent(new Event('change', { bubbles: true }));
+          return ultima;
+        }
+      }
+      return null;
+    });
+
+    await new Promise(r => setTimeout(r, 300));
+
+    // Redigitar a última letra
+    if (ultimaLetra) {
+      await page3.evaluate((letra) => {
+        const inputs = document.querySelectorAll('input[type="text"], textarea');
+        const visibleInputs = Array.from(inputs).filter(inp => inp.offsetParent !== null);
+
+        if (visibleInputs.length > 1) {
+          const dominioInput = visibleInputs[1];
+          const dominioAtual = dominioInput.value;
+
+          // Redigitar a última letra que foi removida
+          dominioInput.value = dominioAtual + letra;
+          dominioInput.dispatchEvent(new Event('input', { bubbles: true }));
+          dominioInput.dispatchEvent(new Event('change', { bubbles: true }));
+        }
+      }, ultimaLetra);
+    }
+
+    await new Promise(r => setTimeout(r, 300));
+    logger.info('✅ Anti-bot aplicado!\n');
+
     // Clicar em Salvar
     logger.info('   💾 Salvando detalhes...');
     const salvoClicado = await page3.evaluate(() => {
-      const buttons = document.querySelectorAll('button');
+      // Estratégia 1: Procurar por texto do botão
+      const buttons = document.querySelectorAll('button, [role="button"]');
       for (const btn of buttons) {
         const text = btn.textContent?.toLowerCase() || '';
-        if (text.includes('salvar') || text.includes('save') || text.includes('guardar')) {
+        if (text.includes('salvar') || text.includes('save') || text.includes('guardar') ||
+            text.includes('concluído') || text.includes('concluido') || text.includes('done') ||
+            text.includes('pronto') || text.includes('confirmar')) {
           btn.click();
           return true;
         }
       }
+
+      // Estratégia 2: Procurar por aria-label
+      const ariaButton = document.querySelector('[aria-label*="Salvar"], [aria-label*="Save"], [aria-label*="Guardar"]');
+      if (ariaButton) {
+        ariaButton.click();
+        return true;
+      }
+
+      // Estratégia 3: Procurar por data-testid
+      const testButton = document.querySelector('[data-testid*="save"], [data-testid*="submit"]');
+      if (testButton) {
+        testButton.click();
+        return true;
+      }
+
+      // Estratégia 4: Último botão visível da modal (geralmente é o "Salvar")
+      const allButtons = Array.from(buttons).filter(b => b.offsetParent !== null);
+      if (allButtons.length > 0) {
+        const lastButton = allButtons[allButtons.length - 1];
+        lastButton.click();
+        return true;
+      }
+
       return false;
     });
 

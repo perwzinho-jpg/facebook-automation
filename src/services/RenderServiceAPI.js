@@ -3,9 +3,9 @@ const logger = require('../utils/logger');
 
 class RenderServiceAPI {
   constructor(apiKey) {
-    this.apiKey = apiKey || process.env.RENDER_API_KEY || 'rnd_mtiVGFSaIEwm0zZzPOYWmsz0ZB9T';
+    this.apiKey = apiKey || process.env.RENDER_API_KEY || 'rnd_syvLjCCqB3r7mRvWcuY87eUSEaEo';
     this.baseURL = 'https://api.render.com/v1';
-    this.workspaceId = 'tea-d95i4qmq1p3s73d2laog'; // Workspace ID da conta Render
+    this.workspaceId = 'tea-d993sa3eo5us7381q41g'; // Workspace ID da conta Render
     this.ownerId = process.env.RENDER_OWNER_ID || null; // Owner ID é opcional
     this.client = axios.create({
       baseURL: this.baseURL,
@@ -14,7 +14,7 @@ class RenderServiceAPI {
         'Content-Type': 'application/json'
       }
     });
-    this.repoUrl = 'https://github.com/perwzinho-jpg/facebook-automation.git';
+    this.repoUrl = 'https://github.com/brunostreamerpro-code/bruninho.git';
   }
 
   /**
